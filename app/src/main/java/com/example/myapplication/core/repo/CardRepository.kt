@@ -1,4 +1,4 @@
-package com.example.myapplication.domain.api
+package com.example.myapplication.core.repo
 
 import com.example.myapplication.data.db.CardEntity
 
