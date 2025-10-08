@@ -1,6 +1,6 @@
-package com.example.myapplication.core.repo
+package com.example.myapplication.core.domain.api
 
-import com.example.myapplication.data.db.CardEntity
+import com.example.myapplication.core.data.db.CardEntity
 
 interface CardRepository {
     suspend fun add(card: CardEntity)
