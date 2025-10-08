@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CardDao {
@@ -19,4 +20,7 @@ interface CardDao {
 
     @Query("SELECT * FROM cards WHERE id = :id")
     suspend fun getCardById(id: Long): CardEntity?
+
+    @Query("SELECT * FROM cards ORDER BY id DESC")
+    fun observeAll(): Flow<List<CardEntity>>
 }
