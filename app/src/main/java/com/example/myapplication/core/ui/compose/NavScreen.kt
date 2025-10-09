@@ -8,7 +8,7 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -44,9 +44,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.R
-import com.example.myapplication.ui.theme.PinPadBackgroundColor
-import com.example.myapplication.ui.theme.secondaryContainerDark
-
+import com.example.myapplication.core.ui.theme.NavBarSize
+import com.example.myapplication.core.ui.theme.PinPadBackgroundColor
+import com.example.myapplication.core.ui.theme.RoundedCornerShapeSelector
+import com.example.myapplication.core.ui.theme.secondaryContainerDark
 
 const val ROUTE_MAPS = "cards"
 const val ROUTE_FINANCE = "finance"
@@ -54,7 +55,7 @@ const val ROUTE_TRANSFERS = "transactions"
 const val ROUTE_HISTORY = "history"
 const val ROUTE_PROFILE = "profile"
 
-const val ANIMATION_DELAY = 400
+const val ANIMATION_DELAY = 500
 const val ZERO_DELAY = 0
 
 data class BottomBarItem(
@@ -65,8 +66,6 @@ data class BottomBarItem(
 
 @Composable
 fun NavScreen() {
-    val navController = rememberNavController()
-
     val bottomBarRoutes = listOf(
         BottomBarItem(
             label = stringResource(R.string.cards),
@@ -79,133 +78,141 @@ fun NavScreen() {
             route = ROUTE_FINANCE
         ),
         BottomBarItem(
-            label = "Переводы",
+            label = stringResource(R.string.transactions),
             icon = R.drawable.ic_transfers,
             route = ROUTE_TRANSFERS
         ),
         BottomBarItem(
-            label = stringResource(R.string.finances),
+            label = stringResource(R.string.history),
             icon = R.drawable.ic_history,
             route = ROUTE_HISTORY
         ),
         BottomBarItem(
-            label = "Профиль",
+            label = stringResource(R.string.profile),
             icon = R.drawable.ic_profile,
             route = ROUTE_PROFILE
         )
     )
 
+    val navController = rememberNavController()
+
+    Scaffold(
+        bottomBar = { BottomNavigationBar(navController, bottomBarRoutes) }
+    ) { innerPadding ->
+        NavHostContent(navController, innerPadding)
+    }
+}
+
+@Composable
+fun BottomNavigationBar(navController: NavHostController, bottomBarRoutes: List<BottomBarItem>) {
     val bottomRoutes = bottomBarRoutes.map { it.route }
     val showBottomBar = remember { mutableStateOf(true) }
     showBottomBar.value = navController.currentBackStackEntryAsState().value?.destination?.route in bottomRoutes
 
-    Scaffold(
-        bottomBar = {
-            AnimatedVisibility(
-                visible = showBottomBar.value,
-                enter = slideInVertically(
-                    initialOffsetY = { it },
-                    animationSpec = tween(durationMillis = ANIMATION_DELAY)
-                ),
-                exit = slideOutVertically(
-                    targetOffsetY = { it },
-                    animationSpec = tween(durationMillis = ZERO_DELAY)
-                )
-            ) {
-                Column {
-                    NavigationBar(
-                        containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                        tonalElevation = 0.dp,
-                        modifier = Modifier.defaultMinSize(minHeight = 77.dp)
-                    ) {
-                        val navBackStackEntry by navController.currentBackStackEntryAsState()
-                        val currentDestination = navBackStackEntry?.destination
-                        val isDarkTheme = isSystemInDarkTheme()
+    AnimatedVisibility(
+        visible = showBottomBar.value,
+        enter = slideInVertically(
+            initialOffsetY = { it },
+            animationSpec = tween(durationMillis = ANIMATION_DELAY)
+        ),
+        exit = slideOutVertically(
+            targetOffsetY = { it },
+            animationSpec = tween(durationMillis = ZERO_DELAY)
+        )
+    ) {
+        NavigationBarContent(navController, bottomBarRoutes)
+    }
+}
 
-                        bottomBarRoutes.forEach { item ->
-                            val selected = currentDestination?.route == item.route
+@Composable
+fun NavigationBarContent(navController: NavHostController, bottomBarRoutes: List<BottomBarItem>) {
+    NavigationBar(
+        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+        tonalElevation = 0.dp,
+        modifier = Modifier.defaultMinSize(minHeight = NavBarSize)
+    ) {
+        val navBackStackEntry by navController.currentBackStackEntryAsState()
+        val currentDestination = navBackStackEntry?.destination
+        val isDarkTheme = isSystemInDarkTheme()
 
-                            val highlightColor by animateColorAsState(
-                                targetValue = when {
-                                    selected && isDarkTheme -> secondaryContainerDark
-                                    selected && !isDarkTheme -> PinPadBackgroundColor
-                                    else -> Color.Transparent
-                                },
-                                animationSpec = if (selected) {
-                                    tween(durationMillis = 500)
-                                } else {
-                                    tween(durationMillis = 0)
-                                },
-                                label = "highlight"
-                            )
+        bottomBarRoutes.forEach { item ->
+            val selected = currentDestination?.route == item.route
+            val highlightColor by animateColorAsState(
+                targetValue = when {
+                    selected && isDarkTheme -> secondaryContainerDark
+                    selected && !isDarkTheme -> PinPadBackgroundColor
+                    else -> Color.Transparent
+                },
+                animationSpec = if (selected) tween(ANIMATION_DELAY) else tween(ZERO_DELAY),
+                label = "highlight"
+            )
 
-                            NavigationBarItem(
-                                selected = selected,
-                                onClick = {
-                                    navController.navigate(item.route) {
-                                        popUpTo(navController.graph.findStartDestination().id) {
-                                            saveState = true
-                                        }
-                                        launchSingleTop = true
-                                        restoreState = true
-                                    }
-                                },
-                                icon = {
-                                    Box(
-                                        modifier = Modifier
-                                            .size(width = 56.dp, height = 32.dp)
-                                            .clip(RoundedCornerShape(50))
-                                            .background(highlightColor),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        Icon(
-                                            painter = painterResource(id = item.icon),
-                                            contentDescription = item.label,
-                                            modifier = Modifier.size(24.dp),
-                                            tint = Gray
-                                        )
-                                    }
-                                },
-                                label = {
-                                    Text(
-                                        text = item.label,
-                                        maxLines = 1,
-                                        modifier = Modifier.height(20.dp),
-                                        style = MaterialTheme.typography.labelSmall,
-                                        color = Gray
-                                    )
-                                },
-                                colors = NavigationBarItemDefaults.colors(
-                                    selectedIconColor = Gray,
-                                    selectedTextColor = Gray,
-                                    unselectedIconColor = Gray,
-                                    unselectedTextColor = Gray,
-                                    indicatorColor = Color.Transparent,
-                                ),
-                                alwaysShowLabel = true,
-                                interactionSource = remember { NoRippleInteractionSource() }
-                            )
+            NavigationBarItem(
+                selected = selected,
+                onClick = {
+                    navController.navigate(item.route) {
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = true
                         }
+                        launchSingleTop = true
+                        restoreState = true
                     }
-                }
-            }
-        }
-    ) { innerPadding ->
-        NavHost(
-            navController = navController,
-            startDestination = ROUTE_MAPS,
-            modifier = Modifier.padding(innerPadding)
-        ) {
-            mapsScreenNavigation(navController)
-            financeScreenNavigation(navController)
-            transfersScreenNavigation(navController)
-            historyScreenNavigation(navController)
-            profileScreenNavigation(navController)
+                },
+                icon = {
+                    Box(
+                        modifier = Modifier
+                            .size(width = 56.dp, height = 32.dp)
+                            .clip(RoundedCornerShape(RoundedCornerShapeSelector))
+                            .background(highlightColor),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            painter = painterResource(id = item.icon),
+                            contentDescription = item.label,
+                            modifier = Modifier.size(24.dp),
+                            tint = Gray
+                        )
+                    }
+                },
+                label = {
+                    Text(
+                        text = item.label,
+                        maxLines = 1,
+                        modifier = Modifier.height(20.dp),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = Gray
+                    )
+                },
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = Gray,
+                    selectedTextColor = Gray,
+                    unselectedIconColor = Gray,
+                    unselectedTextColor = Gray,
+                    indicatorColor = Color.Transparent,
+                ),
+                alwaysShowLabel = true,
+                interactionSource = remember { NoRippleInteractionSource() }
+            )
         }
     }
 }
 
-//Поменять на страницы после готовности
+@Composable
+fun NavHostContent(navController: NavHostController, padding: PaddingValues) {
+    NavHost(
+        navController = navController,
+        startDestination = ROUTE_MAPS,
+        modifier = Modifier.padding(padding)
+    ) {
+        mapsScreenNavigation()
+        financeScreenNavigation()
+        transfersScreenNavigation()
+        historyScreenNavigation()
+        profileScreenNavigation()
+    }
+}
+
+// Поменять на страницы после готовности
 @Composable
 fun CardsScreen() = PlaceholderScreen("Карты")
 
@@ -237,22 +244,22 @@ fun PlaceholderScreen(title: String) {
     }
 }
 
-fun NavGraphBuilder.mapsScreenNavigation(navController: NavHostController) {
+fun NavGraphBuilder.mapsScreenNavigation() {
     composable(ROUTE_MAPS) { CardsScreen() }
 }
 
-fun NavGraphBuilder.financeScreenNavigation(navController: NavHostController) {
+fun NavGraphBuilder.financeScreenNavigation() {
     composable(ROUTE_FINANCE) { FinanceScreen() }
 }
 
-fun NavGraphBuilder.transfersScreenNavigation(navController: NavHostController) {
+fun NavGraphBuilder.transfersScreenNavigation() {
     composable(ROUTE_TRANSFERS) { TransfersScreen() }
 }
 
-fun NavGraphBuilder.historyScreenNavigation(navController: NavHostController) {
+fun NavGraphBuilder.historyScreenNavigation() {
     composable(ROUTE_HISTORY) { HistoryScreen() }
 }
 
-fun NavGraphBuilder.profileScreenNavigation(navController: NavHostController) {
+fun NavGraphBuilder.profileScreenNavigation() {
     composable(ROUTE_PROFILE) { ProfileScreen() }
 }

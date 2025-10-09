@@ -12,6 +12,7 @@ val ZeroPadding = 0.dp
 val CornerRadiusSmall = 4.dp
 
 // Размеры
+val NavBarSize = 77.dp
 val ButtonMainHeight = 64.dp
 val PinpadWidth = 281.dp
 val PinpadButtonDiameter = 75.dp
@@ -23,3 +24,4 @@ val InputFieldThickBorder = 3.dp
 val InputFieldHeight = 56.dp
 val SupportingTextHeight = 20.dp
 val TrailingIconSize = 48.dp
+const val RoundedCornerShapeSelector = 50
