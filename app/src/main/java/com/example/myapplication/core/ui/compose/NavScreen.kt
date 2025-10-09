@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.compose
+package com.example.myapplication.core.ui.compose
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
@@ -6,8 +6,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
-import androidx.compose.foundation.indication
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,7 +15,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -25,7 +22,6 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -48,7 +44,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.R
-import com.example.myapplication.domain.model.BottomBarItem
+import com.example.myapplication.ui.theme.PinPadBackgroundColor
+import com.example.myapplication.ui.theme.secondaryContainerDark
 
 
 const val ROUTE_MAPS = "cards"
@@ -59,6 +56,12 @@ const val ROUTE_PROFILE = "profile"
 
 const val ANIMATION_DELAY = 400
 const val ZERO_DELAY = 0
+
+data class BottomBarItem(
+    val label: String,
+    val icon: Int,
+    val route: String
+)
 
 @Composable
 fun NavScreen() {
@@ -124,15 +127,17 @@ fun NavScreen() {
 
                             val highlightColor by animateColorAsState(
                                 targetValue = when {
-                                    selected && isDarkTheme -> Color(0xFF4A4458)
-                                    selected && !isDarkTheme -> Color(0xFFE8DEF8)
+                                    selected && isDarkTheme -> secondaryContainerDark
+                                    selected && !isDarkTheme -> PinPadBackgroundColor
                                     else -> Color.Transparent
+                                },
+                                animationSpec = if (selected) {
+                                    tween(durationMillis = 500)
+                                } else {
+                                    tween(durationMillis = 0)
                                 },
                                 label = "highlight"
                             )
-
-                            // 🔹 отдельный interactionSource для каждой кнопки
-                            val itemInteractionSource = remember { MutableInteractionSource() }
 
                             NavigationBarItem(
                                 selected = selected,
@@ -178,7 +183,7 @@ fun NavScreen() {
                                     indicatorColor = Color.Transparent,
                                 ),
                                 alwaysShowLabel = true,
-                                interactionSource = itemInteractionSource,
+                                interactionSource = remember { NoRippleInteractionSource() }
                             )
                         }
                     }
