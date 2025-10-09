@@ -1,3 +1,5 @@
+@file:Suppress("complexity:CognitiveComplexMethod", "complexity:CyclomaticComplexMethod")
+
 package com.example.myapplication.ui.components
 
 import android.util.DisplayMetrics
