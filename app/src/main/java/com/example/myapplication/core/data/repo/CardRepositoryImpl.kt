@@ -1,10 +1,10 @@
 package com.example.myapplication.core.data.repo
 
-import com.example.myapplication.core.domain.api.CardRepository
 import com.example.myapplication.core.data.db.CardDao
 import com.example.myapplication.core.data.db.CardEntity
+import com.example.myapplication.core.domain.api.CardRepository
 
-class CardRepositoryImpl (private val dao: CardDao) : CardRepository {
+class CardRepositoryImpl(private val dao: CardDao) : CardRepository {
     override suspend fun add(card: CardEntity) {
         dao.insertCard(card)
     }

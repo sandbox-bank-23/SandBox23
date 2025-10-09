@@ -11,6 +11,6 @@ data class CardEntity(
     val endDate: String?,
     val owner: String?,
     val type: String?,
-    val percent:Double?,
+    val percent: Double?,
     val balance: Long?
 )
