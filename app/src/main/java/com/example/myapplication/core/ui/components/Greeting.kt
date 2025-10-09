@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.components
+package com.example.myapplication.core.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,7 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.example.myapplication.ui.theme.PaddingBase
+import com.example.myapplication.core.ui.theme.PaddingBase
 import kotlin.random.Random
 
 @Composable
@@ -33,25 +33,25 @@ fun Greeting(innerPadding: PaddingValues) {
     ) {
         // Блок полей экрана авторизации
         HeadingText("Авторизация", false)
-        Spacer(modifier = Modifier.height(PaddingBase))
+        Spacer(modifier = Modifier.Companion.height(PaddingBase))
         InputTextField(
             label = "Email",
             isPassword = false,
             isError = false,
             isSuccess = false
         )
-        Spacer(modifier = Modifier.height(PaddingBase))
+        Spacer(modifier = Modifier.Companion.height(PaddingBase))
         InputTextField(
             label = "Пароль",
             isPassword = true,
             isError = false,
             isSuccess = false
         )
-        Spacer(modifier = Modifier.height(PaddingBase))
+        Spacer(modifier = Modifier.Companion.height(PaddingBase))
         // Блок полей ввода пин-кода
         @Suppress("MagicNumber")
         PinCodeProgressBar(digitsEntered, 6, isError)
-        Spacer(modifier = Modifier.height(PaddingBase))
+        Spacer(modifier = Modifier.Companion.height(PaddingBase))
         PinPad(
             isFingerprintEnabled = true,
             onDigitClick = {
@@ -82,10 +82,10 @@ fun Greeting(innerPadding: PaddingValues) {
                 digitsEntered = 0
             }
         )
-        Spacer(modifier = Modifier.height(PaddingBase))
+        Spacer(modifier = Modifier.Companion.height(PaddingBase))
         // Блок кнопок
         PrimaryButton("Вход") { }
-        Spacer(modifier = Modifier.height(PaddingBase))
+        Spacer(modifier = Modifier.Companion.height(PaddingBase))
         SecondaryButton("Регистрация") { }
     }
 }

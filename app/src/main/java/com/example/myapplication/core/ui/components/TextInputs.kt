@@ -1,6 +1,6 @@
 @file:Suppress("complexity:CognitiveComplexMethod", "complexity:CyclomaticComplexMethod")
 
-package com.example.myapplication.ui.components
+package com.example.myapplication.core.ui.components
 
 import android.util.DisplayMetrics
 import androidx.compose.foundation.background
@@ -50,18 +50,18 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.myapplication.R
-import com.example.myapplication.ui.theme.CornerRadiusSmall
-import com.example.myapplication.ui.theme.InputFieldHeight
-import com.example.myapplication.ui.theme.InputFieldThickBorder
-import com.example.myapplication.ui.theme.InputFieldThinBorder
-import com.example.myapplication.ui.theme.Neutral30
-import com.example.myapplication.ui.theme.Padding12dp
-import com.example.myapplication.ui.theme.PaddingBase
-import com.example.myapplication.ui.theme.PaddingQuarter
-import com.example.myapplication.ui.theme.SuccessGreen
-import com.example.myapplication.ui.theme.SupportingTextHeight
-import com.example.myapplication.ui.theme.TrailingIconSize
-import com.example.myapplication.ui.theme.ZeroPadding
+import com.example.myapplication.core.ui.theme.CornerRadiusSmall
+import com.example.myapplication.core.ui.theme.InputFieldHeight
+import com.example.myapplication.core.ui.theme.InputFieldThickBorder
+import com.example.myapplication.core.ui.theme.InputFieldThinBorder
+import com.example.myapplication.core.ui.theme.Neutral30
+import com.example.myapplication.core.ui.theme.Padding12dp
+import com.example.myapplication.core.ui.theme.PaddingBase
+import com.example.myapplication.core.ui.theme.PaddingQuarter
+import com.example.myapplication.core.ui.theme.SuccessGreen
+import com.example.myapplication.core.ui.theme.SupportingTextHeight
+import com.example.myapplication.core.ui.theme.TrailingIconSize
+import com.example.myapplication.core.ui.theme.ZeroPadding
 
 @Suppress("DEPRECATION")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -133,7 +133,7 @@ fun InputTextField(
         when {
             isPassword && !isError -> {
                 Box(
-                    modifier = Modifier
+                    modifier = Modifier.Companion
                         .size(TrailingIconSize)
                         .clickable(
                             onClick = { },
@@ -156,7 +156,7 @@ fun InputTextField(
             }
             isError || isSuccess -> {
                 Box(
-                    modifier = Modifier.size(TrailingIconSize),
+                    modifier = Modifier.Companion.size(TrailingIconSize),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
@@ -246,7 +246,7 @@ fun InputTextField(
                 }
             }
             Row(modifier = Modifier.fillMaxWidth()) {
-                Spacer(modifier = Modifier.width(Padding12dp))
+                Spacer(modifier = Modifier.Companion.width(Padding12dp))
                 Box(
                     modifier = Modifier
                         .padding(horizontal = ZeroPadding)

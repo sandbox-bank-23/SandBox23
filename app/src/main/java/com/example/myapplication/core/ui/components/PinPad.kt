@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.components
+package com.example.myapplication.core.ui.components
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
@@ -24,13 +24,13 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.example.myapplication.R
-import com.example.myapplication.ui.theme.PinCodeProgressBarDotSize
-import com.example.myapplication.ui.theme.PinCodeProgressBarDotStrokeWidth
-import com.example.myapplication.ui.theme.PinCodeProgressBarWidth
-import com.example.myapplication.ui.theme.PinPadBackgroundColor
-import com.example.myapplication.ui.theme.PinPadTextColor
-import com.example.myapplication.ui.theme.PinpadButtonDiameter
-import com.example.myapplication.ui.theme.PinpadWidth
+import com.example.myapplication.core.ui.theme.PinCodeProgressBarDotSize
+import com.example.myapplication.core.ui.theme.PinCodeProgressBarDotStrokeWidth
+import com.example.myapplication.core.ui.theme.PinCodeProgressBarWidth
+import com.example.myapplication.core.ui.theme.PinPadBackgroundColor
+import com.example.myapplication.core.ui.theme.PinPadTextColor
+import com.example.myapplication.core.ui.theme.PinpadButtonDiameter
+import com.example.myapplication.core.ui.theme.PinpadWidth
 
 @Suppress("MagicNumber")
 @Composable
@@ -41,7 +41,7 @@ fun PinPad(
     onFingerprintClick: () -> Unit
 ) {
     val buttonsSpace = (PinpadWidth - PinpadButtonDiameter * 3) / 2
-    Column(modifier = Modifier.width(PinpadWidth)) {
+    Column(modifier = Modifier.Companion.width(PinpadWidth)) {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             for (i in 1..3) PinPadDigitButton(i, onDigitClick)
         }
@@ -66,7 +66,7 @@ fun PinPad(
 @Composable
 fun PinPadDigitButton(number: Int = 0, onClick: (digit: Int) -> Unit) {
     if (number in 0..9) {
-        Box(modifier = Modifier.size(PinpadButtonDiameter)) {
+        Box(modifier = Modifier.Companion.size(PinpadButtonDiameter)) {
             FilledTonalButton(
                 modifier = Modifier.fillMaxSize(),
                 onClick = { onClick(number) },
@@ -87,7 +87,7 @@ fun PinPadDigitButton(number: Int = 0, onClick: (digit: Int) -> Unit) {
 
 @Composable
 fun PinPadBackspaceButton(onClick: () -> Unit) {
-    Box(modifier = Modifier.size(PinpadButtonDiameter)) {
+    Box(modifier = Modifier.Companion.size(PinpadButtonDiameter)) {
         IconButton(
             modifier = Modifier.fillMaxSize(),
             onClick = onClick,
@@ -104,7 +104,7 @@ fun PinPadBackspaceButton(onClick: () -> Unit) {
 
 @Composable
 fun PinPadFingerprintButton(isFingerprintEnabled: Boolean, onClick: () -> Unit) {
-    Box(modifier = Modifier.size(PinpadButtonDiameter)) {
+    Box(modifier = Modifier.Companion.size(PinpadButtonDiameter)) {
         if (isFingerprintEnabled) {
             IconButton(
                 modifier = Modifier.fillMaxSize(),
@@ -125,7 +125,7 @@ fun PinPadFingerprintButton(isFingerprintEnabled: Boolean, onClick: () -> Unit) 
 @Composable
 fun PinCodeProgressBar(digitsEntered: Int, digitsTotal: Int, isError: Boolean) {
     Row(
-        modifier = Modifier.width(PinCodeProgressBarWidth),
+        modifier = Modifier.Companion.width(PinCodeProgressBarWidth),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         val currentColor = if (isError) {
@@ -147,7 +147,7 @@ fun PinCodeProgressBar(digitsEntered: Int, digitsTotal: Int, isError: Boolean) {
 
 @Composable
 fun DotFilled(color: Color) {
-    Canvas(modifier = Modifier.size(PinCodeProgressBarDotSize)) {
+    Canvas(modifier = Modifier.Companion.size(PinCodeProgressBarDotSize)) {
         drawCircle(
             color = color,
             radius = (PinCodeProgressBarDotSize / 2).toPx(),
@@ -158,7 +158,7 @@ fun DotFilled(color: Color) {
 
 @Composable
 fun DotStroked(color: Color) {
-    Canvas(modifier = Modifier.size(PinCodeProgressBarDotSize)) {
+    Canvas(modifier = Modifier.Companion.size(PinCodeProgressBarDotSize)) {
         drawCircle(
             color = color,
             radius = ((PinCodeProgressBarDotSize - PinCodeProgressBarDotStrokeWidth) / 2).toPx(),

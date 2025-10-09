@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.components
+package com.example.myapplication.core.ui.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -9,8 +9,8 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.example.myapplication.ui.theme.ButtonMainHeight
-import com.example.myapplication.ui.theme.DisabledButtonText
+import com.example.myapplication.core.ui.theme.ButtonMainHeight
+import com.example.myapplication.core.ui.theme.DisabledButtonText
 
 @Composable
 fun PrimaryButton(label: String, isEnabled: Boolean = true, onClick: () -> Unit) {
