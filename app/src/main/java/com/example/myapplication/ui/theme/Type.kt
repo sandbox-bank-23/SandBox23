@@ -8,6 +8,8 @@ import androidx.compose.ui.text.googlefonts.GoogleFont
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.R
 
+const val MainFont = "Roboto"
+
 val provider = GoogleFont.Provider(
     providerAuthority = "com.google.android.gms.fonts",
     providerPackage = "com.google.android.gms",
@@ -16,7 +18,7 @@ val provider = GoogleFont.Provider(
 
 val bodyFontFamily = FontFamily(
     Font(
-        googleFont = GoogleFont("Roboto"),
+        googleFont = GoogleFont(MainFont),
         fontProvider = provider,
         weight = FontWeight.Medium
     )
@@ -24,7 +26,7 @@ val bodyFontFamily = FontFamily(
 
 val displayFontFamily = FontFamily(
     Font(
-        googleFont = GoogleFont("Roboto"),
+        googleFont = GoogleFont(MainFont),
         fontProvider = provider,
         weight = FontWeight.Medium
     )
@@ -32,7 +34,7 @@ val displayFontFamily = FontFamily(
 
 val headlineFontFamily = FontFamily(
     Font(
-        googleFont = GoogleFont("Roboto"),
+        googleFont = GoogleFont(MainFont),
         fontProvider = provider,
         weight = FontWeight.Bold
     )

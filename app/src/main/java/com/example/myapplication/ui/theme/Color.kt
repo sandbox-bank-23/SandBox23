@@ -1,8 +1,11 @@
+@file:Suppress("MagicNumber")
+
 package com.example.myapplication.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
 // Цвета для светлой темы
+
 // Парные использованные цвета (не корректировать)
 val primaryLight = Color(0xFF65558F)
 val onPrimaryLight = Color(0xFFFFFFFF)
@@ -14,6 +17,7 @@ val onSurfaceVariantLight = Color(0xFF49454F)
 val outlineLight = Color(0xFF79747E)
 val outlineVariantLight = Color(0x1F1D1B20)
 val surfaceContainerLowestLight = Color(0xFFFFFFFF)
+
 // Неиспользованные цвета, можно корректировать пары
 val primaryContainerLight = Color(0xFFEADDFF)
 val onSecondaryLight = Color(0xFFFFFFFF)
@@ -42,6 +46,7 @@ val surfaceContainerHighLight = Color(0xFFECE6F0)
 val surfaceContainerHighestLight = Color(0xFFE6E0E9)
 
 // Цвета для тёмной темы
+
 // Парные использованные цвета (не корректировать)
 val primaryDark = Color(0xFFD0BCFF)
 val onPrimaryDark = Color(0xFF21005D)
@@ -53,6 +58,7 @@ val onSurfaceVariantDark = Color(0xFFFFFFFF)
 val outlineDark = Color(0xFFFFFFFF)
 val outlineVariantDark = Color(0xFFCEC8D4)
 val surfaceContainerLowestDark = Color(0xFF1D1B20)
+
 // Неиспользованные цвета, можно корректировать пары
 val primaryContainerDark = Color(0xFF4F378B)
 val onSecondaryDark = Color(0xFF332D41)
