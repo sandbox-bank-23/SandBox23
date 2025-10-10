@@ -92,4 +92,3 @@ val Neutral30 = Color(0xFF484646)
 val PinPadTextColor = Color(0xFF4A4458)
 val PinPadBackgroundColor = Color(0xFFE8DEF8)
 val DisabledButtonText = Color(0xFF8B868F)
-val Transparent = Color.Transparent

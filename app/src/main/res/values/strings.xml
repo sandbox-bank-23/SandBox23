@@ -1,5 +1,10 @@
 <resources>
     <string name="app_name">MyApplication</string>
+    <string name="backspace">Backspace</string>
+    <string name="fingerprint">Fingerprint</string>
+    <string name="show_password">Show password</string>
+    <string name="error">Error</string>
+    <string name="success">Success</string>
     <string name="cards">Карты</string>
     <string name="finances">Финансы</string>
     <string name="transactions">Переводы</string>
