@@ -49,11 +49,13 @@ import com.example.myapplication.core.ui.theme.PinPadBackgroundColor
 import com.example.myapplication.core.ui.theme.RoundedCornerShapeSelector
 import com.example.myapplication.core.ui.theme.secondaryContainerDark
 
-const val ROUTE_MAPS = "cards"
-const val ROUTE_FINANCE = "finance"
-const val ROUTE_TRANSFERS = "transactions"
-const val ROUTE_HISTORY = "history"
-const val ROUTE_PROFILE = "profile"
+enum class Routes(val route: String) {
+    CARDS("cards"),
+    FINANCE("finance"),
+    TRANSFERS("transactions"),
+    HISTORY("history"),
+    PROFILE("profile")
+}
 
 const val ANIMATION_DELAY = 500
 const val ZERO_DELAY = 0
@@ -70,27 +72,27 @@ fun NavScreen() {
         BottomBarItem(
             label = stringResource(R.string.cards),
             icon = R.drawable.ic_cards,
-            route = ROUTE_MAPS
+            route = Routes.CARDS.route
         ),
         BottomBarItem(
             label = stringResource(R.string.finances),
             icon = R.drawable.ic_finance,
-            route = ROUTE_FINANCE
+            route = Routes.FINANCE.route
         ),
         BottomBarItem(
             label = stringResource(R.string.transactions),
             icon = R.drawable.ic_transfers,
-            route = ROUTE_TRANSFERS
+            route = Routes.TRANSFERS.route
         ),
         BottomBarItem(
             label = stringResource(R.string.history),
             icon = R.drawable.ic_history,
-            route = ROUTE_HISTORY
+            route = Routes.HISTORY.route
         ),
         BottomBarItem(
             label = stringResource(R.string.profile),
             icon = R.drawable.ic_profile,
-            route = ROUTE_PROFILE
+            route = Routes.PROFILE.route
         )
     )
 
@@ -127,7 +129,7 @@ fun BottomNavigationBar(navController: NavHostController, bottomBarRoutes: List<
 @Composable
 fun NavigationBarContent(navController: NavHostController, bottomBarRoutes: List<BottomBarItem>) {
     NavigationBar(
-        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+        containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
         tonalElevation = 0.dp,
         modifier = Modifier.defaultMinSize(minHeight = NavBarSize)
     ) {
@@ -201,7 +203,7 @@ fun NavigationBarContent(navController: NavHostController, bottomBarRoutes: List
 fun NavHostContent(navController: NavHostController, padding: PaddingValues) {
     NavHost(
         navController = navController,
-        startDestination = ROUTE_MAPS,
+        startDestination = Routes.CARDS.route,
         modifier = Modifier.padding(padding)
     ) {
         mapsScreenNavigation()
@@ -245,21 +247,21 @@ fun PlaceholderScreen(title: String) {
 }
 
 fun NavGraphBuilder.mapsScreenNavigation() {
-    composable(ROUTE_MAPS) { CardsScreen() }
+    composable(Routes.CARDS.route) { CardsScreen() }
 }
 
 fun NavGraphBuilder.financeScreenNavigation() {
-    composable(ROUTE_FINANCE) { FinanceScreen() }
+    composable(Routes.FINANCE.route) { FinanceScreen() }
 }
 
 fun NavGraphBuilder.transfersScreenNavigation() {
-    composable(ROUTE_TRANSFERS) { TransfersScreen() }
+    composable(Routes.TRANSFERS.route) { TransfersScreen() }
 }
 
 fun NavGraphBuilder.historyScreenNavigation() {
-    composable(ROUTE_HISTORY) { HistoryScreen() }
+    composable(Routes.HISTORY.route) { HistoryScreen() }
 }
 
 fun NavGraphBuilder.profileScreenNavigation() {
-    composable(ROUTE_PROFILE) { ProfileScreen() }
+    composable(Routes.PROFILE.route) { ProfileScreen() }
 }
