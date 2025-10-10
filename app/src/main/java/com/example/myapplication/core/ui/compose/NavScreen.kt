@@ -1,5 +1,7 @@
 package com.example.myapplication.core.ui.compose
 
+import android.app.Activity
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
@@ -30,13 +32,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.Gray
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -44,7 +45,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.R
+import com.example.myapplication.core.ui.theme.AppTypography
 import com.example.myapplication.core.ui.theme.NavBarSize
+import com.example.myapplication.core.ui.theme.NavTextActiveDark
+import com.example.myapplication.core.ui.theme.NavTextActiveLight
+import com.example.myapplication.core.ui.theme.NavTextInactiveDark
+import com.example.myapplication.core.ui.theme.NavTextInactiveLight
 import com.example.myapplication.core.ui.theme.PinPadBackgroundColor
 import com.example.myapplication.core.ui.theme.RoundedCornerShapeSelector
 import com.example.myapplication.core.ui.theme.secondaryContainerDark
@@ -64,6 +70,14 @@ data class BottomBarItem(
     val label: String,
     val icon: Int,
     val route: String
+)
+
+val ROOT_ROUTES = listOf(
+    Routes.CARDS.route,
+    Routes.FINANCE.route,
+    Routes.TRANSFERS.route,
+    Routes.HISTORY.route,
+    Routes.PROFILE.route
 )
 
 @Composable
@@ -98,8 +112,19 @@ fun NavScreen() {
 
     val navController = rememberNavController()
 
+    val context = LocalContext.current
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+
+    val isRootScreen = currentRoute in ROOT_ROUTES
+
+    BackHandler(enabled = isRootScreen) {
+        (context as? Activity)?.finish()
+    }
+
     Scaffold(
-        bottomBar = { BottomNavigationBar(navController, bottomBarRoutes) }
+        bottomBar = { BottomNavigationBar(navController, bottomBarRoutes) },
+        containerColor = MaterialTheme.colorScheme.surfaceContainerLowest
     ) { innerPadding ->
         NavHostContent(navController, innerPadding)
     }
@@ -126,10 +151,15 @@ fun BottomNavigationBar(navController: NavHostController, bottomBarRoutes: List<
     }
 }
 
+@Suppress(
+    "CyclomaticComplexMethod",
+    "CognitiveComplexMethod",
+    "LabeledExpression"
+)
 @Composable
 fun NavigationBarContent(navController: NavHostController, bottomBarRoutes: List<BottomBarItem>) {
     NavigationBar(
-        containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
+        containerColor = MaterialTheme.colorScheme.surfaceContainer,
         tonalElevation = 0.dp,
         modifier = Modifier.defaultMinSize(minHeight = NavBarSize)
     ) {
@@ -139,6 +169,14 @@ fun NavigationBarContent(navController: NavHostController, bottomBarRoutes: List
 
         bottomBarRoutes.forEach { item ->
             val selected = currentDestination?.route == item.route
+
+            val itemTextColor = when {
+                selected && isDarkTheme -> NavTextActiveDark
+                selected && !isDarkTheme -> NavTextActiveLight
+                !selected && isDarkTheme -> NavTextInactiveDark
+                else -> NavTextInactiveLight
+            }
+
             val highlightColor by animateColorAsState(
                 targetValue = when {
                     selected && isDarkTheme -> secondaryContainerDark
@@ -152,12 +190,13 @@ fun NavigationBarContent(navController: NavHostController, bottomBarRoutes: List
             NavigationBarItem(
                 selected = selected,
                 onClick = {
+                    val currentRoute = navController.currentDestination?.route
+                    if (currentRoute == item.route) return@NavigationBarItem
+
                     navController.navigate(item.route) {
-                        popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
-                        }
+                        popUpTo(0) { inclusive = true }
                         launchSingleTop = true
-                        restoreState = true
+                        restoreState = false
                     }
                 },
                 icon = {
@@ -172,7 +211,7 @@ fun NavigationBarContent(navController: NavHostController, bottomBarRoutes: List
                             painter = painterResource(id = item.icon),
                             contentDescription = item.label,
                             modifier = Modifier.size(24.dp),
-                            tint = Gray
+                            tint = itemTextColor
                         )
                     }
                 },
@@ -181,15 +220,14 @@ fun NavigationBarContent(navController: NavHostController, bottomBarRoutes: List
                         text = item.label,
                         maxLines = 1,
                         modifier = Modifier.height(20.dp),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = Gray
+                        style = AppTypography.labelMedium.copy(color = itemTextColor),
                     )
                 },
                 colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = Gray,
-                    selectedTextColor = Gray,
-                    unselectedIconColor = Gray,
-                    unselectedTextColor = Gray,
+                    selectedIconColor = itemTextColor,
+                    selectedTextColor = itemTextColor,
+                    unselectedIconColor = itemTextColor,
+                    unselectedTextColor = itemTextColor,
                     indicatorColor = Color.Transparent,
                 ),
                 alwaysShowLabel = true,
