@@ -45,6 +45,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.R
+import com.example.myapplication.core.ui.model.BottomBarItem
+import com.example.myapplication.core.ui.state.Routes
 import com.example.myapplication.core.ui.theme.AppTypography
 import com.example.myapplication.core.ui.theme.NavBarSize
 import com.example.myapplication.core.ui.theme.NavTextActiveDark
@@ -54,23 +56,10 @@ import com.example.myapplication.core.ui.theme.NavTextInactiveLight
 import com.example.myapplication.core.ui.theme.PinPadBackgroundColor
 import com.example.myapplication.core.ui.theme.RoundedCornerShapeSelector
 import com.example.myapplication.core.ui.theme.secondaryContainerDark
-
-enum class Routes(val route: String) {
-    CARDS("cards"),
-    FINANCE("finance"),
-    TRANSFERS("transactions"),
-    HISTORY("history"),
-    PROFILE("profile")
-}
+import kotlin.collections.map
 
 const val ANIMATION_DELAY = 500
 const val ZERO_DELAY = 0
-
-data class BottomBarItem(
-    val label: String,
-    val icon: Int,
-    val route: String
-)
 
 val ROOT_ROUTES = listOf(
     Routes.CARDS.route,
