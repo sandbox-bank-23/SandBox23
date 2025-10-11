@@ -6,16 +6,19 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -38,28 +41,73 @@ fun CardsScreen(
     //viewModel: CardsViewModel = koinViewModel<CardsViewModel>()
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxSize(1f)
+        modifier = Modifier.fillMaxSize(1f),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top
     ) {
-        CardItem()
-        ExtendedFloatingActionButton(
-            modifier = Modifier.fillMaxWidth().padding(16.dp, 8.dp),
-            onClick = {  },
-            icon = { Image(painterResource(R.drawable.ic_card_debit),
-                "Extended floating action button.") },
-            text = { Text(text = "Оформить дебетовую карту") },
-        )
-        ExtendedFloatingActionButton(
-            modifier = Modifier.fillMaxWidth().padding(16.dp, 8.dp),
-            onClick = {  },
-            icon = { Image(painterResource(R.drawable.ic_card_credit),
-                "Extended floating action button.") },
-            text = { Text(text = "Оформить кредитную карту") },
-        )
+        Column(
+            modifier = Modifier
+                .fillMaxHeight(0.45f)
+                .padding(bottom = 48.dp),
+            verticalArrangement = Arrangement.Bottom
+        ) {
+            CardItem()
+        }
+        Column(
+            modifier = Modifier.height(188.dp),
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            CreateCard("Оформить дебетовую карту", false) {}
+            CreateCard("Оформить кредитную карту", true) {}
+        }
     }
 }
 
-@Preview
+@Composable
+private fun CreateCard(text: String, isCredit: Boolean, onClick: () -> Unit) {
+    ExtendedFloatingActionButton(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(80.dp)
+            .padding(horizontal = 16.dp)
+            .clip(RoundedCornerShape(16.dp)),
+        containerColor = Color(0XFFF3EDF7),
+        elevation = FloatingActionButtonDefaults.elevation(
+            defaultElevation = 4.dp,
+            pressedElevation = 8.dp,
+            hoveredElevation = 2.dp,
+            focusedElevation = 1.dp,
+        ),
+        onClick = { onClick.invoke() },
+        icon = {
+            if (isCredit) {
+                Image(
+                    painterResource(R.drawable.ic_card_credit),
+                    "Extended floating action button.",
+                    modifier = Modifier.size(40.dp)
+                )
+            } else {
+                Image(
+                    painterResource(R.drawable.ic_card_debit),
+                    "Extended floating action button.",
+                    modifier = Modifier.size(40.dp)
+                )
+            }
+        },
+        text = {
+            Text(
+                modifier = Modifier,
+                color = Color(0XFF65558F),
+                textAlign = TextAlign.Start,
+                text = text,
+                maxLines = 1,
+                style = MaterialTheme.typography.titleMedium
+            )
+        },
+    )
+}
+
+
 @Composable
 fun CardItem(
     cardHolderName: String = "SandboxBank",
@@ -97,7 +145,9 @@ fun CardItem(
                 )
         )
         Column(
-            modifier = Modifier.fillMaxSize().padding(vertical = 24.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(vertical = 24.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             CardHolderName(cardHolderName)
@@ -128,7 +178,9 @@ private fun CardData(cardName: String?, cardNumber: String?) {
     Column() {
         if (!cardName.isNullOrEmpty())
         Text(
-            modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp).height(16.dp),
+            modifier = Modifier
+                .padding(horizontal = 24.dp, vertical = 4.dp)
+                .height(16.dp),
             color = Color(0XFF222222),
             textAlign = TextAlign.Start,
             text = cardName,
@@ -137,7 +189,9 @@ private fun CardData(cardName: String?, cardNumber: String?) {
         )
         if (!cardNumber.isNullOrEmpty())
         Text(
-            modifier = Modifier.padding(horizontal = 18.dp, vertical = 4.dp).height(24.dp),
+            modifier = Modifier
+                .padding(horizontal = 18.dp, vertical = 4.dp)
+                .height(24.dp),
             color = Color(0XFF222222),
             textAlign = TextAlign.Start,
             text = cardNumber,
@@ -151,7 +205,9 @@ private fun CardData(cardName: String?, cardNumber: String?) {
 private fun CardBalance(balance: Float) {
     val balanceFormat = DecimalFormat("#,##0 \u20BD").format(balance)
     Row(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 24.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -187,7 +243,9 @@ private fun CardBalance(balance: Float) {
                     )
                 }
                 Row(
-                    modifier = Modifier.height(11.dp).padding(0.dp),
+                    modifier = Modifier
+                        .height(11.dp)
+                        .padding(0.dp),
                     verticalAlignment = Alignment.Top
                 ) {
                     Icon(
