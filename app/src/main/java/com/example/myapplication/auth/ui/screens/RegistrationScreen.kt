@@ -12,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.myapplication.R
-import com.example.myapplication.auth.ui.viewmodel.UserViewModel
 import com.example.myapplication.core.ui.components.HeadingText
 import com.example.myapplication.core.ui.components.InputTextField
 import com.example.myapplication.core.ui.components.PrimaryButton
@@ -20,12 +19,9 @@ import com.example.myapplication.core.ui.theme.Height60
 import com.example.myapplication.core.ui.theme.Height80
 import com.example.myapplication.core.ui.theme.PaddingBase
 import com.example.myapplication.core.ui.theme.SandBox23Theme
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun RegistrationScreen(
-    userVm: UserViewModel = koinViewModel(),
-) {
+fun RegistrationScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -57,7 +53,7 @@ fun RegistrationScreen(
         )
         Spacer(modifier = Modifier.Companion.height(Height60))
         // Блок кнопок
-        PrimaryButton(stringResource(R.string.register)) {  }
+        PrimaryButton(stringResource(R.string.register)) { }
     }
 }
 
