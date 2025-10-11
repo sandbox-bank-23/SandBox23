@@ -5,4 +5,9 @@
     <string name="show_password">Show password</string>
     <string name="error">Error</string>
     <string name="success">Success</string>
+    <string name="cards">Карты</string>
+    <string name="finances">Финансы</string>
+    <string name="transactions">Переводы</string>
+    <string name="history">История</string>
+    <string name="profile">Профиль</string>
 </resources>
