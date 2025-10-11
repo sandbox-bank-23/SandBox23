@@ -1,4 +1,4 @@
-package com.example.myapplication.auth.data
+package com.example.myapplication.auth.data.repo
 
 import com.example.myapplication.auth.domain.api.AuthRepository
 import com.example.myapplication.core.domain.models.Response
@@ -10,12 +10,12 @@ class AuthRepositoryImpl : AuthRepository {
         email: String,
         password: String
     ): Response {
-        when (Random.nextInt(100)) {
+        when (Random.Default.nextInt(100)) {
             in 0..79 -> {
                 return Response(
                     code = 200,
                     description = "OK",
-                    response = "\"access_token\": ${formToken()}\n\"refresh_token\": ${formToken()}\n\"user_id\": ${Random.nextInt()}"
+                    response = "\"access_token\": ${formToken()}\n\"refresh_token\": ${formToken()}\n\"user_id\": ${Random.Default.nextInt()}"
                 )
             }
 
@@ -50,15 +50,15 @@ class AuthRepositoryImpl : AuthRepository {
         email: String,
         password: String
     ): Response {
-        when (Random.nextInt(1, 100)) {
+        when (Random.Default.nextInt(1, 100)) {
             in 1..85 -> {
                 return Response(
                     code = 201,
                     description = "Created",
-                    response = "\"access_token\": ${formToken()}\n\"refresh_token\": ${formToken()}\n\"user_id\": ${Random.nextInt()}"
+                    response = "\"access_token\": ${formToken()}\n\"refresh_token\": ${formToken()}\n\"user_id\": ${Random.Default.nextInt()}"
                 )
             }
-            
+
             in 86..90 -> {
                 return Response(
                     code = 409,
@@ -93,6 +93,6 @@ class AuthRepositoryImpl : AuthRepository {
             }
         }
     }
-    
-    private fun formToken(): String = Base64.getEncoder().withoutPadding().encodeToString(Random.nextBytes(32))
+
+    private fun formToken(): String = Base64.getEncoder().withoutPadding().encodeToString(Random.Default.nextBytes(32))
 }
