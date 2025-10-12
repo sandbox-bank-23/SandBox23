@@ -63,7 +63,7 @@ import com.example.myapplication.core.ui.theme.SupportingTextHeight
 import com.example.myapplication.core.ui.theme.TrailingIconSize
 import com.example.myapplication.core.ui.theme.ZeroPadding
 
-@Suppress("DEPRECATION")
+@Suppress("DEPRECATION", "Indentation")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InputTextField(
