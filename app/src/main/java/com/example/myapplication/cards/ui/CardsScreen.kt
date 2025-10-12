@@ -62,6 +62,7 @@ fun CardsScreen(
             cardNumber = stringResource(R.string.card_number_default)
             cardBalance = null
         }
+
         is CardsState.Cards -> {
             cardBalance = CARD_BALANCE_DEF
         }

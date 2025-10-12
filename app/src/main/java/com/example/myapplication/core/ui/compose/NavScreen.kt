@@ -62,7 +62,6 @@ import com.example.myapplication.core.ui.theme.PinPadBackgroundColor
 import com.example.myapplication.core.ui.theme.RoundedCornerShapeSelector
 import com.example.myapplication.core.ui.theme.secondaryContainerDark
 import org.koin.androidx.compose.koinViewModel
-import kotlin.collections.map
 
 const val ANIMATION_DELAY = 500
 const val ZERO_DELAY = 0
@@ -143,7 +142,8 @@ fun MainNavScreen() {
 fun BottomNavigationBar(navController: NavHostController, bottomBarRoutes: List<BottomBarItem>) {
     val bottomRoutes = bottomBarRoutes.map { it.route }
     val showBottomBar = remember { mutableStateOf(true) }
-    showBottomBar.value = navController.currentBackStackEntryAsState().value?.destination?.route in bottomRoutes
+    showBottomBar.value =
+        navController.currentBackStackEntryAsState().value?.destination?.route in bottomRoutes
 
     AnimatedVisibility(
         visible = showBottomBar.value,

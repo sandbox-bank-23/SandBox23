@@ -11,5 +11,6 @@ class NoRippleInteractionSource : MutableInteractionSource {
     override suspend fun emit(interaction: Interaction) {
         // детект ругается на пустой блок, но это бред, он и должен быть пустой
     }
+
     override fun tryEmit(interaction: Interaction) = true
 }

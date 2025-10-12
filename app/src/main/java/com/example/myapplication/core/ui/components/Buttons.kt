@@ -15,7 +15,9 @@ import com.example.myapplication.core.ui.theme.DisabledButtonText
 @Composable
 fun PrimaryButton(label: String, isEnabled: Boolean = true, onClick: () -> Unit) {
     Button(
-        modifier = Modifier.fillMaxWidth().height(ButtonMainHeight),
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(ButtonMainHeight),
         onClick = onClick,
         enabled = isEnabled,
         colors = ButtonDefaults.buttonColors(
@@ -37,7 +39,9 @@ fun PrimaryButton(label: String, isEnabled: Boolean = true, onClick: () -> Unit)
 @Composable
 fun SecondaryButton(label: String, isEnabled: Boolean = true, onClick: () -> Unit) {
     OutlinedButton(
-        modifier = Modifier.fillMaxWidth().height(ButtonMainHeight),
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(ButtonMainHeight),
         onClick = onClick,
         enabled = isEnabled,
         content = {
