@@ -61,7 +61,6 @@ import com.example.myapplication.core.ui.theme.PinPadBackgroundColor
 import com.example.myapplication.core.ui.theme.RoundedCornerShapeSelector
 import com.example.myapplication.core.ui.theme.secondaryContainerDark
 import org.koin.androidx.compose.koinViewModel
-import kotlin.collections.map
 
 const val ANIMATION_DELAY = 500
 const val ZERO_DELAY = 0

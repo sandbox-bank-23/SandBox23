@@ -26,7 +26,6 @@ class AppStorage(
     }
 
     fun getStringValue(storageKey: StorageKey<String>): Flow<String> {
-
         return dataStore.data
             .map { preferences ->
                 when (storageKey) {
