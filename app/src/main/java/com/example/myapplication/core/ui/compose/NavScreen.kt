@@ -49,6 +49,7 @@ import com.example.myapplication.R
 import com.example.myapplication.auth.navigation.Auth
 import com.example.myapplication.auth.ui.state.UserState
 import com.example.myapplication.auth.ui.viewmodel.UserViewModel
+import com.example.myapplication.cards.ui.CardsScreen
 import com.example.myapplication.core.ui.model.BottomBarItem
 import com.example.myapplication.core.ui.state.Routes
 import com.example.myapplication.core.ui.theme.AppTypography
@@ -264,8 +265,8 @@ fun NavHostContent(
 }
 
 // Поменять на страницы после готовности
-@Composable
-fun CardsScreen() = PlaceholderScreen("Карты")
+// @Composable
+// fun CardsScreen() = PlaceholderScreen("Карты")
 
 @Composable
 fun FinanceScreen() = PlaceholderScreen("Финансы")

@@ -4,6 +4,7 @@ import android.app.Application
 import com.example.myapplication.auth.di.viewmodel.userViewModelModule
 import com.example.myapplication.core.di.data.coreDataModule
 import com.example.myapplication.core.di.domain.coreInteractorModule
+import com.example.myapplication.cards.di.cardsViewModelModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
@@ -15,7 +16,8 @@ class App : Application() {
             modules(
                 coreDataModule,
                 coreInteractorModule,
-                userViewModelModule
+                userViewModelModule,
+                cardsViewModelModule
             )
         }
     }
