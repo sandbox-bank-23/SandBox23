@@ -17,9 +17,9 @@ class AppStorage(
         return dataStore.data
             .map { preferences ->
                 preferences[storageKey.key] ?: when (storageKey) {
-                    StorageKey.THEME_KEY -> currentTheme()
-                    StorageKey.BIOMETRIC_KEY -> false
-                    StorageKey.NOTIFICATIONS_KEY -> false
+                    StorageKey.THEME -> currentTheme()
+                    StorageKey.BIOMETRIC -> false
+                    StorageKey.NOTIFICATIONS -> false
                     else -> throw IllegalArgumentException("Unsupported key: $storageKey")
                 }
             }
@@ -30,7 +30,7 @@ class AppStorage(
         return dataStore.data
             .map { preferences ->
                 when (storageKey) {
-                    StorageKey.LANGUAGE_KEY -> preferences[storageKey.key] ?: currentLanguage()
+                    StorageKey.LANGUAGE -> preferences[storageKey.key] ?: currentLanguage()
                     else -> throw IllegalArgumentException("Unsupported key: $storageKey")
                 }
             }

@@ -6,6 +6,6 @@ import org.koin.dsl.module
 
 val coreInteractorModule = module {
     single<AppInteractor> {
-        AppInteractorImpl()
+        AppInteractorImpl(get())
     }
 }
