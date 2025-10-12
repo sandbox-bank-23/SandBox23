@@ -10,4 +10,13 @@
     <string name="transactions">Переводы</string>
     <string name="history">История</string>
     <string name="profile">Профиль</string>
+    <string name="card_holder_default">SandboxBank</string>
+    <string name="card_type_default">Amazon Platinum</string>
+    <string name="card_number_default">0000 ···· ···· 0000</string>
+    <string name="card_dialog_title">Нет созданных виртуальных карт</string>
+    <string name="card_dialog_confirm">Оформить</string>
+    <string name="card_dialog_dismiss">В другой раз</string>
+    <string name="card_create_credit">Оформить кредитную карту</string>
+    <string name="card_create_debit">Оформить дебетовую карту</string>
+    <string name="card_logo_content_descr">Виртуальная карта</string>
 </resources>

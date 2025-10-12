@@ -45,6 +45,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.R
+import com.example.myapplication.cards.ui.CardsScreen
 import com.example.myapplication.core.ui.model.BottomBarItem
 import com.example.myapplication.core.ui.state.Routes
 import com.example.myapplication.core.ui.theme.AppTypography
@@ -242,8 +243,8 @@ fun NavHostContent(navController: NavHostController, padding: PaddingValues) {
 }
 
 // Поменять на страницы после готовности
-@Composable
-fun CardsScreen() = PlaceholderScreen("Карты")
+//@Composable
+//fun CardsScreen() = PlaceholderScreen("Карты")
 
 @Composable
 fun FinanceScreen() = PlaceholderScreen("Финансы")
