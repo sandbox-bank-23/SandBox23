@@ -3,7 +3,6 @@ package com.example.myapplication.cards.ui
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,15 +11,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,26 +29,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
 import com.example.myapplication.R
 import com.example.myapplication.cards.domain.models.CardsState
+import com.example.myapplication.core.ui.components.BasicDialog
 import com.example.myapplication.core.ui.components.CardItem
 import com.example.myapplication.core.ui.theme.AppTypography
-import com.example.myapplication.core.ui.theme.CardDialogButtonHeight
 import com.example.myapplication.core.ui.theme.CardIconHeight
 import com.example.myapplication.core.ui.theme.CornerRadiusMedium
-import com.example.myapplication.core.ui.theme.Padding24dp
 import com.example.myapplication.core.ui.theme.PaddingBase
-import com.example.myapplication.core.ui.theme.onPrimaryLight
-import com.example.myapplication.core.ui.theme.onSurfaceLight
 import com.example.myapplication.core.ui.theme.primaryLight
 import com.example.myapplication.core.ui.theme.surfaceContainerLight
-import com.example.myapplication.core.ui.theme.surfaceContainerLowestLight
 
 const val CARD_BALANCE_DEF = 1_000_000f
 const val FRACTION_05 = 0.5f
 
-@Preview(showSystemUi = true)
 @Composable
 fun CardsScreen(
     // viewModel: CardsViewModel = koinViewModel<CardsViewModel>()
@@ -86,7 +73,7 @@ fun CardsScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
-        CardDialog(
+        BasicDialog(
             visible = openCardDialog.value,
             onDismissRequest = { openCardDialog.value = false },
             onConfirmation = {
@@ -167,102 +154,17 @@ private fun CreateCardButton(text: String, isCredit: Boolean, onClick: () -> Uni
                 textAlign = TextAlign.Start,
                 text = text,
                 maxLines = 1,
-                style = AppTypography.bodyMedium
+                style = AppTypography.bodyMedium.copy(
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.W500
+                )
             )
         },
     )
 }
 
-
+@Preview(showSystemUi = true)
 @Composable
-fun CardDialog(
-    visible: Boolean,
-    onDismissRequest: () -> Unit,
-    onConfirmation: () -> Unit,
-    dialogTitle: String,
-    confirmButtonText: String,
-    dismissButtonText: String,
-) {
-    if (visible) {
-        Dialog(
-            onDismissRequest = {
-                onDismissRequest()
-            }
-        ) {
-            Card(
-                shape = RoundedCornerShape(28.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = surfaceContainerLowestLight
-                )
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = Padding24dp),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth(1f)
-                            .padding(bottom = Padding24dp),
-                        color = onSurfaceLight,
-                        textAlign = TextAlign.Center,
-                        text = dialogTitle,
-                        style = AppTypography.headlineSmall.copy(
-                            fontWeight = FontWeight.W400
-                        )
-                    )
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center,
-                    ) {
-                        TextButton(
-                            modifier = Modifier
-                                .height(CardDialogButtonHeight)
-                                .padding(horizontal = 2.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = onPrimaryLight,
-                                contentColor = MaterialTheme.colorScheme.tertiaryContainer
-                            ),
-                            onClick = {
-                                onDismissRequest()
-                            },
-                        ) {
-                            Text(
-                                textAlign = TextAlign.Center,
-                                text = dismissButtonText,
-                                style = AppTypography.labelLarge.copy(
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.W500
-                                )
-                            )
-                        }
-                        Button(
-                            modifier = Modifier
-                                .height(CardDialogButtonHeight)
-                                .padding(horizontal = 2.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                                contentColor = onPrimaryLight
-                            ),
-                            onClick = {
-                                onConfirmation()
-                            }
-                        ) {
-                            Text(
-                                textAlign = TextAlign.Center,
-                                text = confirmButtonText,
-                                style = AppTypography.labelLarge.copy(
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.W500
-                                )
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
+fun CardsScreenPreview() {
+    CardsScreen()
 }

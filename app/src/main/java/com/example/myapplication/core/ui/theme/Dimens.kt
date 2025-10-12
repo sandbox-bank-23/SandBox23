@@ -12,7 +12,8 @@ val ZeroPadding = 0.dp
 
 // Радиусы закруглений
 val CornerRadiusSmall = 4.dp
-val CornerRadiusMedium = 16.dp
+val CornerRadiusMedium = 18.dp
+val CornerRadiusDialog = 28.dp
 
 // Размеры
 val NavBarSize = 77.dp
@@ -28,5 +29,5 @@ val InputFieldHeight = 56.dp
 val SupportingTextHeight = 20.dp
 val TrailingIconSize = 48.dp
 const val RoundedCornerShapeSelector = 50
-val CardDialogButtonHeight = 40.dp
+val BasicDialogButtonHeight = 40.dp
 val CardIconHeight = 40.dp
