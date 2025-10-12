@@ -25,6 +25,7 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,6 +46,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.R
+import com.example.myapplication.auth.navigation.Auth
+import com.example.myapplication.auth.ui.state.UserState
+import com.example.myapplication.auth.ui.viewmodel.UserViewModel
 import com.example.myapplication.core.ui.model.BottomBarItem
 import com.example.myapplication.core.ui.state.Routes
 import com.example.myapplication.core.ui.theme.AppTypography
@@ -56,6 +60,8 @@ import com.example.myapplication.core.ui.theme.NavTextInactiveLight
 import com.example.myapplication.core.ui.theme.PinPadBackgroundColor
 import com.example.myapplication.core.ui.theme.RoundedCornerShapeSelector
 import com.example.myapplication.core.ui.theme.secondaryContainerDark
+import org.koin.androidx.compose.koinViewModel
+import kotlin.collections.map
 
 const val ANIMATION_DELAY = 500
 const val ZERO_DELAY = 0
@@ -69,7 +75,18 @@ val ROOT_ROUTES = listOf(
 )
 
 @Composable
-fun NavScreen() {
+fun App() {
+    val userVm = koinViewModel<UserViewModel>()
+    val userState by userVm.userState.collectAsState()
+
+    when (userState) {
+        is UserState.IsAuthorized -> MainNavScreen()
+        is UserState.IsUnauthorized -> Auth()
+    }
+}
+
+@Composable
+fun MainNavScreen() {
     val bottomBarRoutes = listOf(
         BottomBarItem(
             label = stringResource(R.string.cards),
@@ -114,7 +131,10 @@ fun NavScreen() {
         bottomBar = { BottomNavigationBar(navController, bottomBarRoutes) },
         containerColor = MaterialTheme.colorScheme.surfaceContainerLowest
     ) { innerPadding ->
-        NavHostContent(navController, innerPadding)
+        NavHostContent(
+            navController = navController,
+            padding = innerPadding
+        )
     }
 }
 
@@ -227,7 +247,10 @@ fun NavigationBarContent(navController: NavHostController, bottomBarRoutes: List
 }
 
 @Composable
-fun NavHostContent(navController: NavHostController, padding: PaddingValues) {
+fun NavHostContent(
+    navController: NavHostController,
+    padding: PaddingValues
+) {
     NavHost(
         navController = navController,
         startDestination = Routes.CARDS.route,

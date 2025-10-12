@@ -16,6 +16,7 @@ uiTextGoogleFonts = "1.9.3"
 room_version = "2.8.2"
 detekt = "1.23.8"
 navigationCompose = "2.9.3"
+koinAndroid = "4.1.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -49,6 +50,8 @@ staticAnalysis-detektFormatting = { module = "io.gitlab.arturbosch.detekt:detekt
 staticAnalysis-detektLibraries = { module = "io.gitlab.arturbosch.detekt:detekt-rules-libraries", version.ref = "detekt" }
 androidx-material3 = { module = "androidx.compose.material3:material3" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
+koin = { group = "io.insert-koin", name = "koin-android", version.ref = "koinAndroid" }
+koinCompose = { group = "io.insert-koin", name = "koin-androidx-compose", version.ref = "koinAndroid" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

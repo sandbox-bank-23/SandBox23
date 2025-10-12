@@ -10,4 +10,12 @@
     <string name="transactions">Переводы</string>
     <string name="history">История</string>
     <string name="profile">Профиль</string>
+    <string name="authorization">Авторизация</string>
+    <string name="email">Email</string>
+    <string name="password">Пароль</string>
+    <string name="enter">Вход</string>
+    <string name="registration">Регистрация</string>
+    <string name="register">Зарегистрироваться</string>
+    <string name="repeat_password">Еще раз пароль</string>
+    <string name="pass_constraint">Не менее 6 символов</string>
 </resources>

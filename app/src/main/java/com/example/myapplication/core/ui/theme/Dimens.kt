@@ -25,3 +25,6 @@ val InputFieldHeight = 56.dp
 val SupportingTextHeight = 20.dp
 val TrailingIconSize = 48.dp
 const val RoundedCornerShapeSelector = 50
+
+val Height80 = 80.dp
+val Height60 = 60.dp
