@@ -42,6 +42,7 @@ fun RegistrationScreen(
         Spacer(modifier = Modifier.Companion.height(PaddingBase))
         InputTextField(
             label = stringResource(R.string.password),
+            supportingText = stringResource(R.string.pass_constraint),
             isPassword = true,
             isError = false,
             isSuccess = false

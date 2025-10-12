@@ -16,5 +16,6 @@
     <string name="enter">Вход</string>
     <string name="registration">Регистрация</string>
     <string name="register">Зарегистрироваться</string>
-    <string name="repeat_password">Повторите пароль</string>
+    <string name="repeat_password">Еще раз пароль</string>
+    <string name="pass_constraint">Не менее 6 символов</string>
 </resources>

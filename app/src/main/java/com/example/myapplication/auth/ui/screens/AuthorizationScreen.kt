@@ -40,14 +40,15 @@ fun AuthorizationScreen(
             label = stringResource(R.string.email),
             isPassword = false,
             isError = false,
-            isSuccess = false
+            isSuccess = false,
         )
         Spacer(modifier = Modifier.Companion.height(PaddingBase))
         InputTextField(
             label = stringResource(R.string.password),
             isPassword = true,
             isError = false,
-            isSuccess = false
+            isSuccess = false,
+            supportingText = stringResource(R.string.pass_constraint)
         )
         Spacer(modifier = Modifier.Companion.height(Height60))
         // Блок кнопок
