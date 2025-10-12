@@ -11,4 +11,12 @@ class CardsViewModel : ViewModel() {
     private val _cardsState = MutableStateFlow<CardsState>(value = CardsState.Empty)
     val cardsState: StateFlow<CardsState> = _cardsState.asStateFlow()
 
+    fun createCard() {
+        renderState(CardsState.Cards)
+    }
+
+    private fun renderState(state: CardsState) {
+        _cardsState.value = state
+    }
+
 }

@@ -15,10 +15,9 @@ import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,16 +38,16 @@ import com.example.myapplication.core.ui.theme.CornerRadiusMedium
 import com.example.myapplication.core.ui.theme.PaddingBase
 import com.example.myapplication.core.ui.theme.primaryLight
 import com.example.myapplication.core.ui.theme.surfaceContainerLight
+import org.koin.androidx.compose.koinViewModel
 
 const val CARD_BALANCE_DEF = 1_000_000f
 const val FRACTION_05 = 0.5f
 
 @Composable
 fun CardsScreen(
-    // viewModel: CardsViewModel = koinViewModel<CardsViewModel>()
+    viewModel: CardsViewModel = koinViewModel<CardsViewModel>()
 ) {
-    // val cardState = viewModel.cardState.collectAsState().value
-    var cardState by remember { mutableStateOf<CardsState>(CardsState.Empty) }
+    val cardsState = viewModel.cardsState.collectAsState().value
 
     val cardHolderName = stringResource(R.string.card_holder_default)
     var cardBalance: Float?
@@ -57,7 +56,7 @@ fun CardsScreen(
 
     val openCardDialog = remember { mutableStateOf(false) }
 
-    when (cardState) {
+    when (cardsState) {
         is CardsState.Empty -> {
             cardType = stringResource(R.string.card_type_default)
             cardNumber = stringResource(R.string.card_number_default)
@@ -78,7 +77,7 @@ fun CardsScreen(
             onDismissRequest = { openCardDialog.value = false },
             onConfirmation = {
                 openCardDialog.value = false
-                cardState = CardsState.Cards
+                viewModel.createCard()
             },
             dialogTitle = stringResource(R.string.card_dialog_title),
             confirmButtonText = stringResource(R.string.card_dialog_confirm),
@@ -94,7 +93,7 @@ fun CardsScreen(
                 cardType = cardType,
                 cardNumber = cardNumber
             ) {
-                if (cardState is CardsState.Empty) {
+                if (cardsState is CardsState.Empty) {
                     openCardDialog.value = true
                 }
             }
