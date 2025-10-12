@@ -1,6 +1,8 @@
 package com.example.myapplication.core.domain.models
 
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class Response(
     val code: Int,
     val description: String,

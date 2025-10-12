@@ -1,98 +1,44 @@
 package com.example.myapplication.auth.data.repo
 
+import com.example.myapplication.auth.data.mock.AuthMock
 import com.example.myapplication.auth.domain.api.AuthRepository
+import com.example.myapplication.core.data.dto.PostmanPostResponse
 import com.example.myapplication.core.domain.models.Response
-import java.util.Base64
-import kotlin.random.Random
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
 
-class AuthRepositoryImpl : AuthRepository {
+class AuthRepositoryImpl(val client: HttpClient, val authMock: AuthMock) : AuthRepository {
+
     override suspend fun login(
         email: String,
         password: String
     ): Response {
-        when (Random.Default.nextInt(100)) {
-            in 0..79 -> {
-                return Response(
-                    code = 200,
-                    description = "OK",
-                    response = "\"access_token\": ${formToken()}\n\"refresh_token\": ${formToken()}\n\"user_id\": ${Random.Default.nextInt()}"
-                )
-            }
+        val data = authMock.getLogin()
 
-            in 80..89 -> {
-                return Response(
-                    code = 400,
-                    description = "Invalid email",
-                    response = null
-                )
-            }
+        val postmanResponse = client.post("https://postman-echo.com/post") {
+            contentType(ContentType.Application.Json)
+            setBody(data)
+        }.body<PostmanPostResponse>()
 
-            in 90..99 -> {
-                return Response(
-                    code = 400,
-                    description = "Invalid password",
-                    response = null
-                )
-            }
-
-            // Данный ответ есть, просто потому что без него студия пишет, что нет return
-            else -> {
-                return Response(
-                    code = 420,
-                    description = "No",
-                    response = null
-                )
-            }
-        }
+        return postmanResponse.json
     }
 
     override suspend fun register(
         email: String,
         password: String
     ): Response {
-        when (Random.Default.nextInt(1, 100)) {
-            in 1..85 -> {
-                return Response(
-                    code = 201,
-                    description = "Created",
-                    response = "\"access_token\": ${formToken()}\n\"refresh_token\": ${formToken()}\n\"user_id\": ${Random.Default.nextInt()}"
-                )
-            }
+        val data = authMock.getRegister()
 
-            in 86..90 -> {
-                return Response(
-                    code = 409,
-                    description = "User exists",
-                    response = null
-                )
-            }
+        val postmanResponse = client.post("https://postman-echo.com/post") {
+            contentType(ContentType.Application.Json)
+            setBody(data)
+        }.body<PostmanPostResponse>()
 
-            in 91..95 -> {
-                return Response(
-                    code = 400,
-                    description = "Invalid email",
-                    response = null
-                )
-            }
-
-            in 96..100 -> {
-                return Response(
-                    code = 400,
-                    description = "Invalid password",
-                    response = null
-                )
-            }
-
-            // Данный ответ есть, просто потому что без него студия пишет, что нет return
-            else -> {
-                return Response(
-                    code = 420,
-                    description = "No",
-                    response = null
-                )
-            }
-        }
+        return postmanResponse.json
     }
 
-    private fun formToken(): String = Base64.getEncoder().withoutPadding().encodeToString(Random.Default.nextBytes(32))
 }

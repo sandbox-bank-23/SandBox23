@@ -3,7 +3,9 @@ package com.example.myapplication.core.domain.models
 import androidx.annotation.StringDef
 import com.example.myapplication.core.domain.models.CardType.Companion.CREDIT
 import com.example.myapplication.core.domain.models.CardType.Companion.DEBIT
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class Card(
     val id: Long,
     val cvv: Long,
