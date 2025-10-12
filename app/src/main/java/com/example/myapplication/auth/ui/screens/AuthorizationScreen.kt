@@ -23,11 +23,12 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun AuthorizationScreen(
+    modifier: Modifier = Modifier,
     userVm: UserViewModel = koinViewModel(),
     onRegistrationClick: () -> Unit = {}
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .padding(PaddingBase),
         horizontalAlignment = Alignment.CenterHorizontally,

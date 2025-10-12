@@ -21,9 +21,11 @@ import com.example.myapplication.core.ui.theme.PaddingBase
 import com.example.myapplication.core.ui.theme.SandBox23Theme
 
 @Composable
-fun RegistrationScreen() {
+fun RegistrationScreen(
+    modifier: Modifier = Modifier,
+) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .padding(PaddingBase),
         horizontalAlignment = Alignment.CenterHorizontally,

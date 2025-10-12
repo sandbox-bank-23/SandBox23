@@ -46,7 +46,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.R
-import com.example.myapplication.auth.navigation.AuthNavHost
+import com.example.myapplication.auth.navigation.Auth
 import com.example.myapplication.auth.ui.state.UserState
 import com.example.myapplication.auth.ui.viewmodel.UserViewModel
 import com.example.myapplication.core.ui.model.BottomBarItem
@@ -81,7 +81,7 @@ fun App() {
 
     when (userState) {
         is UserState.IsAuthorized -> MainNavScreen()
-        is UserState.IsUnauthorized -> AuthNavHost()
+        is UserState.IsUnauthorized -> Auth()
     }
 }
 
