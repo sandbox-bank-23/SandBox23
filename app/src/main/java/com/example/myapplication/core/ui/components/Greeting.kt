@@ -61,6 +61,7 @@ fun Greeting(innerPadding: PaddingValues) {
                         isError = Random.nextBoolean()
                         digitsEntered++
                     }
+
                     6 -> {
                         digitsEntered = 0
                         isError = false
@@ -74,6 +75,7 @@ fun Greeting(innerPadding: PaddingValues) {
                         isError = false
                         digitsEntered = 0
                     }
+
                     else -> Unit
                 }
             },
