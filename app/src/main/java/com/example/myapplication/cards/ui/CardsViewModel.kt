@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-class CardsViewModel(): ViewModel() {
+class CardsViewModel : ViewModel() {
 
     private val _cardsState = MutableStateFlow<CardsState>(value = CardsState.Empty)
     val cardsState: StateFlow<CardsState> = _cardsState.asStateFlow()

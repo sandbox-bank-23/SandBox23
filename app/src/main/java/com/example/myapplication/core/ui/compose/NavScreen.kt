@@ -243,8 +243,8 @@ fun NavHostContent(navController: NavHostController, padding: PaddingValues) {
 }
 
 // Поменять на страницы после готовности
-//@Composable
-//fun CardsScreen() = PlaceholderScreen("Карты")
+// @Composable
+// fun CardsScreen() = PlaceholderScreen("Карты")
 
 @Composable
 fun FinanceScreen() = PlaceholderScreen("Финансы")

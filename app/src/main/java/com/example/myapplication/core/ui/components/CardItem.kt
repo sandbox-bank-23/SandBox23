@@ -113,8 +113,8 @@ private fun CardHolderName(name: String) {
 
 @Composable
 private fun CardData(cardType: String?, cardNumber: String?) {
-    Column() {
-        if (!cardType.isNullOrEmpty())
+    Column {
+        if (!cardType.isNullOrEmpty()) {
             Text(
                 modifier = Modifier
                     .padding(horizontal = Padding24dp, vertical = PaddingQuarter)
@@ -127,7 +127,8 @@ private fun CardData(cardType: String?, cardNumber: String?) {
                     fontWeight = FontWeight.W500
                 )
             )
-        if (!cardNumber.isNullOrEmpty())
+        }
+        if (!cardNumber.isNullOrEmpty()) {
             Text(
                 modifier = Modifier
                     .padding(horizontal = Padding18dp, vertical = PaddingQuarter)
@@ -140,6 +141,7 @@ private fun CardData(cardType: String?, cardNumber: String?) {
                     fontWeight = FontWeight.W500
                 )
             )
+        }
     }
 }
 
@@ -153,8 +155,9 @@ private fun CardBalance(balance: Float?) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        if (balance != null)
+        if (balance != null) {
             balanceFormat = DecimalFormat("#,##0 \u20BD").format(balance)
+        }
         Text(
             modifier = Modifier.height(28.dp),
             color = CardTextDark,
@@ -169,7 +172,7 @@ private fun CardBalance(balance: Float?) {
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.Bottom,
             modifier = Modifier.height(20.dp),
-        ){
+        ) {
             Icon(
                 painterResource(R.drawable.ic_card_mir_logo1),
                 stringResource(R.string.card_logo_content_descr),

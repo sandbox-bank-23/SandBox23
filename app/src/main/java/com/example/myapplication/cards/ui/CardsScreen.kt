@@ -52,14 +52,15 @@ import com.example.myapplication.core.ui.theme.primaryLight
 import com.example.myapplication.core.ui.theme.surfaceContainerLight
 import com.example.myapplication.core.ui.theme.surfaceContainerLowestLight
 
-const val CARD_BALANCE_DEF = 1000000f
+const val CARD_BALANCE_DEF = 1_000_000f
+const val FRACTION_05 = 0.5f
 
 @Preview(showSystemUi = true)
 @Composable
 fun CardsScreen(
-    //viewModel: CardsViewModel = koinViewModel<CardsViewModel>()
+    // viewModel: CardsViewModel = koinViewModel<CardsViewModel>()
 ) {
-    //val cardState = viewModel.cardState.collectAsState().value
+    // val cardState = viewModel.cardState.collectAsState().value
     var cardState by remember { mutableStateOf<CardsState>(CardsState.Empty) }
 
     val cardHolderName = stringResource(R.string.card_holder_default)
@@ -81,7 +82,7 @@ fun CardsScreen(
     }
 
     Column(
-        modifier = Modifier.fillMaxSize(1f),
+        modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
@@ -97,7 +98,7 @@ fun CardsScreen(
             dismissButtonText = stringResource(R.string.card_dialog_dismiss),
         )
         Column(
-            modifier = Modifier.fillMaxHeight(0.5f),
+            modifier = Modifier.fillMaxHeight(FRACTION_05),
             verticalArrangement = Arrangement.Bottom
         ) {
             CardItem(
@@ -106,8 +107,9 @@ fun CardsScreen(
                 cardType = cardType,
                 cardNumber = cardNumber
             ) {
-                if (cardState is CardsState.Empty)
+                if (cardState is CardsState.Empty) {
                     openCardDialog.value = true
+                }
             }
         }
         Spacer(modifier = Modifier.Companion.height(48.dp))
