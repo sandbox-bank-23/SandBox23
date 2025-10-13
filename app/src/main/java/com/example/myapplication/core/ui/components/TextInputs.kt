@@ -109,26 +109,26 @@ fun InputTextField(
         if (!isFocused && text.isEmpty()) InputFieldThinBorder else InputFieldThickBorder
     val labelHeight: Float =
         MaterialTheme.typography.bodySmall.lineHeight.value.toInt() *
-                (displayMetrics.scaledDensity / displayMetrics.density)
+            (displayMetrics.scaledDensity / displayMetrics.density)
     val labelSpacerHeight: Int = when (label.isNotEmpty()) {
         true -> {
             (
-                    (
-                            labelHeight -
-                                    (
-                                            InputFieldThinBorder.value.toInt() +
-                                                    InputFieldThickBorder.value.toInt()
-                                            ) / 2
+                (
+                    labelHeight -
+                        (
+                            InputFieldThinBorder.value.toInt() +
+                                InputFieldThickBorder.value.toInt()
                             ) / 2
-                    ).toInt()
+                    ) / 2
+                ).toInt()
         }
 
         false -> 0
     }
     val totalFieldHeight =
         labelSpacerHeight.dp +
-                InputFieldHeight +
-                if (supportingText.isNotEmpty()) SupportingTextHeight else ZeroPadding
+            InputFieldHeight +
+            if (supportingText.isNotEmpty()) SupportingTextHeight else ZeroPadding
     val trailingIcon: @Composable () -> Unit = {
         when {
             isPassword && !isError -> {
@@ -145,11 +145,11 @@ fun InputTextField(
                     Icon(
                         tint = iconColor,
                         imageVector =
-                            if (isPasswordVisibilityPressed) {
-                                Icons.Outlined.Visibility
-                            } else {
-                                Icons.Outlined.VisibilityOff
-                            },
+                        if (isPasswordVisibilityPressed) {
+                            Icons.Outlined.Visibility
+                        } else {
+                            Icons.Outlined.VisibilityOff
+                        },
                         contentDescription = stringResource(R.string.show_password)
                     )
                 }
@@ -164,11 +164,11 @@ fun InputTextField(
                         tint = iconColor,
                         imageVector = if (isError) Icons.Filled.Info else Icons.Outlined.Check,
                         contentDescription =
-                            if (isError) {
-                                stringResource(R.string.error)
-                            } else {
-                                stringResource(R.string.success)
-                            }
+                        if (isError) {
+                            stringResource(R.string.error)
+                        } else {
+                            stringResource(R.string.success)
+                        }
                     )
                 }
             }
@@ -191,7 +191,7 @@ fun InputTextField(
         singleLine = singleLine,
         cursorBrush = SolidColor(cursorColor),
         textStyle =
-            MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurface),
+        MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurface),
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
         keyboardActions = KeyboardActions(
             onDone = {
@@ -200,11 +200,11 @@ fun InputTextField(
             }
         ),
         visualTransformation =
-            if (isPasswordVisibilityPressed || !isPassword) {
-                VisualTransformation.None
-            } else {
-                PasswordVisualTransformation()
-            },
+        if (isPasswordVisibilityPressed || !isPassword) {
+            VisualTransformation.None
+        } else {
+            PasswordVisualTransformation()
+        },
         decorationBox = { innerTextField ->
             Column(modifier = Modifier.fillMaxSize()) {
                 Spacer(modifier = Modifier.height(labelSpacerHeight.dp))

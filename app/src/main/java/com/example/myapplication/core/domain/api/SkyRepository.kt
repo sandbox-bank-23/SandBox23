@@ -2,8 +2,8 @@
 
 package com.example.myapplication.core.domain.api
 
-import com.example.myapplication.core.domain.models.ProductType
 import com.example.myapplication.core.data.network.Response
+import com.example.myapplication.core.domain.models.ProductType
 
 interface SkyRepository {
     suspend fun replenishment(

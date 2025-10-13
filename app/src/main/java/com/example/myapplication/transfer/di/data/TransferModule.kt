@@ -10,7 +10,7 @@ import org.koin.dsl.module
 @Suppress("NoTrailingSpaces")
 val transferModule = module {
     single<TransferMock> { TransferMock() }
-    
+
     single<TransferRepository> {
         TransferRepositoryImpl(
             client = get<NetworkClient>(),

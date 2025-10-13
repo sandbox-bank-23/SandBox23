@@ -2,9 +2,9 @@
 
 package com.example.myapplication.loansanddeposits.data.mock
 
+import com.example.myapplication.core.data.network.Response
 import com.example.myapplication.core.domain.models.Product
 import com.example.myapplication.core.domain.models.ProductType
-import com.example.myapplication.core.data.network.Response
 import kotlinx.serialization.json.Json
 import kotlin.random.Random
 

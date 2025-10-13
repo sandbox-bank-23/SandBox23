@@ -4,8 +4,8 @@ package com.example.myapplication.core.data.repo
 
 import com.example.myapplication.core.data.dto.PostmanPostResponse
 import com.example.myapplication.core.data.mock.SkyMock
-import com.example.myapplication.core.domain.api.SkyRepository
 import com.example.myapplication.core.data.network.Response
+import com.example.myapplication.core.domain.api.SkyRepository
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.post

@@ -2,9 +2,9 @@
 
 package com.example.myapplication.loans.data.mock
 
+import com.example.myapplication.core.data.network.Response
 import com.example.myapplication.core.domain.models.Product
 import com.example.myapplication.core.domain.models.ProductType
-import com.example.myapplication.core.data.network.Response
 import kotlinx.serialization.json.Json
 import kotlin.random.Random
 
@@ -62,7 +62,7 @@ class LoansMock {
 
     fun loanExists(): Response = Response(
         code = 409,
-        description = "Deposit with current number already exists",
+        description = "Loan with current number already exists",
         response = null
     )
 }

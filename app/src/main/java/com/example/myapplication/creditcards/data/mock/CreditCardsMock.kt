@@ -2,9 +2,9 @@
 
 package com.example.myapplication.creditcards.data.mock
 
+import com.example.myapplication.core.data.network.Response
 import com.example.myapplication.core.domain.models.Card
 import com.example.myapplication.core.domain.models.CardType
-import com.example.myapplication.core.data.network.Response
 import kotlinx.serialization.json.Json
 import kotlin.random.Random
 
@@ -26,7 +26,12 @@ class CreditCardsMock {
         val card = Card(
             id = Random.nextLong(1000_0000_0000_0000, 9999_9999_9999_9999),
             cvv = Random.nextLong(100, 1000),
-            endDate = "${Random.nextInt(1, 13).toString().padStart(2, '0')}/${Random.nextInt(25, 32)}",
+            endDate = "${Random.nextInt(1, 13).toString().padStart(2, '0')}/${
+                Random.nextInt(
+                    25,
+                    32
+                )
+            }",
             owner = listOf("Michael Johnson", "Emily Davis", "Chris Miller").random(),
             type = CardType.CREDIT,
             percent = Random.nextDouble(0.5, 3.0), // Процент для дебетовых карт обычно ниже
