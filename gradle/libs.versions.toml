@@ -1,5 +1,6 @@
 [versions]
 agp = "8.13.0"
+koinAndroid = "4.1.1"
 kotlin = "2.0.21"
 coreKtx = "1.17.0"
 junit = "4.13.2"
@@ -39,6 +40,8 @@ ktor-client-android = { module = "io.ktor:ktor-client-android", version.ref = "k
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktorClientCore" }
 staticAnalysis-detektFormatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
 staticAnalysis-detektLibraries = { module = "io.gitlab.arturbosch.detekt:detekt-rules-libraries", version.ref = "detekt" }
+koin = { group = "io.insert-koin", name = "koin-android", version.ref = "koinAndroid" }
+koinCompose = { group = "io.insert-koin", name = "koin-androidx-compose", version.ref = "koinAndroid" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

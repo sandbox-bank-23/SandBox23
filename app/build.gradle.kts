@@ -67,5 +67,9 @@ dependencies {
     implementation(libs.androidx.compose.ui.text.google.fonts)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
+
+    implementation(libs.koin)
+    implementation(libs.koinCompose)
+
     kapt(libs.androidx.room.compiler)
 }
