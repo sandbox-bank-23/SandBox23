@@ -29,7 +29,7 @@ class LoansMock {
             type = ProductType.LOAN,
             percentType = Random.nextLong(1, 5),
             period = listOf(6, 12, 24, 36).random().toLong(),
-            percent = Random.nextLong(8,20),
+            percent = Random.nextLong(8, 20),
             balance = Random.nextLong(0, 5000000)
         )
 

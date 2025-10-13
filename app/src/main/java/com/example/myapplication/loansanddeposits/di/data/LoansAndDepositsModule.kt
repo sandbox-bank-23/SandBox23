@@ -6,9 +6,10 @@ import com.example.myapplication.loansanddeposits.domain.api.LoansAndDepositsRep
 import io.ktor.client.HttpClient
 import org.koin.dsl.module
 
-val loansAndDepositsModule = module { 
+@Suppress("NoTrailingSpaces")
+val loansAndDepositsModule = module {
     single<LoansAndDepositsMock> { LoansAndDepositsMock() }
-    
+
     single<LoansAndDepositsRepository> {
         LoansAndDepositsRepositoryImpl(
             client = get<HttpClient>(),

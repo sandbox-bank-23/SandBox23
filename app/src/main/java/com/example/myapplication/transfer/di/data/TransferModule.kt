@@ -7,6 +7,7 @@ import com.example.myapplication.transfer.domain.api.TransferRepository
 import io.ktor.client.HttpClient
 import org.koin.dsl.module
 
+@Suppress("NoTrailingSpaces")
 val transferModule = module {
     single<TransferMock> { TransferMock() }
     

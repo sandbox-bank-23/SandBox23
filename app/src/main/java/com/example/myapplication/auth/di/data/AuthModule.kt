@@ -6,6 +6,7 @@ import com.example.myapplication.auth.domain.api.AuthRepository
 import io.ktor.client.HttpClient
 import org.koin.dsl.module
 
+@Suppress("NoTrailingSpaces")
 val authDataModule = module {
     single<AuthMock> { AuthMock() }
 

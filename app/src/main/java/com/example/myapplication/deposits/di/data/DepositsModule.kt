@@ -6,6 +6,7 @@ import com.example.myapplication.deposits.domain.api.DepositsRepository
 import io.ktor.client.HttpClient
 import org.koin.dsl.module
 
+@Suppress("NoTrailingSpaces")
 val depositsModule = module { 
     single<DepositMock> { DepositMock() }
     

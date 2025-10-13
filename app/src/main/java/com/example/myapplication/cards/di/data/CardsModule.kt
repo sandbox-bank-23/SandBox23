@@ -6,6 +6,7 @@ import com.example.myapplication.cards.domain.api.CardsRepository
 import io.ktor.client.HttpClient
 import org.koin.dsl.module
 
+@Suppress("NoTrailingSpaces")
 val cardsModule = module {
     single<CardsMock> { CardsMock() }
 
