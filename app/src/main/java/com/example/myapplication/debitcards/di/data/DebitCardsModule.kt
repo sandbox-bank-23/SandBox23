@@ -6,9 +6,9 @@ import com.example.myapplication.debitcards.domain.api.DebitCardsRepository
 import io.ktor.client.HttpClient
 import org.koin.dsl.module
 
-val debitCardsModule = module { 
+val debitCardsModule = module {
     single<DebitCardsMock> { DebitCardsMock() }
-    
+
     single<DebitCardsRepository> {
         DebitCardsRepositoryImpl(
             client = get<HttpClient>(),
