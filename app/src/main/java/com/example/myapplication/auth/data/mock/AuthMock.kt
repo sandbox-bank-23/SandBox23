@@ -1,4 +1,4 @@
-@file:Suppress("MagicNumber")
+@file:Suppress("MagicNumber", "Indentation")
 
 package com.example.myapplication.auth.data.mock
 
