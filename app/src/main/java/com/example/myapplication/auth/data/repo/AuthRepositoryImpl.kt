@@ -3,7 +3,7 @@ package com.example.myapplication.auth.data.repo
 import com.example.myapplication.auth.data.mock.AuthMock
 import com.example.myapplication.auth.domain.api.AuthRepository
 import com.example.myapplication.core.data.network.NetworkClient
-import com.example.myapplication.core.domain.models.Response
+import com.example.myapplication.core.data.network.Response
 
 class AuthRepositoryImpl(val client: NetworkClient, val authMock: AuthMock) : AuthRepository {
 

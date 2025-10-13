@@ -1,6 +1,6 @@
 package com.example.myapplication.loans.domain.api
 
-import com.example.myapplication.core.domain.models.Response
+import com.example.myapplication.core.data.network.Response
 
 interface LoansRepository {
     suspend fun takeLoan(

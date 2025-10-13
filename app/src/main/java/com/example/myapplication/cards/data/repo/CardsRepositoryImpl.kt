@@ -3,7 +3,7 @@ package com.example.myapplication.cards.data.repo
 import com.example.myapplication.cards.data.mock.CardsMock
 import com.example.myapplication.cards.domain.api.CardsRepository
 import com.example.myapplication.core.data.network.NetworkClient
-import com.example.myapplication.core.domain.models.Response
+import com.example.myapplication.core.data.network.Response
 
 class CardsRepositoryImpl(
     private val client: NetworkClient,

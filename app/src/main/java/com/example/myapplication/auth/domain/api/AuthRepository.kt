@@ -1,6 +1,6 @@
 package com.example.myapplication.auth.domain.api
 
-import com.example.myapplication.core.domain.models.Response
+import com.example.myapplication.core.data.network.Response
 
 /**
  * Интерфейс для авторизации и регистрации.

@@ -2,7 +2,7 @@
 
 package com.example.myapplication.transfer.data.mock
 
-import com.example.myapplication.core.domain.models.Response
+import com.example.myapplication.core.data.network.Response
 import kotlin.random.Random
 
 class TransferMock {

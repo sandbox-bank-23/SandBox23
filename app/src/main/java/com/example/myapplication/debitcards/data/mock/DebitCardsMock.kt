@@ -4,7 +4,7 @@ package com.example.myapplication.debitcards.data.mock
 
 import com.example.myapplication.core.domain.models.Card
 import com.example.myapplication.core.domain.models.CardType
-import com.example.myapplication.core.domain.models.Response
+import com.example.myapplication.core.data.network.Response
 import kotlinx.serialization.json.Json
 import kotlin.random.Random
 

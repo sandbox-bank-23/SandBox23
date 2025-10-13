@@ -1,7 +1,6 @@
 package com.example.myapplication.core.data.network
 
 import com.example.myapplication.core.data.dto.PostmanPostResponse
-import com.example.myapplication.core.domain.models.Response
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.post

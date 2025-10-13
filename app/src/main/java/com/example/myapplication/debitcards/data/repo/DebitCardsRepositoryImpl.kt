@@ -1,7 +1,7 @@
 package com.example.myapplication.debitcards.data.repo
 
 import com.example.myapplication.core.data.network.NetworkClient
-import com.example.myapplication.core.domain.models.Response
+import com.example.myapplication.core.data.network.Response
 import com.example.myapplication.debitcards.data.mock.DebitCardsMock
 import com.example.myapplication.debitcards.domain.api.DebitCardsRepository
 

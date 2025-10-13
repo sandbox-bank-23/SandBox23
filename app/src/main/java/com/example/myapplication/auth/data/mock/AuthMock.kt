@@ -2,7 +2,7 @@
 
 package com.example.myapplication.auth.data.mock
 
-import com.example.myapplication.core.domain.models.Response
+import com.example.myapplication.core.data.network.Response
 import java.util.Base64
 import kotlin.random.Random
 

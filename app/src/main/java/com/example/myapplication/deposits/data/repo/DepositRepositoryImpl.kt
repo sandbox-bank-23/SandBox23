@@ -1,7 +1,7 @@
 package com.example.myapplication.deposits.data.repo
 
 import com.example.myapplication.core.data.network.NetworkClient
-import com.example.myapplication.core.domain.models.Response
+import com.example.myapplication.core.data.network.Response
 import com.example.myapplication.deposits.data.mock.DepositMock
 import com.example.myapplication.deposits.domain.api.DepositsRepository
 
