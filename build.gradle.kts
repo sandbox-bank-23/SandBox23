@@ -48,6 +48,28 @@ tasks.register<Detekt>("detektAll") {
     }
 }
 
+tasks.register<Detekt>("detektFormat") {
+    description = "Runs auto formatting accoring to detekt"
+    group = "clean-up"
+
+    parallel = true
+    autoCorrect = true
+    disableDefaultRuleSets = false
+    buildUponDefaultConfig = false
+    jvmTarget = "17"
+
+    setSource(files("app/src"))
+    include("**/*.kt")
+    exclude("**/resources/**", "**/build/**")
+
+    config.setFrom(files(project.rootDir.resolve("conf/custom-detekt.yml")))
+
+    reports {
+        html.required.set(true)
+        txt.required.set(true)
+    }
+}
+
 dependencies {
     detektPlugins(libs.staticAnalysis.detektFormatting)
     detektPlugins(libs.staticAnalysis.detektLibraries)
