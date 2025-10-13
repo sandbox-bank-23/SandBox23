@@ -1,14 +1,13 @@
-package com.example.myapplication.transfer.data.mock
+package com.example.myapplication.core.data.mock
 
 import com.example.myapplication.core.domain.models.Response
 import kotlin.random.Random
 
-class TransferMock {
+class SkyMock {
     fun getResponse(): Response =
         when (Random.nextInt(1, 100)) {
-            in 1..80 -> transfer()
+            in 1..80 -> replenish()
             in 81..85 -> invalidTransactionNumber()
-            in 86..90 -> cantTransfer()
             in 91..95 -> invalidOrExpiredToken()
             in 96..100 -> transactionCompleted()
             else -> Response(
@@ -18,7 +17,7 @@ class TransferMock {
             )
         }
 
-    fun transfer(): Response = Response(
+    fun replenish(): Response = Response(
         code = 200,
         description = "OK",
         response = "\"transaction_number: ${Random.nextLong(1, 999999)}\""
@@ -27,12 +26,6 @@ class TransferMock {
     fun invalidTransactionNumber(): Response = Response(
         code = 400,
         description = "Invalid transaction number",
-        response = null
-    )
-
-    fun cantTransfer(): Response = Response(
-        code = 400,
-        description = "Can not transfer",
         response = null
     )
 
