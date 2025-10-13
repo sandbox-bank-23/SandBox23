@@ -6,9 +6,9 @@ import com.example.myapplication.loans.domain.api.LoansRepository
 import io.ktor.client.HttpClient
 import org.koin.dsl.module
 
-val loansModule = module { 
+val loansModule = module {
     single<LoansMock> { LoansMock() }
-    
+
     single<LoansRepository> {
         LoansRepositoryImpl(
             client = get<HttpClient>(),

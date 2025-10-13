@@ -1,3 +1,4 @@
+@file:Suppress("MagicNumber")
 package com.example.myapplication.transfer.data.mock
 
 import com.example.myapplication.core.domain.models.Response
