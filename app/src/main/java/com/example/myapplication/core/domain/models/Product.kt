@@ -1,3 +1,5 @@
+@file:Suppress("ImportOrdering")
+
 package com.example.myapplication.core.domain.models
 
 import androidx.annotation.StringDef

@@ -1,3 +1,5 @@
+@file:Suppress("Indentation")
+
 package com.example.myapplication.core.domain.api
 
 import com.example.myapplication.core.domain.models.ProductType

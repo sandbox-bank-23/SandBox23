@@ -1,4 +1,4 @@
-@file:Suppress("MagicNumber")
+@file:Suppress("MagicNumber", "UnderscoresInNumericLiterals")
 
 package com.example.myapplication.cards.data.mock
 

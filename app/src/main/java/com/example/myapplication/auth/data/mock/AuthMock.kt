@@ -1,4 +1,4 @@
-@file:Suppress("MagicNumber")
+@file:Suppress("MagicNumber", "ReturnCount", "MaxLineLength")
 
 package com.example.myapplication.auth.data.mock
 
@@ -13,7 +13,9 @@ class AuthMock {
                 return Response(
                     code = 200,
                     description = "OK",
-                    response = "\"access_token\": ${formToken()}\n\"refresh_token\": ${formToken()}\n\"user_id\": ${Random.nextInt()}"
+                    response = """"access_token": ${formToken()}
+"refresh_token": ${formToken()}
+"user_id": ${Random.nextInt()}""""
                 )
             }
 
@@ -50,7 +52,9 @@ class AuthMock {
                 return Response(
                     code = 201,
                     description = "Created",
-                    response = "\"access_token\": ${formToken()}\n\"refresh_token\": ${formToken()}\n\"user_id\": ${Random.nextInt()}"
+                    response = """"access_token": ${formToken()}
+"refresh_token": ${formToken()}
+"user_id": ${Random.nextInt()}""""
                 )
             }
 
@@ -89,5 +93,6 @@ class AuthMock {
         }
     }
 
-    private fun formToken(): String = Base64.getEncoder().withoutPadding().encodeToString(Random.Default.nextBytes(32))
+    private fun formToken(): String =
+        Base64.getEncoder().withoutPadding().encodeToString(Random.Default.nextBytes(32))
 }
