@@ -76,7 +76,9 @@ class AuthRepositoryImpl(val client: NetworkClient, val authMock: AuthMock) : Au
                     val key = parts[0].trim('"', ' ', '\n')
                     val value = parts[1].trim('"', ' ', '\n')
                     key to value
-                } else null
+                } else {
+                    null
+                }
             }.toMap()
     }
 
