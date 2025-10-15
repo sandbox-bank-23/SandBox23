@@ -7,6 +7,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import com.example.myapplication.core.data.repo.AppRepositoryImpl
 import com.example.myapplication.core.data.storage.AppStorage
 import com.example.myapplication.core.domain.api.AppRepository
+import com.google.gson.Gson
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
@@ -24,7 +25,10 @@ val coreDataModule = module {
     single<AppStorage> {
         AppStorage(
             dataStore = androidContext().dataStore,
+            gson = get(),
             context = androidContext()
         )
     }
+
+    factory<Gson> { Gson() }
 }

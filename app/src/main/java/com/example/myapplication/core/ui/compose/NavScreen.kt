@@ -47,8 +47,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.R
 import com.example.myapplication.auth.navigation.Auth
-import com.example.myapplication.auth.ui.state.UserState
-import com.example.myapplication.auth.ui.viewmodel.UserViewModel
+import com.example.myapplication.auth.ui.state.AuthState
+import com.example.myapplication.auth.ui.viewmodel.PinPadViewModel
 import com.example.myapplication.cards.ui.CardsScreen
 import com.example.myapplication.core.ui.model.BottomBarItem
 import com.example.myapplication.core.ui.state.Routes
@@ -76,12 +76,12 @@ val ROOT_ROUTES = listOf(
 
 @Composable
 fun App() {
-    val userVm = koinViewModel<UserViewModel>()
-    val userState by userVm.userState.collectAsState()
+    val authVm = koinViewModel<PinPadViewModel>()
+    val authState by authVm.authState.collectAsState()
 
-    when (userState) {
-        is UserState.IsAuthorized -> MainNavScreen()
-        is UserState.IsUnauthorized -> Auth()
+    when (authState) {
+        is AuthState.IsAuthorized -> MainNavScreen()
+        is AuthState.IsUnauthorized -> Auth()
     }
 }
 

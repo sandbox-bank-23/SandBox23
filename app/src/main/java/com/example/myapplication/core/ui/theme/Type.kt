@@ -20,7 +20,7 @@ val bodyFontFamily = FontFamily(
     Font(
         googleFont = GoogleFont(MainFont),
         fontProvider = provider,
-        weight = FontWeight.Medium
+        weight = FontWeight.Normal
     )
 )
 
@@ -54,7 +54,12 @@ val AppTypography = Typography(
         lineHeight = 36.sp
     ),
     headlineSmall = baseline.headlineSmall.copy(fontFamily = headlineFontFamily),
-    titleLarge = baseline.titleLarge.copy(fontFamily = displayFontFamily),
+    titleLarge = baseline.titleLarge.copy(
+        fontSize = 22.sp,
+        fontFamily = displayFontFamily,
+        letterSpacing = 0.0.sp,
+        lineHeight = 28.sp
+    ),
     titleMedium = baseline.titleMedium.copy(
         fontSize = 16.sp,
         fontFamily = displayFontFamily,
@@ -77,10 +82,10 @@ val AppTypography = Typography(
     ),
     labelLarge = baseline.labelLarge.copy(
         fontSize = 36.sp,
-        fontFamily = bodyFontFamily,
+        fontFamily = headlineFontFamily,
         letterSpacing = 0.1.sp,
         lineHeight = 20.sp
     ),
-    labelMedium = baseline.labelMedium.copy(fontFamily = bodyFontFamily),
-    labelSmall = baseline.labelSmall.copy(fontFamily = bodyFontFamily),
+    labelMedium = baseline.labelMedium.copy(fontFamily = headlineFontFamily),
+    labelSmall = baseline.labelSmall.copy(fontFamily = headlineFontFamily),
 )

@@ -9,4 +9,9 @@ interface AuthInteractor {
     suspend fun login(authRequest: AuthRequest): Result<AuthData>
 
     suspend fun register(authRequest: AuthRequest): Result<AuthData>
+
+    fun isEmailValid(email: String): Pair<Boolean, String>
+
+    fun isPasswordValid(password: String): Pair<Boolean, String>
+
 }
