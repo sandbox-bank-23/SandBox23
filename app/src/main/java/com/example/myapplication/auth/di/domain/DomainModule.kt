@@ -7,6 +7,6 @@ import org.koin.dsl.module
 val domainModule = module {
 
     single<AuthInteractor> {
-        AuthInteractorImpl(get())
+        AuthInteractorImpl(get(), get())
     }
 }
