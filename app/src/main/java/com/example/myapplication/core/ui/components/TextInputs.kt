@@ -33,6 +33,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,6 +51,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.myapplication.R
+import com.example.myapplication.core.ui.model.TextInputState
 import com.example.myapplication.core.ui.theme.CornerRadiusSmall
 import com.example.myapplication.core.ui.theme.InputFieldHeight
 import com.example.myapplication.core.ui.theme.InputFieldThickBorder
@@ -67,71 +69,72 @@ import com.example.myapplication.core.ui.theme.ZeroPadding
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InputTextField(
-    label: String,
-    supportingText: String = "",
-    isPassword: Boolean,
-    isError: Boolean,
-    isSuccess: Boolean
+    state: TextInputState,
+    onTextChange: (text: String) -> Unit
 ) {
     // Статические переменные
     val context = LocalResources.current
     val displayMetrics: DisplayMetrics = context.displayMetrics
-    var text by remember { mutableStateOf("") }
+    var text by remember { mutableStateOf(state.valueText) }
     var isFocused by remember { mutableStateOf(false) }
     val interactionSource = remember { MutableInteractionSource() }
     val iconInteractionSource = remember { MutableInteractionSource() }
     val focusManager = LocalFocusManager.current
-    val enabled = !isSuccess
+    val enabled = !state.isSuccess
     val singleLine = true
     val keyboardController = LocalSoftwareKeyboardController.current
     val isPasswordVisibilityPressed by iconInteractionSource.collectIsPressedAsState()
 
+    LaunchedEffect(state.valueText) {
+        text = state.valueText
+    }
+
     // Расчётные переменные
     val cursorColor = MaterialTheme.colorScheme.primary
     val borderColor = when {
-        isError -> MaterialTheme.colorScheme.error
+        state.isError -> MaterialTheme.colorScheme.error
         isFocused -> MaterialTheme.colorScheme.primary
-        isSuccess -> SuccessGreen
+        state.isSuccess -> SuccessGreen
         else -> MaterialTheme.colorScheme.outline
     }
     val labelColor = when {
-        isError -> MaterialTheme.colorScheme.error
+        state.isError -> MaterialTheme.colorScheme.error
         isFocused -> MaterialTheme.colorScheme.primary
-        isSuccess -> Neutral30
+        state.isSuccess -> Neutral30
         else -> MaterialTheme.colorScheme.onSurfaceVariant
     }
     val iconColor = when {
-        isError -> MaterialTheme.colorScheme.error
-        isSuccess -> SuccessGreen
+        state.isError -> MaterialTheme.colorScheme.error
+        state.isSuccess -> SuccessGreen
         else -> MaterialTheme.colorScheme.onSurfaceVariant
     }
     val borderWidth =
         if (!isFocused && text.isEmpty()) InputFieldThinBorder else InputFieldThickBorder
     val labelHeight: Float =
         MaterialTheme.typography.bodySmall.lineHeight.value.toInt() *
-                (displayMetrics.scaledDensity / displayMetrics.density)
-    val labelSpacerHeight: Int = when (label.isNotEmpty()) {
+            (displayMetrics.scaledDensity / displayMetrics.density)
+    val labelSpacerHeight: Int = when (state.label.isNotEmpty()) {
         true -> {
             (
-                    (
-                            labelHeight -
-                                    (
-                                            InputFieldThinBorder.value.toInt() +
-                                                    InputFieldThickBorder.value.toInt()
-                                            ) / 2
+                (
+                    labelHeight -
+                        (
+                            InputFieldThinBorder.value.toInt() +
+                                InputFieldThickBorder.value.toInt()
                             ) / 2
-                    ).toInt()
+                    ) / 2
+                ).toInt()
         }
 
         false -> 0
     }
     val totalFieldHeight =
         labelSpacerHeight.dp +
-                InputFieldHeight +
-                if (supportingText.isNotEmpty()) SupportingTextHeight else ZeroPadding
+            InputFieldHeight +
+            if (state.supportingText.isNotEmpty()) SupportingTextHeight else ZeroPadding
     val trailingIcon: @Composable () -> Unit = {
         when {
-            isPassword && !isError -> {
+            state.isPassword && !state.isError -> {
                 Box(
                     modifier = Modifier.Companion
                         .size(TrailingIconSize)
@@ -145,30 +148,30 @@ fun InputTextField(
                     Icon(
                         tint = iconColor,
                         imageVector =
-                            if (isPasswordVisibilityPressed) {
-                                Icons.Outlined.Visibility
-                            } else {
-                                Icons.Outlined.VisibilityOff
-                            },
+                        if (isPasswordVisibilityPressed) {
+                            Icons.Outlined.Visibility
+                        } else {
+                            Icons.Outlined.VisibilityOff
+                        },
                         contentDescription = stringResource(R.string.show_password)
                     )
                 }
             }
 
-            isError || isSuccess -> {
+            state.isError || state.isSuccess -> {
                 Box(
                     modifier = Modifier.Companion.size(TrailingIconSize),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         tint = iconColor,
-                        imageVector = if (isError) Icons.Filled.Info else Icons.Outlined.Check,
+                        imageVector = if (state.isError) Icons.Filled.Info else Icons.Outlined.Check,
                         contentDescription =
-                            if (isError) {
-                                stringResource(R.string.error)
-                            } else {
-                                stringResource(R.string.success)
-                            }
+                        if (state.isError) {
+                            stringResource(R.string.error)
+                        } else {
+                            stringResource(R.string.success)
+                        }
                     )
                 }
             }
@@ -179,7 +182,10 @@ fun InputTextField(
 
     BasicTextField(
         value = text,
-        onValueChange = { text = it },
+        onValueChange = {
+            text = it
+            onTextChange(it)
+        },
         modifier = Modifier
             .fillMaxWidth()
             .height(totalFieldHeight)
@@ -191,7 +197,7 @@ fun InputTextField(
         singleLine = singleLine,
         cursorBrush = SolidColor(cursorColor),
         textStyle =
-            MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurface),
+        MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurface),
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
         keyboardActions = KeyboardActions(
             onDone = {
@@ -200,11 +206,11 @@ fun InputTextField(
             }
         ),
         visualTransformation =
-            if (isPasswordVisibilityPressed || !isPassword) {
-                VisualTransformation.None
-            } else {
-                PasswordVisualTransformation()
-            },
+        if (isPasswordVisibilityPressed || !state.isPassword) {
+            VisualTransformation.None
+        } else {
+            PasswordVisualTransformation()
+        },
         decorationBox = { innerTextField ->
             Column(modifier = Modifier.fillMaxSize()) {
                 Spacer(modifier = Modifier.height(labelSpacerHeight.dp))
@@ -242,7 +248,7 @@ fun InputTextField(
                 ) {
                     Text(
                         modifier = Modifier.padding(start = PaddingBase),
-                        text = supportingText,
+                        text = state.supportingText,
                         style = MaterialTheme.typography.bodySmall.copy(color = labelColor)
                     )
                 }
@@ -256,7 +262,7 @@ fun InputTextField(
                 ) {
                     Text(
                         modifier = Modifier.padding(horizontal = PaddingQuarter),
-                        text = label,
+                        text = state.label,
                         style = MaterialTheme.typography.bodySmall.copy(color = labelColor)
                     )
                 }
