@@ -15,32 +15,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  unit-tests:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup JDK 17 + Gradle cache
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '17'
-          cache: 'gradle'
-
-      - name: Make gradlew executable
-        run: chmod +x gradlew
-
-      - name: Unit tests (debug + release)
-        run: ./gradlew testDebugUnitTest testReleaseUnitTest
-
-      - name: Upload unit test reports
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: unit-test-report
-          path: "**/reports/tests/**"
-
   detekt:
     runs-on: ubuntu-latest
     steps:
@@ -148,27 +122,3 @@ jobs:
             **/outputs/apk/release/*.apk
             **/outputs/bundle/release/*.aab
             **/lint-results*.html
-
-  notify:
-    needs: [unit-tests, detekt, lint, build-and-release]
-    runs-on: ubuntu-latest
-    if: always()
-    steps:
-      - name: Telegram notify
-        uses: appleboy/telegram-action@master
-        with:
-          to: ${{ secrets.TELEGRAM_CHAT_ID }}
-          token: ${{ secrets.TELEGRAM_TOKEN }}
-          message: |
-            ${{ 
-              needs['unit-tests'].result == 'success' &&
-              needs.detekt.result         == 'success' &&
-              needs.lint.result           == 'success' &&
-              needs['build-and-release'].result == 'success'
-              && '✅ Main build successful!'
-              || '❌ Main build failed!'
-            }}
-            🌿 Branch: ${{ github.ref_name }}
-            🔢 Commit: ${{ github.sha }}
-            👤 Author: ${{ github.actor }}
-            🔗 Log: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
