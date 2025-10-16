@@ -11,7 +11,7 @@ import kotlin.random.Random
 class CreditCardsMock {
     fun getResponse(): Response =
         when (Random.nextInt(1, 100)) {
-            in 1..80 -> createDebitCard()
+            in 1..80 -> createCreditCard()
             in 81..85 -> invalidNumber()
             in 86..90 -> invalidOrExpiredToken()
             in 91..100 -> cardExists()
@@ -22,7 +22,7 @@ class CreditCardsMock {
             )
         }
 
-    fun createDebitCard(): Response {
+    fun createCreditCard(): Response {
         val card = Card(
             id = Random.nextLong(1000_0000_0000_0000, 9999_9999_9999_9999),
             cvv = Random.nextLong(100, 1000),

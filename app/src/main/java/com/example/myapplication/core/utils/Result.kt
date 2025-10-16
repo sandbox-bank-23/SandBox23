@@ -1,4 +1,4 @@
-package com.example.myapplication.auth.domain.state
+package com.example.myapplication.core.utils
 
 sealed class Result<out T> {
     data class Success<T>(val data: T) : Result<T>()

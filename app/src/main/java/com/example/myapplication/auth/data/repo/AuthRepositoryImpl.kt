@@ -3,7 +3,7 @@ package com.example.myapplication.auth.data.repo
 import com.example.myapplication.auth.data.mock.AuthMock
 import com.example.myapplication.auth.domain.model.AuthData
 import com.example.myapplication.auth.domain.repo.AuthRepository
-import com.example.myapplication.auth.domain.state.Result
+import com.example.myapplication.core.utils.Result
 import com.example.myapplication.core.data.network.NetworkClient
 import com.example.myapplication.core.data.network.Response
 

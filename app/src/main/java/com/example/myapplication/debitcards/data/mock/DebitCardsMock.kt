@@ -8,63 +8,60 @@ import com.example.myapplication.core.domain.models.CardType
 import kotlinx.serialization.json.Json
 import kotlin.random.Random
 
-class DebitCardsMock(
-    private val json: Json = Json
-) {
-    fun createDebitCard(
-        currentCardNumber: Long,
-        requestNumber: Long,
-        userId: Long
-    ): Response {
-
-        if (currentCardNumber !in 1..5) {
-            return Response(
-                code = 400,
-                description = "Некорректный порядковый номер карты (макс 5)",
-                response = null
-            )
-        }
-
-        return when (Random.nextInt(1, 101)) {
-            in 1..85 -> {
-                val card = Card(
-                    id = Random.nextLong(1_0000_0000_0000_0000, 9_9999_9999_9999_9999),
-                    cvv = Random.nextLong(100, 1000),
-                    endDate = "2028-02-02",
-                    owner = listOf("Michael Johnson", "Emily Davis", "Chris Miller").random(),
-                    type = CardType.DEBIT,
-                    percent = 0.0,
-                    balance = 0
-                )
-
-                Response(
-                    code = 201,
-                    description = "Created",
-                    response = json.encodeToString(card)
-                )
-            }
-
-            in 86..90 -> {
-                Response(
-                    code = 403,
-                    description = "Token is invalid or expired",
-                    response = null
-                )
-            }
-
-            in 91..100 -> {
-                Response(
-                    code = 409,
-                    description = "Карта с текущим порядковым номером уже открыта",
-                    response = null
-                )
-            }
-
+class DebitCardsMock {
+    fun getResponse(): Response =
+        when (Random.nextInt(1, 100)) {
+            in 1..80 -> createDebitCard()
+            in 81..85 -> invalidNumber()
+            in 86..90 -> invalidOrExpiredToken()
+            in 91..100 -> cardExists()
             else -> Response(
                 code = 420,
-                description = "Unexpected mock error",
+                description = "No",
                 response = null
             )
         }
+
+    fun createDebitCard(): Response {
+        val card = Card(
+            id = Random.nextLong(1000_0000_0000_0000, 9999_9999_9999_9999),
+            cvv = Random.nextLong(100, 1000),
+            endDate = "${Random.nextInt(1, 13).toString().padStart(2, '0')}/${
+                Random.nextInt(
+                    25,
+                    32
+                )
+            }",
+            owner = listOf("Michael Johnson", "Emily Davis", "Chris Miller").random(),
+            type = CardType.DEBIT,
+            percent = Random.nextDouble(0.5, 3.0),
+            balance = Random.nextLong(0, 1_000_000)
+        )
+
+        val jsonCard = Json.encodeToString(card)
+
+        return Response(
+            code = 201,
+            description = "Created",
+            response = jsonCard
+        )
     }
+
+    fun invalidNumber(): Response = Response(
+        code = 400,
+        description = "Invalid card number",
+        response = null
+    )
+
+    fun invalidOrExpiredToken(): Response = Response(
+        code = 403,
+        description = "Token is invalid or expired",
+        response = null
+    )
+
+    fun cardExists(): Response = Response(
+        code = 409,
+        description = "Card with current number already exists",
+        response = null
+    )
 }
