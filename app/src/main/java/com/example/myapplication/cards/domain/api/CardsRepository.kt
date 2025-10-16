@@ -6,7 +6,5 @@ import com.example.myapplication.core.domain.models.Card
 interface CardsRepository {
     suspend fun getCards(): Response
     fun getCardsUseCase(): MutableList<Card>
-    fun createDebitCardUseCase()
-    fun createCreditCardUseCase()
     fun closeCardUseCase()
 }

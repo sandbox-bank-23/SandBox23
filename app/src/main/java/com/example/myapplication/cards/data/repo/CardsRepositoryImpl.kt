@@ -21,14 +21,6 @@ class CardsRepositoryImpl(
         TODO("Not yet implemented")
     }
 
-    override fun createDebitCardUseCase() {
-        TODO("Not yet implemented")
-    }
-
-    override fun createCreditCardUseCase() {
-        TODO("Not yet implemented")
-    }
-
     override fun closeCardUseCase() {
         TODO("Not yet implemented")
     }
