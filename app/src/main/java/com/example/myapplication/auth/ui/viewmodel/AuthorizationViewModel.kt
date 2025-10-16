@@ -1,6 +1,5 @@
 package com.example.myapplication.auth.ui.viewmodel
 
-import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myapplication.R
@@ -8,6 +7,7 @@ import com.example.myapplication.auth.domain.AuthInteractor
 import com.example.myapplication.auth.domain.model.AuthData
 import com.example.myapplication.auth.domain.model.AuthRequest
 import com.example.myapplication.auth.domain.state.Result
+import com.example.myapplication.auth.ui.utils.ValidationUtils
 import com.example.myapplication.core.domain.api.AppInteractor
 import com.example.myapplication.core.domain.api.StorageKey
 import com.example.myapplication.core.ui.model.TextInputState
@@ -18,29 +18,28 @@ import kotlinx.coroutines.launch
 
 class AuthorizationViewModel(
     private val appInteractor: AppInteractor,
-    private val authInteractor: AuthInteractor,
-    application: Application
+    private val authInteractor: AuthInteractor
 ) : ViewModel() {
 
     // StateFlow для логина
     private val _loginState = MutableStateFlow(
         TextInputState(
-            label = application.applicationContext.getString(R.string.email),
+            label = application.applicationContext.getString(R.string.email), // TODO "нужно определить единый стейт для экрана" и нельзя апликейшн здесь
         )
     )
     val loginState: StateFlow<TextInputState> = _loginState.asStateFlow()
 
     // StateFlow для пароля
     private val _passwordState = MutableStateFlow(
-        TextInputState(
+        TextInputState( // TODO "нужно определить единый стейт для экрана"
             label = application.applicationContext.getString(R.string.password),
             supportingText = application.applicationContext.getString(R.string.pass_constraint),
             isPassword = true
         )
     )
-    val passwordState: StateFlow<TextInputState> = _passwordState.asStateFlow()
+    val passwordState: StateFlow<TextInputState> = _passwordState.asStateFlow() // TODO "Это лучше сделать полем в едином стейте" и нельзя апликейшн здесь
 
-    // StateFlow для перехода на экран создания пин-кода
+    // StateFlow для перехода на экран создания пин-кода // TODO "как будто можно и без этого обойтись"
     private val _pinCodeCreateTriggerState = MutableStateFlow(false)
     val pinCodeCreateTriggerState = _pinCodeCreateTriggerState.asStateFlow()
 
@@ -60,11 +59,11 @@ class AuthorizationViewModel(
         )
     }
 
-    fun authorize() {
+    fun authorize() { // TODO "Я начал пытаться исправлять, но тут возможно проще переделать полностью"
         // Сначала валидируем логин и пароль на основе содержимого, без запроса бэкенда
-        val emailCheck = authInteractor.isEmailValid(_loginState.value.valueText)
+        val emailCheck = ValidationUtils.isEmailValid(loginState.value.valueText)
         val passwordCheck =
-            authInteractor.isPasswordValid(_passwordState.value.valueText)
+            ValidationUtils.isPasswordValid(_passwordState.value.valueText)
         if (!emailCheck.first) {
             _loginState.value =
                 _loginState.value.copy(
