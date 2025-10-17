@@ -1,4 +1,5 @@
 @file:Suppress("MagicNumber")
+
 package com.example.myapplication.creditcards.data.repo
 
 import com.example.myapplication.core.data.model.Result
