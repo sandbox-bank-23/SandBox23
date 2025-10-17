@@ -6,6 +6,7 @@ import com.example.myapplication.core.domain.models.Card
 import com.example.myapplication.creditcards.data.mock.CreditCardsMock
 import com.example.myapplication.creditcards.domain.api.CreditCardsRepository
 import kotlinx.serialization.json.Json
+
 class CreditCardsRepositoryImpl(
     private val creditCardsMock: CreditCardsMock,
     private val json: Json = Json
