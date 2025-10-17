@@ -11,7 +11,7 @@ val debitCardsModule = module {
 
     single<DebitCardsRepository> {
         DebitCardsRepositoryImpl(
-            //client = get<NetworkClient>(),
+            // client = get<NetworkClient>(),
             debitCardsMock = get<DebitCardsMock>()
         )
     }

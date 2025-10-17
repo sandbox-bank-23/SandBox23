@@ -11,7 +11,7 @@ val cardsModule = module {
 
     single<CardsRepository> {
         CardsRepositoryImpl(
-            //client = get<NetworkClient>(),
+            // client = get<NetworkClient>(),
             cardsMock = get<CardsMock>()
         )
     }
