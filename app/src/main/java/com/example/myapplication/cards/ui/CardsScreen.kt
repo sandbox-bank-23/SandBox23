@@ -40,7 +40,7 @@ import com.example.myapplication.core.ui.theme.primaryLight
 import com.example.myapplication.core.ui.theme.surfaceContainerLight
 import org.koin.androidx.compose.koinViewModel
 
-const val CARD_BALANCE_DEF = 1_000_000f
+const val CARD_BALANCE_DEF: Long = 1_000_000_00
 const val FRACTION_05 = 0.5f
 
 @Composable
@@ -50,7 +50,7 @@ fun CardsScreen(
     val cardsState = viewModel.cardsState.collectAsState().value
 
     val cardHolderName = stringResource(R.string.card_holder_default)
-    var cardBalance: Float?
+    var cardBalance: Long?
     var cardType: String? = null
     var cardNumber: String? = null
 

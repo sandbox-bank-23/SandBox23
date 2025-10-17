@@ -109,10 +109,8 @@ fun CardsDetailsScreen() {
             ) {
                 CardItem(
                     cardHolderName = stringResource(R.string.card_holder_default),
-                    cardBalance = (card.balance / 100).toFloat()
-                ) {
-                }
-
+                    cardBalance = card.balance
+                ) { }
             }
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
                 CardInfoRow(stringResource(R.string.card_holder), card.owner)
