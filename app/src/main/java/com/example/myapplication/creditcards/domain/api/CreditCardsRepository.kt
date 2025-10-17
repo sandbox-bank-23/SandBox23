@@ -7,6 +7,6 @@ interface CreditCardsRepository {
     suspend fun createCreditCard(
         currentCardNumber: Long,
         requestNumber: Long,
-        userId: Long,
+        userId: Long
     ): Result<Card>
 }

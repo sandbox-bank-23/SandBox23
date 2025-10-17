@@ -7,6 +7,6 @@ interface DebitCardsRepository {
     suspend fun createDebitCard(
         currentCardNumber: Long,
         requestNumber: Long,
-        userId: Long,
+        userId: Long
     ): Result<Card>
 }
