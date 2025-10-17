@@ -13,14 +13,19 @@ class CardsRepositoryImpl(
 ) : CardsRepository {
     override suspend fun getCards(userId: Long): Result<List<Card>> {
         val result = cardsMock.getCards()
-        if (result.code != 200) return Result.Error(result.description)
-
-        val body = result.response ?: return Result.Error("Empty body")
-        return runCatching {
-            Result.Success(json.decodeFromString<List<Card>>(body))
-        }.getOrElse {
-            Result.Error("Invalid response format: ${it.message}")
+        val r: Result<List<Card>> = if (result.code != 200) {
+            Result.Error(result.description)
+        } else if (result.response == null) {
+            Result.Error("Empty body")
+        } else {
+            runCatching {
+                Result.Success(json.decodeFromString<List<Card>>(result.response))
+            }.getOrElse {
+                Result.Error("Invalid response format: ${it.message}")
+            }
         }
+
+        return r
     }
 
     override suspend fun closeCard(cardId: Long, type: CardType): Result<Unit> {
