@@ -1,27 +1,34 @@
 package com.example.myapplication.cards.data.repo
 
+import kotlinx.serialization.json.Json
 import com.example.myapplication.cards.data.mock.CardsMock
 import com.example.myapplication.cards.domain.api.CardsRepository
 import com.example.myapplication.core.data.network.NetworkClient
-import com.example.myapplication.core.data.network.Response
 import com.example.myapplication.core.domain.models.Card
+import com.example.myapplication.core.data.model.Result
+import com.example.myapplication.core.domain.models.CardType
 
 class CardsRepositoryImpl(
     private val client: NetworkClient,
-    private val cardsMock: CardsMock
-) :
-    CardsRepository {
-    override suspend fun getCards(): Response {
-        val data = cardsMock.getResponse()
+    private val cardsMock: CardsMock,
+    private val json: Json = Json
+) : CardsRepository {
+    override suspend fun getCards(userId: Long): Result<List<Card>> {
+        val result = cardsMock.getCards()
+        if (result.code != 200) return Result.Error(result.description)
 
-        return client(data)
+        val body = result.response ?: return Result.Error("Empty body")
+        return runCatching {
+            Result.Success(json.decodeFromString<List<Card>>(body))
+        }.getOrElse {
+            Result.Error("Invalid response format: ${it.message}")
+        }
     }
 
-    override fun getCardsUseCase(): MutableList<Card> {
-        TODO("Not yet implemented")
-    }
-
-    override fun closeCardUseCase() {
-        TODO("Not yet implemented")
+    override suspend fun closeCard(
+        cardId: Long,
+        type: CardType
+    ): Result<Unit> {
+        return Result.Success(Unit)
     }
 }
