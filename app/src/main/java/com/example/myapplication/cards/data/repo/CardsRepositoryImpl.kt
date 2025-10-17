@@ -1,12 +1,13 @@
 @file:Suppress("MagicNumber")
+
 package com.example.myapplication.cards.data.repo
 
-import kotlinx.serialization.json.Json
-import com.example.myapplication.cards.data.mock.CardsMock
-import com.example.myapplication.cards.domain.api.CardsRepository
 import com.example.myapplication.core.domain.models.Card
 import com.example.myapplication.core.data.model.Result
+import com.example.myapplication.cards.data.mock.CardsMock
+import com.example.myapplication.cards.domain.api.CardsRepository
 import com.example.myapplication.core.domain.models.CardType
+import kotlinx.serialization.json.Json
 class CardsRepositoryImpl(
     private val cardsMock: CardsMock,
     private val json: Json = Json
