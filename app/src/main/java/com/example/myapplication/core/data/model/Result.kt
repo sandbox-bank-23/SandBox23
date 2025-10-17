@@ -1,4 +1,4 @@
-package com.example.myapplication.core.utils
+package com.example.myapplication.core.data.model
 
 sealed class Result<out T> {
     data class Success<T>(val data: T) : Result<T>()

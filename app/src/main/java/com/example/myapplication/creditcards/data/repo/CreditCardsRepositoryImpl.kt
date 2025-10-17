@@ -1,6 +1,6 @@
 package com.example.myapplication.creditcards.data.repo
 
-import com.example.myapplication.core.utils.Result
+import com.example.myapplication.core.data.model.Result
 import com.example.myapplication.core.data.network.NetworkClient
 import com.example.myapplication.core.domain.models.Card
 import com.example.myapplication.creditcards.data.mock.CreditCardsMock

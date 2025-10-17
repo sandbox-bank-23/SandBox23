@@ -7,7 +7,7 @@ import com.example.myapplication.auth.domain.AuthInteractor
 import com.example.myapplication.auth.domain.model.AuthData
 import com.example.myapplication.auth.domain.model.AuthRequest
 import com.example.myapplication.auth.domain.repo.AuthRepository
-import com.example.myapplication.core.utils.Result
+import com.example.myapplication.core.data.model.Result
 
 class AuthInteractorImpl(
     val authRepository: AuthRepository,

@@ -1,7 +1,7 @@
 package com.example.myapplication.creditcards.domain.api
 
 import com.example.myapplication.core.domain.models.Card
-import com.example.myapplication.core.utils.Result
+import com.example.myapplication.core.data.model.Result
 
 class CreateCreditCardUseCase(
     private val сreditCardRepository: CreditCardsRepository

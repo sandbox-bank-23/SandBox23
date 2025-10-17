@@ -7,7 +7,7 @@ import com.example.myapplication.R
 import com.example.myapplication.auth.domain.AuthInteractor
 import com.example.myapplication.auth.domain.model.AuthData
 import com.example.myapplication.auth.domain.model.AuthRequest
-import com.example.myapplication.core.utils.Result
+import com.example.myapplication.core.data.model.Result
 import com.example.myapplication.core.domain.api.AppInteractor
 import com.example.myapplication.core.domain.api.StorageKey
 import com.example.myapplication.core.ui.model.TextInputState
