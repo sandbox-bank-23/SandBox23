@@ -5,6 +5,8 @@ import com.example.myapplication.core.domain.models.Card
 
 interface CreditCardsRepository {
     suspend fun createCreditCard(
-        currentCardNumber: Long, requestNumber: Long, userId: Long
+        currentCardNumber: Long,
+        requestNumber: Long,
+        userId: Long
     ): Result<Card>
 }
