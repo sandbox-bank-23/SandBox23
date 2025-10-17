@@ -2,8 +2,9 @@
 
 package com.example.myapplication.debitcards.data.repo
 
-import com.example.myapplication.core.data.model.Result
 import com.example.myapplication.core.domain.models.Card
+import com.example.myapplication.core.domain.models.Result
+import com.example.myapplication.core.utils.ApiCodes
 import com.example.myapplication.debitcards.data.mock.DebitCardsMock
 import com.example.myapplication.debitcards.domain.api.DebitCardsRepository
 import kotlinx.serialization.json.Json
@@ -19,13 +20,17 @@ class DebitCardsRepositoryImpl(
     ): Result<Card> {
         val result = debitCardsMock.createDebitCard()
         return when (result.code) {
-            201 -> {
-                val body = result.response ?: return Result.Error("Empty body")
+            ApiCodes.CREATED -> {
+                val body = result.response ?: return Result.Error(ApiCodes.EMPTY_BODY)
                 val card = json.decodeFromString<Card>(body)
                 Result.Success(card)
             }
 
-            else -> Result.Error(result.description)
+            ApiCodes.INVALID_REQUEST,
+            ApiCodes.USER_EXISTS,
+            ApiCodes.NO_RESPONSE -> Result.Error(result.description)
+
+            else -> Result.Error(ApiCodes.UNKNOWN_ERROR)
         }
     }
 }

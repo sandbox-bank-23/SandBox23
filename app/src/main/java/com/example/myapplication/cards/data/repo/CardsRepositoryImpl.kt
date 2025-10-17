@@ -4,9 +4,10 @@ package com.example.myapplication.cards.data.repo
 
 import com.example.myapplication.cards.data.mock.CardsMock
 import com.example.myapplication.cards.domain.api.CardsRepository
-import com.example.myapplication.core.data.model.Result
 import com.example.myapplication.core.domain.models.Card
 import com.example.myapplication.core.domain.models.CardType
+import com.example.myapplication.core.domain.models.Result
+import com.example.myapplication.core.utils.ApiCodes
 import kotlinx.serialization.json.Json
 
 class CardsRepositoryImpl(
@@ -15,15 +16,15 @@ class CardsRepositoryImpl(
 ) : CardsRepository {
     override suspend fun getCards(userId: Long): Result<List<Card>> {
         val result = cardsMock.getCards()
-        val r: Result<List<Card>> = if (result.code != 200) {
+        val r: Result<List<Card>> = if (result.code != ApiCodes.SUCCESS) {
             Result.Error(result.description)
         } else if (result.response == null) {
-            Result.Error("Empty body")
+            Result.Error(ApiCodes.EMPTY_BODY)
         } else {
             runCatching {
                 Result.Success(json.decodeFromString<List<Card>>(result.response))
             }.getOrElse {
-                Result.Error("Invalid response format: ${it.message}")
+                Result.Error("${ApiCodes.UNKNOWN_ERROR}: ${it.message}")
             }
         }
 

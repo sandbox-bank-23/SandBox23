@@ -1,7 +1,7 @@
 package com.example.myapplication.auth.domain.repo
 
 import com.example.myapplication.auth.domain.model.AuthData
-import com.example.myapplication.core.data.model.Result
+import com.example.myapplication.core.domain.models.Result
 
 /**
  * Интерфейс для авторизации и регистрации.
