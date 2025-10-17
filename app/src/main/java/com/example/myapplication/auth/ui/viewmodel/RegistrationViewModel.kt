@@ -7,9 +7,9 @@ import com.example.myapplication.R
 import com.example.myapplication.auth.domain.AuthInteractor
 import com.example.myapplication.auth.domain.model.AuthData
 import com.example.myapplication.auth.domain.model.AuthRequest
-import com.example.myapplication.auth.domain.state.Result
 import com.example.myapplication.core.domain.api.AppInteractor
 import com.example.myapplication.core.domain.api.StorageKey
+import com.example.myapplication.core.domain.models.Result
 import com.example.myapplication.core.ui.model.TextInputState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
