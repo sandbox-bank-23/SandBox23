@@ -33,6 +33,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.myapplication.R
 import com.example.myapplication.core.domain.models.Card
 import com.example.myapplication.core.ui.components.CardItem
@@ -46,9 +47,11 @@ import com.example.myapplication.core.ui.theme.tertiaryLight
 
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview(showSystemUi = true)
+//@Preview(showSystemUi = true)
 @Composable
-fun CardsDetailsScreen() {
+fun CardsDetailsScreen(
+    navController: NavHostController
+) {
 
     val card = Card(
         id = 4000_1234_3215_7893,
@@ -79,7 +82,7 @@ fun CardsDetailsScreen() {
                 },
                 navigationIcon = {
                     IconButton(
-                        onClick = { },
+                        onClick = { navController.popBackStack() },
                         modifier = Modifier
                             .size(48.dp)
                             .padding(start = PaddingBase)

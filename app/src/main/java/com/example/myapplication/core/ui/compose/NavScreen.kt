@@ -49,7 +49,7 @@ import com.example.myapplication.R
 import com.example.myapplication.auth.navigation.Auth
 import com.example.myapplication.auth.ui.state.UserState
 import com.example.myapplication.auth.ui.viewmodel.UserViewModel
-import com.example.myapplication.cards.ui.CardsScreen
+import com.example.myapplication.cards.navigation.cardsScreenNavigation
 import com.example.myapplication.core.ui.model.BottomBarItem
 import com.example.myapplication.core.ui.state.Routes
 import com.example.myapplication.core.ui.theme.AppTypography
@@ -142,8 +142,15 @@ fun MainNavScreen() {
 fun BottomNavigationBar(navController: NavHostController, bottomBarRoutes: List<BottomBarItem>) {
     val bottomRoutes = bottomBarRoutes.map { it.route }
     val showBottomBar = remember { mutableStateOf(true) }
-    showBottomBar.value =
-        navController.currentBackStackEntryAsState().value?.destination?.route in bottomRoutes
+
+    val currentBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = currentBackStackEntry?.destination
+
+    showBottomBar.value = when {
+        currentDestination?.route in bottomRoutes -> true
+        currentDestination?.parent?.route in bottomRoutes -> true
+        else -> false
+    }
 
     AnimatedVisibility(
         visible = showBottomBar.value,
@@ -177,7 +184,8 @@ fun NavigationBarContent(navController: NavHostController, bottomBarRoutes: List
         val isDarkTheme = isSystemInDarkTheme()
 
         bottomBarRoutes.forEach { item ->
-            val selected = currentDestination?.route == item.route
+            val selected = (currentDestination?.route == item.route) ||
+                    (currentDestination?.parent?.route == item.route)
 
             val itemTextColor = when {
                 selected && isDarkTheme -> NavTextActiveDark
@@ -199,8 +207,10 @@ fun NavigationBarContent(navController: NavHostController, bottomBarRoutes: List
             NavigationBarItem(
                 selected = selected,
                 onClick = {
-                    val currentRoute = navController.currentDestination?.route
-                    if (currentRoute == item.route) return@NavigationBarItem
+                    val currentRoute = currentDestination?.route
+                    val currentParentRoute = currentDestination?.parent?.route
+                    if (currentRoute == item.route || currentParentRoute == item.route )
+                        return@NavigationBarItem
 
                     navController.navigate(item.route) {
                         popUpTo(0) { inclusive = true }
@@ -256,17 +266,13 @@ fun NavHostContent(
         startDestination = Routes.CARDS.route,
         modifier = Modifier.padding(padding)
     ) {
-        mapsScreenNavigation()
+        cardsScreenNavigation(navController)
         financeScreenNavigation()
         transfersScreenNavigation()
         historyScreenNavigation()
         profileScreenNavigation()
     }
 }
-
-// Поменять на страницы после готовности
-// @Composable
-// fun CardsScreen() = PlaceholderScreen("Карты")
 
 @Composable
 fun FinanceScreen() = PlaceholderScreen("Финансы")
@@ -296,10 +302,6 @@ fun PlaceholderScreen(title: String) {
     }
 }
 
-fun NavGraphBuilder.mapsScreenNavigation() {
-    composable(Routes.CARDS.route) { CardsScreen() }
-}
-
 fun NavGraphBuilder.financeScreenNavigation() {
     composable(Routes.FINANCE.route) { FinanceScreen() }
 }
@@ -315,3 +317,5 @@ fun NavGraphBuilder.historyScreenNavigation() {
 fun NavGraphBuilder.profileScreenNavigation() {
     composable(Routes.PROFILE.route) { ProfileScreen() }
 }
+
+

@@ -25,9 +25,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.myapplication.R
 import com.example.myapplication.cards.domain.models.CardsState
 import com.example.myapplication.core.ui.components.BasicDialog
@@ -45,6 +45,7 @@ const val FRACTION_05 = 0.5f
 
 @Composable
 fun CardsScreen(
+    navController: NavHostController,
     viewModel: CardsViewModel = koinViewModel<CardsViewModel>()
 ) {
     val cardsState = viewModel.cardsState.collectAsState().value
@@ -96,6 +97,8 @@ fun CardsScreen(
             ) {
                 if (cardsState is CardsState.Empty) {
                     openCardDialog.value = true
+                } else {
+                    navController.navigate("card_details")
                 }
             }
         }
@@ -163,8 +166,10 @@ private fun CreateCardButton(text: String, isCredit: Boolean, onClick: () -> Uni
     )
 }
 
+/*
 @Preview(showSystemUi = true)
 @Composable
 fun CardsScreenPreview() {
     CardsScreen()
 }
+ */
