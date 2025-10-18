@@ -49,9 +49,6 @@ import com.example.myapplication.R
 import com.example.myapplication.auth.navigation.Auth
 import com.example.myapplication.auth.ui.state.AuthState
 import com.example.myapplication.auth.ui.viewmodel.PinPadViewModel
-import com.example.myapplication.cards.ui.CardsScreen
-import com.example.myapplication.auth.ui.state.UserState
-import com.example.myapplication.auth.ui.viewmodel.UserViewModel
 import com.example.myapplication.cards.navigation.cardsScreenNavigation
 import com.example.myapplication.core.ui.model.BottomBarItem
 import com.example.myapplication.core.ui.state.Routes
