@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 class CardsViewModel : ViewModel() {
-
     private val _cardsState = MutableStateFlow<CardsState>(value = CardsState.Empty)
     val cardsState: StateFlow<CardsState> = _cardsState.asStateFlow()
 
@@ -18,5 +17,4 @@ class CardsViewModel : ViewModel() {
     private fun renderState(state: CardsState) {
         _cardsState.value = state
     }
-
 }

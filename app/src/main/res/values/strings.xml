@@ -27,6 +27,22 @@
     <string name="card_create_credit">Оформить кредитную карту</string>
     <string name="card_create_debit">Оформить дебетовую карту</string>
     <string name="card_logo_content_descr">Виртуальная карта</string>
+    <plurals name="numberOfTries">
+        <item quantity="one">ПИН-код введен неверно!\nОсталась последняя попытка!</item>
+        <item quantity="few">ПИН-код введен неверно!\nОсталось %1$d попытки!</item>
+        <item quantity="other">ПИН-код введен неверно!\nОсталось %1$d попыток!</item>
+    </plurals>
+    <string name="pincodes_are_different">Введенные данные не совпадают, попробуйте заново!</string>
+    <string name="passwords_are_different">Пароли не совпадают, попробуйте заново!</string>
+    <string name="enter_pincode">Введите ПИН-код</string>
+    <string name="enter_new_pincode">Придумайте ПИН-код</string>
+    <string name="repeat_new_pincode">Повторите ПИН-код</string>
+    <string name="arrow_back">Назад</string>
+    <string name="login_empty_error">Логин не заполнен!</string>
+    <string name="login_is_not_email_error">Это не адрес электронной почты!</string>
+    <string name="spaces_in_password_error">Пароль не должен содержать пробелы!</string>
+    <string name="short_password_error">Пароль не может быть короче 6ти символов!</string>
+    <string name="unsupported_key">Unsupported key: %1$s</string>
     <string name="card_holder">Держатель карты</string>
     <string name="card_number">Номер карты</string>
     <string name="card_date">Карта действует до</string>
@@ -35,7 +51,6 @@
     <string name="card_type_debit">Вид карты: дебетовая</string>
     <string name="card_debit_info">Вы получайте в этом месяце:\n · до 100% суперкэшбэка на 1 категорию\n · до 20% кэшбэка на ваш выбор</string>
     <string name="card_type_credit">Вид карты: кредитная</string>
-    <string name="arrow_back">Назад</string>
     <string name="card_top_up">Пополнить карту</string>
     <string name="card_close">Закрыть карту</string>
     <string name="offline">Нет подключения к интернету</string>

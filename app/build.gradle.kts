@@ -49,6 +49,13 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.android)
+
+    implementation(libs.ktor.ktor.client.cio)
+    implementation(libs.ktor.serialization)
+    implementation(libs.ktor.ktor.serialization.kotlinx.json)
+    implementation(libs.ktor.ktor.client.content.negotiation)
+    implementation(libs.ktor.network.tls)
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -83,5 +90,8 @@ dependencies {
 
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.coroutines.core)
+
+    // Подключаем Gson и Retrofit
+    implementation(libs.gson)
 
 }
