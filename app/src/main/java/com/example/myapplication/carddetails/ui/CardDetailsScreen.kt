@@ -15,6 +15,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -34,6 +35,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -51,13 +53,13 @@ import com.example.myapplication.core.ui.theme.ButtonMainHeight
 import com.example.myapplication.core.ui.theme.Padding12dp
 import com.example.myapplication.core.ui.theme.PaddingBase
 import com.example.myapplication.core.ui.theme.backgroundLight
+import com.example.myapplication.core.ui.theme.onTertiaryLight
 import com.example.myapplication.core.ui.theme.tertiaryLight
 import org.koin.androidx.compose.koinViewModel
 import java.text.DecimalFormat
 
 
 @OptIn(ExperimentalMaterial3Api::class)
-//@Preview(showSystemUi = true)
 @Composable
 fun CardDetailsScreen(
     navController: NavHostController,
@@ -73,6 +75,10 @@ fun CardDetailsScreen(
         percent = 2.5 ,
         balance = 500000
     )
+
+    val cardLimit : Long = 500000
+    val cardDebt : Long = 0
+
     val cardDetailsState = viewModel.cardDetailsState.collectAsState().value
     val offlineCardDialog = remember { mutableStateOf(false) }
     val successCardDialog = remember { mutableStateOf(false) }
@@ -95,9 +101,9 @@ fun CardDetailsScreen(
             TopAppBar(
                 windowInsets = androidx.compose.foundation.layout.WindowInsets(0),
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = backgroundLight,
-                    titleContentColor = MaterialTheme.colorScheme.onBackground,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onBackground,
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
                 ),
                 title = {
                     Text(
@@ -130,7 +136,8 @@ fun CardDetailsScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(top = innerPadding.calculateTopPadding())
-                .padding(horizontal = 12.dp),
+                .padding(horizontal = 12.dp)
+                .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
 
@@ -164,9 +171,7 @@ fun CardDetailsScreen(
                 ) { }
             }
             Column(
-                modifier = Modifier
-                    .padding(top = Padding12dp)
-                    .verticalScroll(rememberScrollState())
+                modifier = Modifier.padding(top = Padding12dp)
             ) {
                 CardInfoRow(stringResource(R.string.card_holder), card.owner)
                 CardInfoRow(
@@ -175,20 +180,27 @@ fun CardDetailsScreen(
                 )
                 CardInfoRow(stringResource(R.string.card_date), card.endDate)
                 CardInfoRow(stringResource(R.string.card_cvv),
-                    DecimalFormat("###").format(card.cvv))
+                    DecimalFormat("000").format(card.cvv))
                 Spacer(modifier = Modifier.Companion.height(12.dp))
                 CardInfoRow(stringResource(R.string.card_about))
                 when (card.type) {
                     CardType.DEBIT -> {
                         CardInfoRow(stringResource(R.string.card_type_debit))
-                        CardInfoRow(value = stringResource(R.string.card_debit_info))
+                        CardInfoRow(value = stringResource(R.string.card_debit_info_row1))
+                        CardInfoRow(value = stringResource(R.string.card_debit_info_row2))
+                        CardInfoRow(value = stringResource(R.string.card_debit_info_row3))
                     }
                     CardType.CREDIT -> {
                         CardInfoRow(stringResource(R.string.card_type_credit))
                         CardInfoRow(stringResource(R.string.card_credit_available),
-                            "${card.balance} из 500 000\u20BD")
+                            stringResource(R.string.card_limit,
+                                DecimalFormat("###,###")
+                                    .format(card.balance), DecimalFormat("###,###")
+                                    .format(cardLimit)))
                         CardInfoRow(stringResource(R.string.card_credit_debt),
-                            "0 \u20BD")
+                            stringResource(R.string.card_debt,
+                                DecimalFormat("#,##0.00")
+                                    .format(cardDebt)))
                         CardInfoRow(stringResource(R.string.card_credit_grace_period),
                             stringResource(R.string.card_credit_grace_value))
                     }
@@ -210,7 +222,7 @@ fun CardDetailsScreen(
 @Composable
 private fun CardInfoRow(title: String? = null, value: String? = null) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
         horizontalArrangement = Arrangement.Start
     ) {
         if (!title.isNullOrEmpty()) {
@@ -220,7 +232,6 @@ private fun CardInfoRow(title: String? = null, value: String? = null) {
                 text = title,
                 style = AppTypography.bodyMedium.copy(
                     fontWeight = FontWeight.W600,
-                    lineHeight = 32.sp
                 )
             )
         }
@@ -231,7 +242,6 @@ private fun CardInfoRow(title: String? = null, value: String? = null) {
                 text = value,
                 style = AppTypography.bodyMedium.copy(
                     fontWeight = FontWeight.W400,
-                    lineHeight = 32.sp
                 )
             )
         }
@@ -247,15 +257,19 @@ fun CloseButton(label: String, isEnabled: Boolean = true, onClick: () -> Unit) {
         onClick = onClick,
         enabled = isEnabled,
         border =  BorderStroke(
-            color = tertiaryLight,
+            color = onTertiaryLight,
             width = 1.dp
+        ),
+        colors = ButtonDefaults.outlinedButtonColors(
+            containerColor = MaterialTheme.colorScheme.tertiary,
+            contentColor = tertiaryLight
         ),
         content = {
             Text(
                 text = label,
                 maxLines = 1,
                 style = AppTypography.titleMedium.copy(
-                    color = tertiaryLight
+                    color = onTertiaryLight
                 )
             )
         }
@@ -273,6 +287,3 @@ private fun creditCardNumberFormat(number: Long): String {
     }
     return result.toString()
 }
-
-
-

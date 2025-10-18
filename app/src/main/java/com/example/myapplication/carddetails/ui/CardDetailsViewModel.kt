@@ -13,7 +13,7 @@ class CardDetailsViewModel : ViewModel() {
     val cardDetailsState: StateFlow<CardDetailsState> = _cardDetailsState.asStateFlow()
 
     fun closeCard(card: Card) {
-        renderState(CardDetailsState.Success)
+        renderState(CardDetailsState.Offline)
     }
 
     private fun renderState(state: CardDetailsState) {

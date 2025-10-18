@@ -171,7 +171,8 @@ fun SimpleIconDialog(
                     Icon(
                         icon,
                         contentDescription = stringResource(R.string.success_icon_dialog_content_descr),
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier.size(24.dp),
+                        tint = onSurfaceLight
                     )
                     Text(
                         modifier = Modifier

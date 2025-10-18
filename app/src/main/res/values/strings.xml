@@ -49,7 +49,9 @@
     <string name="card_cvv">CVC/CVV</string>
     <string name="card_about">О карте</string>
     <string name="card_type_debit">Вид карты: дебетовая</string>
-    <string name="card_debit_info">Вы получайте в этом месяце:\n · до 100% суперкэшбэка на 1 категорию\n · до 20% кэшбэка на ваш выбор</string>
+    <string name="card_debit_info_row1">Вы получайте в этом месяце:</string>
+    <string name="card_debit_info_row2"> · до 100% суперкэшбэка на 1 категорию</string>
+    <string name="card_debit_info_row3"> · до 20% кэшбэка на ваш выбор</string>
     <string name="card_type_credit">Вид карты: кредитная</string>
     <string name="card_credit_available">Доступно для трат</string>
     <string name="card_credit_debt">Задолженность</string>
@@ -62,4 +64,6 @@
     <string name="close">Закрыть</string>
     <string name="try_again">Повторить попытку</string>
     <string name="success_icon_dialog_content_descr">Successfully</string>
+    <string name="card_limit">%s из %s ₽</string>
+    <string name="card_debt">%s ₽</string>
 </resources>
