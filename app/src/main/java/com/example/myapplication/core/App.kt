@@ -4,6 +4,7 @@ import android.app.Application
 import com.example.myapplication.auth.di.data.authDataModule
 import com.example.myapplication.auth.di.domain.domainModule
 import com.example.myapplication.auth.di.viewmodel.authViewModelModule
+import com.example.myapplication.carddetails.di.viewmodel.cardDetailsViewModelModule
 import com.example.myapplication.cards.di.cardsViewModelModule
 import com.example.myapplication.cards.di.data.cardsModule
 import com.example.myapplication.core.di.data.coreDataModule
@@ -37,7 +38,9 @@ class App : Application() {
                 depositsModule,
                 loansModule,
                 loansAndDepositsModule,
-                transferModule
+                transferModule,
+                cardsViewModelModule,
+                cardDetailsViewModelModule
             )
         }
     }
