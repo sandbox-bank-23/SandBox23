@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.myapplication.R
 import com.example.myapplication.cards.domain.models.CardsState
+import com.example.myapplication.cards.navigation.CardsRoutes
 import com.example.myapplication.core.ui.components.BasicDialog
 import com.example.myapplication.core.ui.components.CardItem
 import com.example.myapplication.core.ui.theme.AppTypography
@@ -50,6 +51,7 @@ fun CardsScreen(
 ) {
     val cardsState = viewModel.cardsState.collectAsState().value
 
+    val cardId = 4000_1234_3215_7893
     val cardHolderName = stringResource(R.string.card_holder_default)
     var cardBalance: Long?
     var cardType: String? = null
@@ -98,7 +100,7 @@ fun CardsScreen(
                 if (cardsState is CardsState.Empty) {
                     openCardDialog.value = true
                 } else {
-                    navController.navigate("card_details")
+                    navController.navigate("${CardsRoutes.CARD_DETAILS}/${cardId}")
                 }
             }
         }
@@ -165,11 +167,3 @@ private fun CreateCardButton(text: String, isCredit: Boolean, onClick: () -> Uni
         },
     )
 }
-
-/*
-@Preview(showSystemUi = true)
-@Composable
-fun CardsScreenPreview() {
-    CardsScreen()
-}
- */

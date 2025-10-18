@@ -35,9 +35,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.navigation.NavHostController
 import com.example.myapplication.R
 import com.example.myapplication.carddetails.domain.models.CardDetailsState
@@ -52,7 +51,6 @@ import com.example.myapplication.core.ui.state.Routes
 import com.example.myapplication.core.ui.theme.ButtonMainHeight
 import com.example.myapplication.core.ui.theme.Padding12dp
 import com.example.myapplication.core.ui.theme.PaddingBase
-import com.example.myapplication.core.ui.theme.backgroundLight
 import com.example.myapplication.core.ui.theme.onTertiaryLight
 import com.example.myapplication.core.ui.theme.tertiaryLight
 import org.koin.androidx.compose.koinViewModel
@@ -65,16 +63,12 @@ fun CardDetailsScreen(
     navController: NavHostController,
     viewModel: CardDetailsViewModel = koinViewModel<CardDetailsViewModel>()
 ) {
-
-    val card = Card(
-        id = 4000_1234_3215_7893,
-        cvv = 12,
-        endDate = "07/2007",
-        owner = "Ivanova Oksana",
-        type = "Credit",
-        percent = 2.5 ,
-        balance = 500000
-    )
+    val cardId: Long? = null
+    var card: Card
+    LifecycleStartEffect(Unit) {
+        viewModel.requestCardDetail()
+        onStopOrDispose { }
+    }
 
     val cardLimit : Long = 500000
     val cardDebt : Long = 0
@@ -84,136 +78,138 @@ fun CardDetailsScreen(
     val successCardDialog = remember { mutableStateOf(false) }
 
     when (cardDetailsState) {
-        CardDetailsState.Content -> { }
-        CardDetailsState.Offline -> {
+        is CardDetailsState.Offline -> {
             offlineCardDialog.value = true
         }
-        CardDetailsState.Online -> {
+        is CardDetailsState.Online -> {
             offlineCardDialog.value = false
         }
-        CardDetailsState.Success -> {
+        is CardDetailsState.Success -> {
             successCardDialog.value = true
         }
-    }
+        is CardDetailsState.Content -> {
+            card = cardDetailsState.card
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                windowInsets = androidx.compose.foundation.layout.WindowInsets(0),
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    titleContentColor = MaterialTheme.colorScheme.onSurface,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
-                ),
-                title = {
-                    Text(
-                        text = stringResource(R.string.cards),
-                        style = AppTypography.titleLarge,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.padding(start = PaddingBase)
+            Scaffold(
+                topBar = {
+                    TopAppBar(
+                        windowInsets = androidx.compose.foundation.layout.WindowInsets(0),
+                        colors = TopAppBarDefaults.topAppBarColors(
+                            containerColor = MaterialTheme.colorScheme.surface,
+                            titleContentColor = MaterialTheme.colorScheme.onSurface,
+                            navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
+                        ),
+                        title = {
+                            Text(
+                                text = stringResource(R.string.cards),
+                                style = AppTypography.titleLarge,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                modifier = Modifier.padding(start = PaddingBase)
+                            )
+                        },
+                        navigationIcon = {
+                            IconButton(
+                                onClick = { navController.popBackStack() },
+                                modifier = Modifier
+                                    .size(48.dp)
+                                    .padding(start = PaddingBase)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                    contentDescription = stringResource(R.string.arrow_back),
+                                    modifier = Modifier.size(24.dp)
+                                )
+                            }
+                        })
+                },
+                containerColor = MaterialTheme.colorScheme.background,
+            ) { innerPadding ->
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(top = innerPadding.calculateTopPadding())
+                        .padding(horizontal = 12.dp)
+                        .verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.SpaceBetween
+                ) {
+
+                    BasicDialog(
+                        visible = offlineCardDialog.value,
+                        onDismissRequest = { offlineCardDialog.value = false },
+                        onConfirmation = {
+                            viewModel.closeCard(cardId)
+                        },
+                        dialogTitle = stringResource(R.string.offline),
+                        confirmButtonText = stringResource(R.string.try_again),
+                        dismissButtonText = stringResource(R.string.close),
                     )
-                },
-                navigationIcon = {
-                    IconButton(
-                        onClick = { navController.popBackStack() },
-                        modifier = Modifier
-                            .size(48.dp)
-                            .padding(start = PaddingBase)
+
+                    SimpleIconDialog(
+                        visible = successCardDialog.value,
+                        onDismissRequest = { successCardDialog.value = false },
+                        dialogTitle = stringResource(R.string.saved_successfully),
+                        dismissButtonText = stringResource(R.string.close),
+                        icon = Icons.Default.Check
+                    )
+
+                    Column(
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Top
                     ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.arrow_back),
-                            modifier = Modifier.size(24.dp)
+                        CardItem(
+                            cardHolderName = stringResource(R.string.card_holder_default),
+                            cardBalance = card.balance
+                        ) { }
+                    }
+                    Column(
+                        modifier = Modifier.padding(top = Padding12dp)
+                    ) {
+                        CardInfoRow(stringResource(R.string.card_holder), card.owner)
+                        CardInfoRow(
+                            stringResource(R.string.card_number),
+                            creditCardNumberFormat(card.id)
                         )
-                    }
-                })
-        },
-        containerColor = MaterialTheme.colorScheme.background,
-    ) { innerPadding ->
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(top = innerPadding.calculateTopPadding())
-                .padding(horizontal = 12.dp)
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
-
-            BasicDialog(
-                visible = offlineCardDialog.value,
-                onDismissRequest = { offlineCardDialog.value = false },
-                onConfirmation = {
-                    viewModel.closeCard(card)
-                },
-                dialogTitle = stringResource(R.string.offline),
-                confirmButtonText = stringResource(R.string.try_again),
-                dismissButtonText = stringResource(R.string.close),
-            )
-
-            SimpleIconDialog(
-                visible = successCardDialog.value,
-                onDismissRequest = { successCardDialog.value = false },
-                dialogTitle = stringResource(R.string.saved_successfully),
-                dismissButtonText = stringResource(R.string.close),
-                icon = Icons.Default.Check
-            )
-
-            Column(
-                modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Top
-            ) {
-                CardItem(
-                    cardHolderName = stringResource(R.string.card_holder_default),
-                    cardBalance = card.balance
-                ) { }
-            }
-            Column(
-                modifier = Modifier.padding(top = Padding12dp)
-            ) {
-                CardInfoRow(stringResource(R.string.card_holder), card.owner)
-                CardInfoRow(
-                    stringResource(R.string.card_number),
-                    creditCardNumberFormat(card.id)
-                )
-                CardInfoRow(stringResource(R.string.card_date), card.endDate)
-                CardInfoRow(stringResource(R.string.card_cvv),
-                    DecimalFormat("000").format(card.cvv))
-                Spacer(modifier = Modifier.Companion.height(12.dp))
-                CardInfoRow(stringResource(R.string.card_about))
-                when (card.type) {
-                    CardType.DEBIT -> {
-                        CardInfoRow(stringResource(R.string.card_type_debit))
-                        CardInfoRow(value = stringResource(R.string.card_debit_info_row1))
-                        CardInfoRow(value = stringResource(R.string.card_debit_info_row2))
-                        CardInfoRow(value = stringResource(R.string.card_debit_info_row3))
-                    }
-                    CardType.CREDIT -> {
-                        CardInfoRow(stringResource(R.string.card_type_credit))
-                        CardInfoRow(stringResource(R.string.card_credit_available),
-                            stringResource(R.string.card_limit,
-                                DecimalFormat("###,###")
-                                    .format(card.balance), DecimalFormat("###,###")
-                                    .format(cardLimit)))
-                        CardInfoRow(stringResource(R.string.card_credit_debt),
-                            stringResource(R.string.card_debt,
-                                DecimalFormat("#,##0.00")
-                                    .format(cardDebt)))
-                        CardInfoRow(stringResource(R.string.card_credit_grace_period),
-                            stringResource(R.string.card_credit_grace_value))
+                        CardInfoRow(stringResource(R.string.card_date), card.endDate)
+                        CardInfoRow(stringResource(R.string.card_cvv),
+                            DecimalFormat("000").format(card.cvv))
+                        Spacer(modifier = Modifier.Companion.height(12.dp))
+                        CardInfoRow(stringResource(R.string.card_about))
+                        when (card.type) {
+                            CardType.DEBIT -> {
+                                CardInfoRow(stringResource(R.string.card_type_debit))
+                                CardInfoRow(value = stringResource(R.string.card_debit_info_row1))
+                                CardInfoRow(value = stringResource(R.string.card_debit_info_row2))
+                                CardInfoRow(value = stringResource(R.string.card_debit_info_row3))
+                            }
+                            CardType.CREDIT -> {
+                                CardInfoRow(stringResource(R.string.card_type_credit))
+                                CardInfoRow(stringResource(R.string.card_credit_available),
+                                    stringResource(R.string.card_limit,
+                                        DecimalFormat("###,###")
+                                            .format(card.balance), DecimalFormat("###,###")
+                                            .format(cardLimit)))
+                                CardInfoRow(stringResource(R.string.card_credit_debt),
+                                    stringResource(R.string.card_debt,
+                                        DecimalFormat("#,##0.00")
+                                            .format(cardDebt)))
+                                CardInfoRow(stringResource(R.string.card_credit_grace_period),
+                                    stringResource(R.string.card_credit_grace_value))
+                            }
+                        }
+                        Spacer(modifier = Modifier.Companion.height(12.dp))
+                        PrimaryButton(stringResource(R.string.card_top_up)) {
+                            navController.navigate(Routes.TRANSFERS.route)
+                        }
+                        Spacer(modifier = Modifier.Companion.height(12.dp))
+                        CloseButton(stringResource(R.string.card_close)) {
+                            viewModel.closeCard(cardId)
+                        }
+                        Spacer(modifier = Modifier.Companion.height(12.dp))
                     }
                 }
-                Spacer(modifier = Modifier.Companion.height(12.dp))
-                PrimaryButton(stringResource(R.string.card_top_up)) {
-                    navController.navigate(Routes.TRANSFERS.route)
-                }
-                Spacer(modifier = Modifier.Companion.height(12.dp))
-                CloseButton(stringResource(R.string.card_close)) {
-                    viewModel.closeCard(card)
-                }
-                Spacer(modifier = Modifier.Companion.height(12.dp))
             }
         }
     }

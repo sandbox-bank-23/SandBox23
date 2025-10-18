@@ -7,12 +7,26 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-class CardDetailsViewModel : ViewModel() {
+class CardDetailsViewModel(private val cardID: Long) : ViewModel() {
 
-    private val _cardDetailsState = MutableStateFlow<CardDetailsState>(value = CardDetailsState.Content)
+    private val _cardDetailsState = MutableStateFlow<CardDetailsState>(value = CardDetailsState.Online)
     val cardDetailsState: StateFlow<CardDetailsState> = _cardDetailsState.asStateFlow()
 
-    fun closeCard(card: Card) {
+    fun requestCardDetail() {
+        // Здесь нужно сходить в репозиторий за картой
+        val card = Card(
+            id = cardID,
+            cvv = 12,
+            endDate = "07/2007",
+            owner = "Ivanova Oksana",
+            type = "Credit",
+            percent = 2.5 ,
+            balance = 500000
+        )
+        renderState(CardDetailsState.Content(card))
+    }
+
+    fun closeCard(cardId: Long? = null) {
         renderState(CardDetailsState.Offline)
     }
 
