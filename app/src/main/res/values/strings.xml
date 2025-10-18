@@ -38,4 +38,9 @@
     <string name="arrow_back">Назад</string>
     <string name="card_top_up">Пополнить карту</string>
     <string name="card_close">Закрыть карту</string>
+    <string name="offline">Нет подключения к интернету</string>
+    <string name="saved_successfully">Изменения\nсохранены</string>
+    <string name="close">Закрыть</string>
+    <string name="try_again">Повторить попытку</string>
+    <string name="success_icon_dialog_content_descr">Successfully</string>
 </resources>

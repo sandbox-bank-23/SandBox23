@@ -14,6 +14,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -24,33 +25,42 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.myapplication.R
+import com.example.myapplication.carddetails.domain.models.CardDetailsState
 import com.example.myapplication.core.domain.models.Card
 import com.example.myapplication.core.ui.components.CardItem
 import com.example.myapplication.core.ui.theme.AppTypography
 import com.example.myapplication.core.domain.models.CardType
+import com.example.myapplication.core.ui.components.BasicDialog
 import com.example.myapplication.core.ui.components.PrimaryButton
+import com.example.myapplication.core.ui.components.SimpleIconDialog
+import com.example.myapplication.core.ui.state.Routes
 import com.example.myapplication.core.ui.theme.ButtonMainHeight
+import com.example.myapplication.core.ui.theme.Padding12dp
 import com.example.myapplication.core.ui.theme.PaddingBase
 import com.example.myapplication.core.ui.theme.backgroundLight
 import com.example.myapplication.core.ui.theme.tertiaryLight
+import org.koin.androidx.compose.koinViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 //@Preview(showSystemUi = true)
 @Composable
-fun CardsDetailsScreen(
-    navController: NavHostController
+fun CardDetailsScreen(
+    navController: NavHostController,
+    viewModel: CardDetailsViewModel = koinViewModel<CardDetailsViewModel>()
 ) {
 
     val card = Card(
@@ -62,6 +72,23 @@ fun CardsDetailsScreen(
         percent = 2.5 ,
         balance = 500000
     )
+    val cardDetailsState = viewModel.cardDetailsState.collectAsState().value
+    val offlineCardDialog = remember { mutableStateOf(false) }
+    val successCardDialog = remember { mutableStateOf(false) }
+
+    when (cardDetailsState) {
+        CardDetailsState.Content -> { }
+        CardDetailsState.Offline -> {
+            offlineCardDialog.value = true
+        }
+        CardDetailsState.Online -> {
+            offlineCardDialog.value = false
+        }
+        CardDetailsState.Success -> {
+            successCardDialog.value = true
+        }
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -101,12 +128,32 @@ fun CardsDetailsScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
+                .padding(top = innerPadding.calculateTopPadding())
                 .padding(horizontal = 12.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
+
+            BasicDialog(
+                visible = offlineCardDialog.value,
+                onDismissRequest = { offlineCardDialog.value = false },
+                onConfirmation = {
+                    viewModel.closeCard(card)
+                },
+                dialogTitle = stringResource(R.string.offline),
+                confirmButtonText = stringResource(R.string.try_again),
+                dismissButtonText = stringResource(R.string.close),
+            )
+
+            SimpleIconDialog(
+                visible = successCardDialog.value,
+                onDismissRequest = { successCardDialog.value = false },
+                dialogTitle = stringResource(R.string.saved_successfully),
+                dismissButtonText = stringResource(R.string.close),
+                icon = Icons.Default.Check
+            )
+
             Column(
-                modifier = Modifier.fillMaxWidth().padding(vertical = 24.dp),
+                modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
             ) {
@@ -115,7 +162,11 @@ fun CardsDetailsScreen(
                     cardBalance = card.balance
                 ) { }
             }
-            Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+            Column(
+                modifier = Modifier
+                    .padding(top = Padding12dp)
+                    .verticalScroll(rememberScrollState())
+            ) {
                 CardInfoRow(stringResource(R.string.card_holder), card.owner)
                 CardInfoRow(
                     stringResource(R.string.card_number),
@@ -135,18 +186,19 @@ fun CardsDetailsScreen(
                         CardInfoRow(stringResource(R.string.card_type_credit))
                     }
                 }
-            }
-            Column {
                 Spacer(modifier = Modifier.Companion.height(12.dp))
-                PrimaryButton(stringResource(R.string.card_top_up)) {}
+                PrimaryButton(stringResource(R.string.card_top_up)) {
+                    navController.navigate(Routes.TRANSFERS.route)
+                }
                 Spacer(modifier = Modifier.Companion.height(12.dp))
-                CloseButton(stringResource(R.string.card_close)) {}
+                CloseButton(stringResource(R.string.card_close)) {
+                    viewModel.closeCard(card)
+                }
                 Spacer(modifier = Modifier.Companion.height(12.dp))
             }
         }
     }
 }
-
 
 @Composable
 private fun CardInfoRow(title: String? = null, value: String? = null) {
@@ -171,13 +223,13 @@ private fun CardInfoRow(title: String? = null, value: String? = null) {
                 textAlign = TextAlign.Start,
                 text = value,
                 style = AppTypography.bodyMedium.copy(
+                    fontWeight = FontWeight.W200,
                     lineHeight = 32.sp
                 )
             )
         }
     }
 }
-
 
 @Composable
 fun CloseButton(label: String, isEnabled: Boolean = true, onClick: () -> Unit) {
@@ -203,7 +255,7 @@ fun CloseButton(label: String, isEnabled: Boolean = true, onClick: () -> Unit) {
     )
 }
 
-fun creditCardNumberFormat(number: Long): String {
+private fun creditCardNumberFormat(number: Long): String {
     val preparedString = number.toString()
     val result = StringBuilder()
     for (i in preparedString.indices) {

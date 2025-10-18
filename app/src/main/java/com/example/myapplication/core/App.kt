@@ -2,6 +2,7 @@ package com.example.myapplication.core
 
 import android.app.Application
 import com.example.myapplication.auth.di.viewmodel.userViewModelModule
+import com.example.myapplication.carddetails.di.viewmodel.cardDetailsViewModelModule
 import com.example.myapplication.cards.di.cardsViewModelModule
 import com.example.myapplication.core.di.data.coreDataModule
 import com.example.myapplication.core.di.domain.coreInteractorModule
@@ -17,7 +18,8 @@ class App : Application() {
                 coreDataModule,
                 coreInteractorModule,
                 userViewModelModule,
-                cardsViewModelModule
+                cardsViewModelModule,
+                cardDetailsViewModelModule
             )
         }
     }
