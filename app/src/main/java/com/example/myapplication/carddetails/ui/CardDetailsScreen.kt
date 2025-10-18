@@ -53,6 +53,7 @@ import com.example.myapplication.core.ui.theme.PaddingBase
 import com.example.myapplication.core.ui.theme.backgroundLight
 import com.example.myapplication.core.ui.theme.tertiaryLight
 import org.koin.androidx.compose.koinViewModel
+import java.text.DecimalFormat
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -68,7 +69,7 @@ fun CardDetailsScreen(
         cvv = 12,
         endDate = "07/2007",
         owner = "Ivanova Oksana",
-        type = "Debit",
+        type = "Credit",
         percent = 2.5 ,
         balance = 500000
     )
@@ -173,7 +174,8 @@ fun CardDetailsScreen(
                     creditCardNumberFormat(card.id)
                 )
                 CardInfoRow(stringResource(R.string.card_date), card.endDate)
-                CardInfoRow(stringResource(R.string.card_cvv), card.cvv.toString())
+                CardInfoRow(stringResource(R.string.card_cvv),
+                    DecimalFormat("###").format(card.cvv))
                 Spacer(modifier = Modifier.Companion.height(12.dp))
                 CardInfoRow(stringResource(R.string.card_about))
                 when (card.type) {
@@ -181,9 +183,14 @@ fun CardDetailsScreen(
                         CardInfoRow(stringResource(R.string.card_type_debit))
                         CardInfoRow(value = stringResource(R.string.card_debit_info))
                     }
-
                     CardType.CREDIT -> {
                         CardInfoRow(stringResource(R.string.card_type_credit))
+                        CardInfoRow(stringResource(R.string.card_credit_available),
+                            "${card.balance} из 500 000\u20BD")
+                        CardInfoRow(stringResource(R.string.card_credit_debt),
+                            "0 \u20BD")
+                        CardInfoRow(stringResource(R.string.card_credit_grace_period),
+                            stringResource(R.string.card_credit_grace_value))
                     }
                 }
                 Spacer(modifier = Modifier.Companion.height(12.dp))
@@ -212,7 +219,7 @@ private fun CardInfoRow(title: String? = null, value: String? = null) {
                 textAlign = TextAlign.Start,
                 text = title,
                 style = AppTypography.bodyMedium.copy(
-                    fontWeight = FontWeight.W500,
+                    fontWeight = FontWeight.W600,
                     lineHeight = 32.sp
                 )
             )
@@ -223,7 +230,7 @@ private fun CardInfoRow(title: String? = null, value: String? = null) {
                 textAlign = TextAlign.Start,
                 text = value,
                 style = AppTypography.bodyMedium.copy(
-                    fontWeight = FontWeight.W200,
+                    fontWeight = FontWeight.W400,
                     lineHeight = 32.sp
                 )
             )

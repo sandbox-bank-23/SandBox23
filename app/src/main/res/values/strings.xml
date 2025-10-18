@@ -51,6 +51,10 @@
     <string name="card_type_debit">Вид карты: дебетовая</string>
     <string name="card_debit_info">Вы получайте в этом месяце:\n · до 100% суперкэшбэка на 1 категорию\n · до 20% кэшбэка на ваш выбор</string>
     <string name="card_type_credit">Вид карты: кредитная</string>
+    <string name="card_credit_available">Доступно для трат</string>
+    <string name="card_credit_debt">Задолженность</string>
+    <string name="card_credit_grace_period">Льготный период</string>
+    <string name="card_credit_grace_value">60 дней с момента первой покупки</string>
     <string name="card_top_up">Пополнить карту</string>
     <string name="card_close">Закрыть карту</string>
     <string name="offline">Нет подключения к интернету</string>
