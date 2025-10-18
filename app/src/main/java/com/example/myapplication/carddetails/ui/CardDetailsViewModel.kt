@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.asStateFlow
 
 class CardDetailsViewModel(private val cardID: Long) : ViewModel() {
 
-    private val _cardDetailsState = MutableStateFlow<CardDetailsState>(value = CardDetailsState.Online)
+    private val _cardDetailsState = MutableStateFlow<CardDetailsState>(value = CardDetailsState.Loading)
     val cardDetailsState: StateFlow<CardDetailsState> = _cardDetailsState.asStateFlow()
 
     fun requestCardDetail() {
