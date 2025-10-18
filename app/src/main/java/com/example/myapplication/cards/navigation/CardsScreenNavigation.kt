@@ -7,14 +7,16 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
 import com.example.myapplication.carddetails.ui.CardDetailsScreen
+import com.example.myapplication.carddetails.ui.CardDetailsViewModel
 import com.example.myapplication.cards.ui.CardsScreen
 import org.koin.androidx.compose.koinViewModel
-import com.example.myapplication.carddetails.ui.CardDetailsViewModel
 import org.koin.core.parameter.parametersOf
 
 fun NavGraphBuilder.cardsScreenNavigation(navController: NavHostController) {
-    navigation(startDestination = CardsRoutes.CARDS.route,
-        route = CardsRoutes.CARDS_NAVIGATION.route) {
+    navigation(
+        startDestination = CardsRoutes.CARDS.route,
+        route = CardsRoutes.CARDS_NAVIGATION.route
+    ) {
         composable(CardsRoutes.CARDS.route) { CardsScreen(navController) }
         composable(
             CardsRoutes.CARD_DETAILS.route,

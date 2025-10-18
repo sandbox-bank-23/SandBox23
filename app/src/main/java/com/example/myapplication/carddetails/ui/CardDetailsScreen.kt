@@ -40,19 +40,22 @@ import androidx.navigation.NavHostController
 import com.example.myapplication.R
 import com.example.myapplication.carddetails.domain.models.CardDetailsState
 import com.example.myapplication.core.domain.models.Card
-import com.example.myapplication.core.ui.components.CardItem
-import com.example.myapplication.core.ui.theme.AppTypography
 import com.example.myapplication.core.domain.models.CardType
 import com.example.myapplication.core.ui.components.BasicDialog
+import com.example.myapplication.core.ui.components.CardItem
 import com.example.myapplication.core.ui.components.CloseButton
 import com.example.myapplication.core.ui.components.PrimaryButton
 import com.example.myapplication.core.ui.components.SimpleIconDialog
 import com.example.myapplication.core.ui.state.Routes
+import com.example.myapplication.core.ui.theme.AppTypography
 import com.example.myapplication.core.ui.theme.Padding12dp
 import com.example.myapplication.core.ui.theme.PaddingBase
 import org.koin.androidx.compose.koinViewModel
 import java.text.DecimalFormat
 
+const val CARD_LIMIT_DEF = 500_000L
+const val CARD_DEBT_DEF = 0L
+const val CARD_NUMBER_GROUP_DIGITS = 4
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -60,7 +63,6 @@ fun CardDetailsScreen(
     navController: NavHostController,
     viewModel: CardDetailsViewModel = koinViewModel<CardDetailsViewModel>()
 ) {
-
     var card: Card? by remember { mutableStateOf<Card?>(null) }
 
     LifecycleStartEffect(Unit) {
@@ -68,8 +70,8 @@ fun CardDetailsScreen(
         onStopOrDispose { }
     }
 
-    val cardLimit : Long = 500000
-    val cardDebt : Long = 0
+    val cardLimit = CARD_LIMIT_DEF
+    val cardDebt = CARD_DEBT_DEF
 
     val cardDetailsState = viewModel.cardDetailsState.collectAsState().value
     val offlineCardDialog = remember { mutableStateOf(false) }
@@ -122,7 +124,8 @@ fun CardDetailsScreen(
                             modifier = Modifier.size(24.dp)
                         )
                     }
-                })
+                }
+            )
         },
         containerColor = MaterialTheme.colorScheme.background,
     ) { innerPadding ->
@@ -134,13 +137,11 @@ fun CardDetailsScreen(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-
-
             BasicDialog(
                 visible = offlineCardDialog.value,
                 onDismissRequest = { offlineCardDialog.value = false },
                 onConfirmation = {
-                    card?.let { viewModel.closeCard(it.id) }
+                    viewModel.closeCard()
                 },
                 dialogTitle = stringResource(R.string.offline),
                 confirmButtonText = stringResource(R.string.try_again),
@@ -176,8 +177,10 @@ fun CardDetailsScreen(
                     creditCardNumberFormat(card?.id)
                 )
                 CardInfoRow(stringResource(R.string.card_date), card?.endDate)
-                CardInfoRow(stringResource(R.string.card_cvv),
-                    DecimalFormat("000").format(card?.cvv))
+                CardInfoRow(
+                    stringResource(R.string.card_cvv),
+                    DecimalFormat("000").format(card?.cvv)
+                )
                 Spacer(modifier = Modifier.Companion.height(12.dp))
                 CardInfoRow(stringResource(R.string.card_about))
                 card?.let {
@@ -196,8 +199,8 @@ fun CardDetailsScreen(
                                 stringResource(
                                     R.string.card_limit,
                                     DecimalFormat("###,###")
-                                        .format(card?.balance), DecimalFormat("###,###")
-                                        .format(cardLimit)
+                                        .format(card?.balance),
+                                    DecimalFormat("###,###").format(cardLimit)
                                 )
                             )
                             CardInfoRow(
@@ -221,7 +224,7 @@ fun CardDetailsScreen(
                 }
                 Spacer(modifier = Modifier.Companion.height(12.dp))
                 CloseButton(stringResource(R.string.card_close)) {
-                    card?.let { viewModel.closeCard(it.id) }
+                    viewModel.closeCard()
                 }
                 Spacer(modifier = Modifier.Companion.height(12.dp))
             }
@@ -262,7 +265,7 @@ private fun creditCardNumberFormat(number: Long?): String {
     val preparedString = number.toString()
     val result = StringBuilder()
     for (i in preparedString.indices) {
-        if (i % 4 == 0 && i != 0) {
+        if (i % CARD_NUMBER_GROUP_DIGITS == 0 && i != 0) {
             result.append(" ")
         }
         result.append(preparedString[i])

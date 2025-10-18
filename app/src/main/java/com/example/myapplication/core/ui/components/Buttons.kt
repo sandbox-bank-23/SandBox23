@@ -69,10 +69,7 @@ fun CloseButton(label: String, isEnabled: Boolean = true, onClick: () -> Unit) {
             .height(ButtonMainHeight),
         onClick = onClick,
         enabled = isEnabled,
-        border =  BorderStroke(
-            color = onTertiaryLight,
-            width = 1.dp
-        ),
+        border = BorderStroke(color = onTertiaryLight, width = 1.dp),
         colors = ButtonDefaults.outlinedButtonColors(
             containerColor = MaterialTheme.colorScheme.tertiary,
             contentColor = tertiaryLight

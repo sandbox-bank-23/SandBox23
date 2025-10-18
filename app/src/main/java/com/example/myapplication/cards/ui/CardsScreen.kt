@@ -41,7 +41,8 @@ import com.example.myapplication.core.ui.theme.primaryLight
 import com.example.myapplication.core.ui.theme.surfaceContainerLight
 import org.koin.androidx.compose.koinViewModel
 
-const val CARD_BALANCE_DEF: Long = 1_000_000_00
+const val CARD_BALANCE_DEF = 100_000_000L
+const val CARD_ID_TEMP = 4_000_123_432_157_893L
 const val FRACTION_05 = 0.5f
 
 @Composable
@@ -51,7 +52,7 @@ fun CardsScreen(
 ) {
     val cardsState = viewModel.cardsState.collectAsState().value
 
-    val cardId = 4000_1234_3215_7893
+    val cardId = CARD_ID_TEMP
     val cardHolderName = stringResource(R.string.card_holder_default)
     var cardBalance: Long?
     var cardType: String? = null
@@ -100,7 +101,7 @@ fun CardsScreen(
                 if (cardsState is CardsState.Empty) {
                     openCardDialog.value = true
                 } else {
-                    navController.navigate("${CardsRoutes.CARD_DETAILS}/${cardId}")
+                    navController.navigate("${CardsRoutes.CARD_DETAILS}/$cardId")
                 }
             }
         }

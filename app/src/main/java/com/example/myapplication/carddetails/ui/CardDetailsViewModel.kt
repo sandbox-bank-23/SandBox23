@@ -20,13 +20,13 @@ class CardDetailsViewModel(private val cardID: Long) : ViewModel() {
             endDate = "07/2007",
             owner = "Ivanova Oksana",
             type = "Credit",
-            percent = 2.5 ,
-            balance = 500000
+            percent = 2.5,
+            balance = 500_000
         )
         renderState(CardDetailsState.Content(card))
     }
 
-    fun closeCard(cardId: Long? = null) {
+    fun closeCard() {
         renderState(CardDetailsState.Offline)
     }
 

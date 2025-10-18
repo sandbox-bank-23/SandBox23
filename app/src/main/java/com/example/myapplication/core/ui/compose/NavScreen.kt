@@ -184,8 +184,8 @@ fun NavigationBarContent(navController: NavHostController, bottomBarRoutes: List
         val isDarkTheme = isSystemInDarkTheme()
 
         bottomBarRoutes.forEach { item ->
-            val selected = (currentDestination?.route == item.route) ||
-                    (currentDestination?.parent?.route == item.route)
+            val selected = currentDestination?.route == item.route ||
+                currentDestination?.parent?.route == item.route
 
             val itemTextColor = when {
                 selected && isDarkTheme -> NavTextActiveDark
@@ -209,9 +209,9 @@ fun NavigationBarContent(navController: NavHostController, bottomBarRoutes: List
                 onClick = {
                     val currentRoute = currentDestination?.route
                     val currentParentRoute = currentDestination?.parent?.route
-                    if (currentRoute == item.route || currentParentRoute == item.route )
+                    if (currentRoute == item.route || currentParentRoute == item.route) {
                         return@NavigationBarItem
-
+                    }
                     navController.navigate(item.route) {
                         popUpTo(0) { inclusive = true }
                         launchSingleTop = true
