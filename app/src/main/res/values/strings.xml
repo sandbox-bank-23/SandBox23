@@ -43,4 +43,12 @@
     <string name="spaces_in_password_error">Пароль не должен содержать пробелы!</string>
     <string name="short_password_error">Пароль не может быть короче 6ти символов!</string>
     <string name="unsupported_key">Unsupported key: %1$s</string>
+    <string name="card_open">+  Оформить карту</string>
+    <string name="card_debit">Виртуальная дебетовая карта SandboxBank</string>
+    <string name="card_debit_info_title1">Выпуск и обслуживание</string>
+    <string name="card_debit_info_text1">Бесплатно</string>
+    <string name="card_debit_info_title2">Кэшбек до 30%</string>
+    <string name="card_debit_info_text2">Получайте суперкэшбэк рублями каждый месяц и
+        бесплатно снимайте наличные в любых банкоматах</string>
+    <string name="card_debit_info_text3">Платите через SandBox Pay или по QR-коду</string>
 </resources>
