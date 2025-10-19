@@ -2,15 +2,14 @@ package com.example.myapplication.auth.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.myapplication.R
 import com.example.myapplication.auth.domain.AuthInteractor
 import com.example.myapplication.auth.domain.model.AuthData
 import com.example.myapplication.auth.domain.model.AuthRequest
 import com.example.myapplication.auth.domain.state.Result
+import com.example.myapplication.auth.ui.state.AuthScreenState
 import com.example.myapplication.auth.ui.utils.ValidationUtils
 import com.example.myapplication.core.domain.api.AppInteractor
 import com.example.myapplication.core.domain.api.StorageKey
-import com.example.myapplication.core.ui.model.TextInputState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,98 +20,65 @@ class AuthorizationViewModel(
     private val authInteractor: AuthInteractor
 ) : ViewModel() {
 
-    // StateFlow для логина
-    private val _loginState = MutableStateFlow(
-        TextInputState(
-            label = application.applicationContext.getString(R.string.email), // TODO "нужно определить единый стейт для экрана" и нельзя апликейшн здесь
-        )
+    private val _screenState = MutableStateFlow<AuthScreenState>(
+        AuthScreenState.Default
     )
-    val loginState: StateFlow<TextInputState> = _loginState.asStateFlow()
+    val screenState: StateFlow<AuthScreenState> = _screenState.asStateFlow()
 
-    // StateFlow для пароля
-    private val _passwordState = MutableStateFlow(
-        TextInputState( // TODO "нужно определить единый стейт для экрана"
-            label = application.applicationContext.getString(R.string.password),
-            supportingText = application.applicationContext.getString(R.string.pass_constraint),
-            isPassword = true
-        )
-    )
-    val passwordState: StateFlow<TextInputState> = _passwordState.asStateFlow() // TODO "Это лучше сделать полем в едином стейте" и нельзя апликейшн здесь
+    private var _email = MutableStateFlow("")
+    val email: StateFlow<String> =_email
 
-    // StateFlow для перехода на экран создания пин-кода // TODO "как будто можно и без этого обойтись"
-    private val _pinCodeCreateTriggerState = MutableStateFlow(false)
-    val pinCodeCreateTriggerState = _pinCodeCreateTriggerState.asStateFlow()
+    private var _password = MutableStateFlow("")
+    val password: StateFlow<String> =_password
 
     fun onLoginChange(login: String) {
-        _loginState.value = _loginState.value.copy(
-            valueText = login,
-            isError = false,
-            isSuccess = false
-        )
+        _email.value = login
     }
 
     fun onPasswordChange(password: String) {
-        _passwordState.value = _passwordState.value.copy(
-            valueText = password,
-            isError = false,
-            isSuccess = false
-        )
+        _password.value = password
     }
 
-    fun authorize() { // TODO "Я начал пытаться исправлять, но тут возможно проще переделать полностью"
-        // Сначала валидируем логин и пароль на основе содержимого, без запроса бэкенда
-        val emailCheck = ValidationUtils.isEmailValid(loginState.value.valueText)
-        val passwordCheck =
-            ValidationUtils.isPasswordValid(_passwordState.value.valueText)
-        if (!emailCheck.first) {
-            _loginState.value =
-                _loginState.value.copy(
-                    isError = true,
-                    isSuccess = false,
-                    supportingText = emailCheck.second
-                )
-        }
-        if (!passwordCheck.first) {
-            _passwordState.value =
-                _passwordState.value.copy(
-                    isError = true,
-                    isSuccess = false,
-                    supportingText = passwordCheck.second
-                )
-        }
-        if (!emailCheck.first || !passwordCheck.first) return
-        // Затем отправляем данные на авторизацию на бэкенде
-        val authRequest = AuthRequest(
-            _loginState.value.valueText,
-            _passwordState.value.valueText
-        )
-        viewModelScope.launch {
-            processResult(authInteractor.login(authRequest))
+    fun authorize() {
+        val emailCheck = ValidationUtils.isEmailValid(email.value)
+        val passwordCheck = ValidationUtils.isPasswordValid(password.value)
+        if(!emailCheck.first || !emailCheck.second || !passwordCheck.first || !passwordCheck.second){
+            _screenState.value = AuthScreenState.ErrorState(
+                emailLengthError = emailCheck.first,
+                emailConsistError = emailCheck.second,
+                passEmptyError = passwordCheck.first,
+                passLengthError = passwordCheck.second
+            )
+        } else {
+            viewModelScope.launch {
+                processResult(authInteractor.login(
+                    authRequest = AuthRequest(
+                        email = email.value,
+                        password = password.value
+                    )
+                ))
+            }
         }
     }
 
     private fun processResult(result: Result<AuthData>) {
         when (result) {
             is Result.Success -> {
-                // Если мы здесь, то авторизация прошла успешно, сохраняем полученные токены,
-                // удаляем старый пин-код и открываем экран создания пин-кода
-                _loginState.value = _loginState.value.copy(isError = false, isSuccess = true)
-                _passwordState.value = _passwordState.value.copy(isError = false, isSuccess = true)
+                _screenState.value = AuthScreenState.Successful
                 viewModelScope.launch {
                     appInteractor.saveAuthDataValue(StorageKey.AUTHDATA, result.data)
                     appInteractor.removeKey(StorageKey.PINCODE)
                     appInteractor.removeKey(StorageKey.PINCODEMISTAKES)
-                    _pinCodeCreateTriggerState.value = true
                 }
             }
+
             is Result.Error -> {
-                // Очищаем пароль, выставляем ошибку на логине
-                _loginState.value = _loginState.value.copy(
-                    isError = true,
-                    isSuccess = false,
-                    supportingText = result.message.orEmpty()
+                _screenState.value = AuthScreenState.ErrorState(
+                    emailLengthError = true,
+                    emailConsistError = true,
+                    passEmptyError = true,
+                    passLengthError = true
                 )
-                _passwordState.value = _passwordState.value.copy(valueText = "")
             }
         }
     }

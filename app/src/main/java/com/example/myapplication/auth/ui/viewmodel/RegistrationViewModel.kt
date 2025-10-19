@@ -8,6 +8,7 @@ import com.example.myapplication.auth.domain.AuthInteractor
 import com.example.myapplication.auth.domain.model.AuthData
 import com.example.myapplication.auth.domain.model.AuthRequest
 import com.example.myapplication.auth.domain.state.Result
+import com.example.myapplication.auth.ui.utils.ValidationUtils
 import com.example.myapplication.core.domain.api.AppInteractor
 import com.example.myapplication.core.domain.api.StorageKey
 import com.example.myapplication.core.ui.model.TextInputState
@@ -66,22 +67,22 @@ class RegistrationViewModel(
         }
 
         // Теперь валидируем логин и пароль на основе содержимого, без запроса бэкенда
-        val emailCheck = authInteractor.isEmailValid(_loginState.value.valueText)
-        val passwordCheck = authInteractor.isPasswordValid(
+        val emailCheck = ValidationUtils.isEmailValid(_loginState.value.valueText)
+        val passwordCheck = ValidationUtils.isPasswordValid(
             _passwordState.value.valueText
         )
         if (!emailCheck.first) {
             _loginState.value = _loginState.value.copy(
                 isError = true,
                 isSuccess = false,
-                supportingText = emailCheck.second
+                supportingText = "emailCheck.second"
             )
         }
         if (!passwordCheck.first) {
             _passwordState.value = _passwordState.value.copy(
                 isError = true,
                 isSuccess = false,
-                supportingText = passwordCheck.second
+                supportingText = "passwordCheck.second"
             )
         }
         if (!emailCheck.first || !passwordCheck.first) return

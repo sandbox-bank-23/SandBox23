@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -15,11 +14,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.example.myapplication.R
 import com.example.myapplication.auth.navigation.AuthScreen
+import com.example.myapplication.auth.ui.state.AuthScreenState
 import com.example.myapplication.auth.ui.viewmodel.AuthorizationViewModel
 import com.example.myapplication.core.ui.components.HeadingText
 import com.example.myapplication.core.ui.components.InputTextField
 import com.example.myapplication.core.ui.components.PrimaryButton
 import com.example.myapplication.core.ui.components.SecondaryButton
+import com.example.myapplication.core.ui.model.TextInputState
 import com.example.myapplication.core.ui.theme.Height60
 import com.example.myapplication.core.ui.theme.Height80
 import com.example.myapplication.core.ui.theme.PaddingBase
@@ -31,16 +32,7 @@ fun AuthorizationScreen(
     authVm: AuthorizationViewModel = koinViewModel(),
     navController: NavController
 ) {
-    // Состояния для текстовых полей из ViewModel
-    val loginState = authVm.loginState.collectAsState().value
-    val passwordState = authVm.passwordState.collectAsState().value
-
-    // Состояние для флага перехода на экран создания пин-кода
-    val pinCodeCreateTriggerState = authVm.pinCodeCreateTriggerState.collectAsState().value
-
-    LaunchedEffect(pinCodeCreateTriggerState) {
-        if (pinCodeCreateTriggerState) navController.navigate(route = AuthScreen.PinPadCreate.route)
-    }
+    val screenState = authVm.screenState.collectAsState().value
 
     Column(
         modifier = modifier
@@ -51,15 +43,48 @@ fun AuthorizationScreen(
     ) {
         HeadingText(stringResource(R.string.authorization), false)
         Spacer(modifier = Modifier.Companion.height(Height80))
-        InputTextField(
-            state = loginState,
-            onTextChange = { authVm.onLoginChange(it) }
-        )
-        Spacer(modifier = Modifier.Companion.height(PaddingBase))
-        InputTextField(
-            state = passwordState,
-            onTextChange = { authVm.onPasswordChange(it) }
-        )
+        when(screenState){
+            AuthScreenState.Default -> {
+                InputTextField(
+                    state = TextInputState(
+                        label = stringResource(R.string.email)
+                    ),
+                    onTextChange = { authVm.onLoginChange(it) }
+                )
+                Spacer(modifier = Modifier.Companion.height(PaddingBase))
+                InputTextField(
+                    state = TextInputState(
+                        label = stringResource(R.string.password),
+                        supportingText = stringResource(R.string.pass_constraint),
+                        isPassword = true
+                    ),
+                    onTextChange = { authVm.onPasswordChange(it) }
+                )
+            }
+            is AuthScreenState.ErrorState -> {
+                InputTextField(
+                    state = TextInputState(
+                        label = stringResource(R.string.email),
+                        isError = !screenState.emailLengthError || !screenState.emailConsistError
+                    ),
+                    onTextChange = { authVm.onLoginChange(it) }
+                )
+                Spacer(modifier = Modifier.Companion.height(PaddingBase))
+                InputTextField(
+                    state = TextInputState(
+                        label = stringResource(R.string.password),
+                        supportingText = stringResource(R.string.pass_constraint),
+                        isError = !screenState.passLengthError || !screenState.passEmptyError,
+                        isPassword = true
+                    ),
+                    onTextChange = { authVm.onPasswordChange(it) }
+                )
+            }
+
+            AuthScreenState.Successful -> {
+                navController.navigate(route = AuthScreen.PinPadCreate.route)
+            }
+        }
         Spacer(modifier = Modifier.Companion.height(Height60))
         // Блок кнопок
         PrimaryButton(stringResource(R.string.enter)) { authVm.authorize() }
