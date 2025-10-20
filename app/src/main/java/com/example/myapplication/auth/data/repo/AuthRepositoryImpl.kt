@@ -3,11 +3,19 @@ package com.example.myapplication.auth.data.repo
 import com.example.myapplication.auth.data.mock.AuthMock
 import com.example.myapplication.auth.domain.model.AuthData
 import com.example.myapplication.auth.domain.repo.AuthRepository
+import com.example.myapplication.core.data.db.dao.UserDao
+import com.example.myapplication.core.data.db.entity.UserEntity
 import com.example.myapplication.core.data.network.NetworkClient
 import com.example.myapplication.core.data.network.Response
+import com.example.myapplication.core.demo.demoFirstName
+import com.example.myapplication.core.demo.demoLastName
 import com.example.myapplication.core.domain.models.Result
 
-class AuthRepositoryImpl(val client: NetworkClient, val authMock: AuthMock) : AuthRepository {
+class AuthRepositoryImpl(
+    val client: NetworkClient,
+    val authMock: AuthMock,
+    val dao: UserDao
+) : AuthRepository {
 
     override suspend fun login(
         email: String,
@@ -38,11 +46,21 @@ class AuthRepositoryImpl(val client: NetworkClient, val authMock: AuthMock) : Au
         val data = client(authMock.getRegister())
 
         return when (data.code) {
-            REGISTER_SUCCESS, USER_EXISTS -> {
+            REGISTER_SUCCESS -> {
+                val parsed = parseAuthResponse(data)
+                dao.createUser(
+                    UserEntity(
+                        firstName = demoFirstName,
+                        lastName = demoLastName,
+                        email = email
+                    )
+                )
+                Result.Success(parsed)
+            }
+            USER_EXISTS -> {
                 val parsed = parseAuthResponse(data)
                 Result.Success(parsed)
             }
-
             INVALID_REQUEST, NO_RESPONSE -> {
                 Result.Error(data.description)
             }
