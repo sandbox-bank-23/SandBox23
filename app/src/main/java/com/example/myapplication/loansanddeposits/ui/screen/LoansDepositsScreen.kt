@@ -39,10 +39,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.R
 import com.example.myapplication.core.ui.theme.AppTypography
 import com.example.myapplication.core.ui.theme.CardIconHeight
@@ -324,17 +322,5 @@ fun CreditItem(
                 )
             }
         }
-    }
-}
-
-@Preview(showBackground = true, name = "LoansDepositsScreen")
-@Composable
-fun LoansDepositsScreenPreview() {
-    MaterialTheme {
-        LoansDepositsScreen(
-            navController = rememberNavController(),
-            viewModel = LoansDepositsViewModel(),
-            onApplyCreditClick = {}
-        )
     }
 }
