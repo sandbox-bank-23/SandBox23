@@ -6,6 +6,7 @@ import com.example.myapplication.core.data.network.Response
 import com.example.myapplication.core.domain.models.Product
 import com.example.myapplication.core.domain.models.ProductType
 import com.example.myapplication.loans.data.mock.model.Pay
+import com.example.myapplication.loans.data.mock.model.Percent
 import com.example.myapplication.loans.data.mock.utils.calculatePay
 import kotlinx.serialization.json.Json
 import java.math.BigDecimal
@@ -38,6 +39,19 @@ class LoansMock {
             code = 200,
             description = "OK",
             response = Json.encodeToString(value = pay)
+        )
+    }
+
+    fun getPercent(): Response {
+        val percent = Json.encodeToString(value =
+            Percent(
+                value = Random.nextInt(8, 25)
+            )
+        )
+        return Response(
+            code = 200,
+            description = "OK",
+            response = percent
         )
     }
 
