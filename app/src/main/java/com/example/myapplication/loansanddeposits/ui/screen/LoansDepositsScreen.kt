@@ -17,14 +17,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -44,13 +40,24 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.R
 import com.example.myapplication.core.ui.theme.AppTypography
+import com.example.myapplication.core.ui.theme.CardIconHeight
+import com.example.myapplication.core.ui.theme.CornerRadiusRegular
+import com.example.myapplication.core.ui.theme.Height100
+import com.example.myapplication.core.ui.theme.Height56
+import com.example.myapplication.core.ui.theme.Height72
+import com.example.myapplication.core.ui.theme.Padding12dp
+import com.example.myapplication.core.ui.theme.Padding16dp
+import com.example.myapplication.core.ui.theme.Padding22dp
+import com.example.myapplication.core.ui.theme.Padding24dp
+import com.example.myapplication.core.ui.theme.Padding31dp
+import com.example.myapplication.core.ui.theme.Padding81dp
 import com.example.myapplication.core.ui.theme.PaddingBase
+import com.example.myapplication.core.ui.theme.PaddingQuarter
 import com.example.myapplication.loansanddeposits.ui.state.CreditUi
 import com.example.myapplication.loansanddeposits.ui.state.DepositUi
 import com.example.myapplication.loansanddeposits.ui.state.LoansDepositsState
@@ -68,9 +75,8 @@ data class Credit(
 
 @Composable
 fun LoansDepositsScreen(
-    navController: NavHostController,
+    _navController: NavHostController,
     viewModel: LoansDepositsViewModel = koinViewModel(),
-    onBackClick: () -> Unit,
     onApplyCreditClick: () -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -101,20 +107,7 @@ fun LoansDepositsScreen(
                     titleContentColor = MaterialTheme.colorScheme.onSurface,
                     navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
                 ),
-                navigationIcon = {
-                    IconButton(
-                        onClick = onBackClick,
-                        modifier = Modifier
-                            .size(48.dp)
-                            .padding(start = PaddingBase)
-                    ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.arrow_back),
-                            modifier = Modifier.size(24.dp)
-                        )
-                    }
-                },
+
                 title = {
                     Text(
                         text = stringResource(R.string.loans_and_deposits),
@@ -133,7 +126,7 @@ fun LoansDepositsScreen(
                 .padding(innerPadding)
                 .padding(horizontal = PaddingBase),
             contentPadding = PaddingValues(vertical = PaddingBase),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(Padding12dp)
         ) {
             item { SectionHeader(text = stringResource(R.string.deposits)) }
 
@@ -153,7 +146,7 @@ fun LoansDepositsScreen(
             }
 
             item {
-                Spacer(Modifier.height(4.dp))
+                Spacer(Modifier.height(PaddingQuarter))
                 SectionHeader(text = stringResource(R.string.loans))
             }
 
@@ -170,7 +163,7 @@ fun LoansDepositsScreen(
                 )
             }
 
-            item { Spacer(Modifier.height(8.dp)) }
+            item { Spacer(Modifier.height(CornerRadiusRegular)) }
         }
     }
 }
@@ -183,7 +176,7 @@ private fun SectionHeader(text: String) {
         color = MaterialTheme.colorScheme.primary,
         maxLines = 1,
         overflow = TextOverflow.Ellipsis,
-        modifier = Modifier.padding(top = 4.dp, bottom = 4.dp)
+        modifier = Modifier.padding(top = PaddingQuarter, bottom = PaddingQuarter)
     )
 }
 
@@ -192,11 +185,11 @@ private fun PrimaryWideButton(text: String, onClick: () -> Unit) {
     Button(
         modifier = Modifier
             .fillMaxWidth()
-            .height(56.dp),
+            .height(Height56),
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.primary
         ),
-        shape = RoundedCornerShape(100.dp),
+        shape = RoundedCornerShape(Height100),
         onClick = onClick
     ) {
         Text(
@@ -214,9 +207,8 @@ fun DepositItem(
     iconRes: Int,
     onClick: (depositId: Long) -> Unit
 ) {
-    val shape = RoundedCornerShape(12.dp)
-    val backgroundColor =
-        if (item.id == 1L) Color(0xFFFEF7FF) else (MaterialTheme.colorScheme.surfaceContainerLowest)
+    val shape = RoundedCornerShape(Padding12dp)
+    val backgroundColor = MaterialTheme.colorScheme.surfaceContainerLowest
 
     Surface(
         modifier = Modifier
@@ -230,15 +222,15 @@ fun DepositItem(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(72.dp)
+                .height(Height72)
         ) {
             Card(
-                modifier = Modifier.padding(start = 22.dp),
-                shape = RoundedCornerShape(8.dp)
+                modifier = Modifier.padding(start = Padding22dp),
+                shape = RoundedCornerShape(CornerRadiusRegular)
             ) {
                 Image(
                     modifier = Modifier
-                        .size(40.dp)
+                        .size(CardIconHeight)
                         .background(Color(0xFFFFFFFF)),
                     painter = painterResource(id = iconRes),
                     contentDescription = null,
@@ -247,7 +239,7 @@ fun DepositItem(
             }
             Column(
                 modifier = Modifier
-                    .padding(start = 31.dp, top = 16.dp, bottom = 16.dp)
+                    .padding(start = Padding31dp, top = Padding16dp, bottom = Padding16dp)
                     .weight(1f)
             ) {
                 Text(
@@ -264,7 +256,7 @@ fun DepositItem(
                 )
             }
             Text(
-                modifier = Modifier.padding(end = 81.dp),
+                modifier = Modifier.padding(end = Padding81dp),
                 text = "${item.percentType}%",
                 maxLines = 1,
                 style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
@@ -280,7 +272,7 @@ fun CreditItem(
     iconAutoRes: Int = R.drawable.ic_car,
     iconMortgageRes: Int = R.drawable.ic_mortage
 ) {
-    val shape = RoundedCornerShape(12.dp)
+    val shape = RoundedCornerShape(Padding12dp)
 
     Surface(
         modifier = Modifier
@@ -293,15 +285,15 @@ fun CreditItem(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(72.dp)
+                .height(Height72)
         ) {
             Card(
-                modifier = Modifier.padding(start = 22.dp),
-                shape = RoundedCornerShape(8.dp)
+                modifier = Modifier.padding(start = Padding22dp),
+                shape = RoundedCornerShape(CornerRadiusRegular)
             ) {
                 Image(
                     modifier = Modifier
-                        .size(40.dp)
+                        .size(CardIconHeight)
                         .background(MaterialTheme.colorScheme.surfaceContainerLowest),
                     painter = painterResource(
                         id = when (item.type) {
@@ -315,7 +307,7 @@ fun CreditItem(
             }
             Column(
                 modifier = Modifier
-                    .padding(start = 24.dp, top = 16.dp, end = 16.dp)
+                    .padding(start = Padding24dp, top = Padding16dp, end = Padding16dp)
                     .weight(1f)
             ) {
                 Text(
@@ -340,9 +332,8 @@ fun CreditItem(
 fun LoansDepositsScreenPreview() {
     MaterialTheme {
         LoansDepositsScreen(
-            navController = rememberNavController(),
+            _navController = rememberNavController(),
             viewModel = LoansDepositsViewModel(),
-            onBackClick = {},
             onApplyCreditClick = {}
         )
     }
