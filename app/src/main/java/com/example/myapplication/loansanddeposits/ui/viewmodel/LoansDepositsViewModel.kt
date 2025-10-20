@@ -1,3 +1,5 @@
+@file:Suppress("MagicNumber")
+
 package com.example.myapplication.loansanddeposits.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
