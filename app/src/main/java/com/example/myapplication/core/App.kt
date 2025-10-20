@@ -12,7 +12,7 @@ import com.example.myapplication.core.di.domain.coreInteractorModule
 import com.example.myapplication.creditcards.di.data.creditCardsModule
 import com.example.myapplication.debitcards.di.data.debitCardsModule
 import com.example.myapplication.deposits.di.data.depositsModule
-import com.example.myapplication.loans.di.data.loansModule
+import com.example.myapplication.loans.di.loansModule
 import com.example.myapplication.loansanddeposits.di.data.loansAndDepositsModule
 import com.example.myapplication.transfer.di.data.transferModule
 import org.koin.android.ext.koin.androidContext

@@ -3,7 +3,7 @@ package com.example.myapplication.loans.data.repo
 import com.example.myapplication.core.data.network.NetworkClient
 import com.example.myapplication.core.data.network.Response
 import com.example.myapplication.loans.data.mock.LoansMock
-import com.example.myapplication.loans.domain.api.LoansRepository
+import com.example.myapplication.loans.domain.LoansRepository
 
 class LoansRepositoryImpl(
     private val client: NetworkClient,

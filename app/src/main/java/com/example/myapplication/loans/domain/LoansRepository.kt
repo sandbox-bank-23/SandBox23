@@ -1,4 +1,4 @@
-package com.example.myapplication.loans.domain.api
+package com.example.myapplication.loans.domain
 
 import com.example.myapplication.core.data.network.Response
 

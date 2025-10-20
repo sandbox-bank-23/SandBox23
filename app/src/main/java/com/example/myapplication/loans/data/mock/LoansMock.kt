@@ -5,7 +5,10 @@ package com.example.myapplication.loans.data.mock
 import com.example.myapplication.core.data.network.Response
 import com.example.myapplication.core.domain.models.Product
 import com.example.myapplication.core.domain.models.ProductType
+import com.example.myapplication.loans.data.mock.model.Pay
+import com.example.myapplication.loans.data.mock.utils.calculatePay
 import kotlinx.serialization.json.Json
+import java.math.BigDecimal
 import kotlin.random.Random
 
 class LoansMock {
@@ -22,6 +25,21 @@ class LoansMock {
                 response = null
             )
         }
+
+    fun calculateLoan(sum: BigDecimal, period: Long, percent: Int): Response {
+        val pay = Pay(
+            sum = calculatePay(
+                sum = sum,
+                period = period,
+                percent = percent
+            )
+        )
+        return Response(
+            code = 200,
+            description = "OK",
+            response = Json.encodeToString(value = pay)
+        )
+    }
 
     fun takeLoan(): Response {
         val product = Product(
