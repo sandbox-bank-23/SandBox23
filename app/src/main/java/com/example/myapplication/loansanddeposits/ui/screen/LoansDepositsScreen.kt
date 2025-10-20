@@ -92,7 +92,7 @@ fun LoansDepositsScreen(
     }
 
     Scaffold(
-        containerColor = Color(0xFFFFFFFF),
+        containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
         topBar = {
             TopAppBar(
                 windowInsets = TopAppBarDefaults.windowInsets,
@@ -215,7 +215,8 @@ fun DepositItem(
     onClick: (depositId: Long) -> Unit
 ) {
     val shape = RoundedCornerShape(12.dp)
-    val backgroundColor = if (item.id == 1L) Color(0xFFFEF7FF) else Color(0xFFFFFFFF)
+    val backgroundColor =
+        if (item.id == 1L) Color(0xFFFEF7FF) else (MaterialTheme.colorScheme.surfaceContainerLowest)
 
     Surface(
         modifier = Modifier
@@ -286,7 +287,7 @@ fun CreditItem(
             .fillMaxWidth()
             .clip(shape),
         shape = shape,
-        color = Color(0xFFFFFFFF)
+        color = MaterialTheme.colorScheme.surfaceContainerLowest
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -301,7 +302,7 @@ fun CreditItem(
                 Image(
                     modifier = Modifier
                         .size(40.dp)
-                        .background(Color(0xFFFFFFFF)),
+                        .background(MaterialTheme.colorScheme.surfaceContainerLowest),
                     painter = painterResource(
                         id = when (item.type) {
                             VmCreditType.Auto -> iconAutoRes
