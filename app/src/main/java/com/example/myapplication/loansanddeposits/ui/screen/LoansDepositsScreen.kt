@@ -3,14 +3,15 @@ package com.example.myapplication.loansanddeposits.ui.screen
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -22,21 +23,22 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.R
@@ -44,7 +46,15 @@ import com.example.myapplication.core.ui.theme.AppTypography
 import com.example.myapplication.core.ui.theme.PaddingBase
 
 data class Deposit(val id: Long, val title: String, val balanceText: String, val percentType: Int)
-data class Credit(val id: Long, val name: String, val amountText: String)
+
+enum class CreditType { Auto, Mortgage }
+
+data class Credit(
+    val id: Long,
+    val name: String,
+    val amountText: String,
+    val type: CreditType
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,14 +64,14 @@ fun LoansDepositsScreen(
     onApplyCreditClick: () -> Unit,
 ) {
     Scaffold(
+        containerColor = Color(0xFFFFFFFF),
         topBar = {
             TopAppBar(
-                windowInsets = WindowInsets(0),
+                windowInsets = TopAppBarDefaults.windowInsets,
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background,
-                    titleContentColor = MaterialTheme.colorScheme.onBackground,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onBackground,
-                    actionIconContentColor = MaterialTheme.colorScheme.onBackground
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
                 ),
                 navigationIcon = {
                     IconButton(
@@ -89,91 +99,93 @@ fun LoansDepositsScreen(
             )
         }
     ) { innerPadding ->
-        Column(
+        val deposits = listOf(
+            Deposit(1L, "Накопительный вклад", "10 000,00 ₽", 8),
+            Deposit(2L, "До востребования", "30 000,00 ₽", 4),
+        )
+        val credits = listOf(
+            Credit(3L, "Автокредит", "15 июня спишем 23 700 ₽", CreditType.Auto),
+            Credit(4L, "Ипотека", "7 июня спишем 128 700 ₽", CreditType.Mortgage),
+        )
+
+        LazyColumn(
             modifier = Modifier
                 .padding(innerPadding)
-                .padding(horizontal = PaddingBase, vertical = PaddingBase)
-                .fillMaxWidth()
+                .padding(horizontal = PaddingBase),
+            contentPadding = PaddingValues(vertical = PaddingBase),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            // Deposit block
-            DepositItem(
-                item = Deposit(
-                    id = 1L,
-                    title = "Накопительный вклад",
-                    balanceText = "10 000,00 ₽",
-                    percentType = 8
-                ),
-                iconRes = R.drawable.ic_deposit,
-                onClick = { /* open deposit by id */ }
-            )
-            DepositItem(
-                item = Deposit(
-                    id = 1L,
-                    title = "До восстребования",
-                    balanceText = "30 000,00 ₽",
-                    percentType = 4
-                ),
-                iconRes = R.drawable.ic_deposit,
-                onClick = { /* open deposit by id */ }
-            )
 
-            Spacer(Modifier.height(8.dp))
+            item {
+                SectionHeader(text = stringResource(R.string.deposits))
+            }
 
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary
-                ),
-                shape = RoundedCornerShape(100.dp),
-                onClick = onApplyCreditClick
-            ) {
-                Text(
+            items(deposits, key = { it.id }) { item ->
+                DepositItem(
+                    item = item,
+                    iconRes = R.drawable.ic_deposit,
+                    onClick = { /* open deposit by id */ }
+                )
+            }
+
+            item {
+                PrimaryWideButton(
                     text = stringResource(R.string.open_deposit),
-                    style = AppTypography.titleMedium.copy(
-                        color = MaterialTheme.colorScheme.onPrimary
-                    )
+                    onClick = onApplyCreditClick
                 )
             }
 
-            Spacer(Modifier.height(16.dp))
+            item {
+                Spacer(Modifier.height(4.dp))
+                SectionHeader(text = stringResource(R.string.loans))
+            }
 
-            CreditItem(
-                item = Credit(
-                    id = 2L,
-                    name = "Автокредит",
-                    amountText = "15 июня спишем 23 700 ₽"
-                )
-            )
-            CreditItem(
-                item = Credit(
-                    id = 2L,
-                    name = "Ипотека",
-                    amountText = "7 июня спишем 128 700 ₽"
-                )
-            )
+            items(credits, key = { it.id }) { item ->
+                CreditItem(item = item)
+            }
 
-            Spacer(Modifier.height(8.dp))
-
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary
-                ),
-                shape = RoundedCornerShape(100.dp),
-                onClick = onApplyCreditClick
-            ) {
-                Text(
+            item {
+                PrimaryWideButton(
                     text = stringResource(R.string.open_loan),
-                    style = AppTypography.titleMedium.copy(
-                        color = MaterialTheme.colorScheme.onPrimary
-                    )
+                    onClick = onApplyCreditClick
                 )
             }
+
+            item { Spacer(Modifier.height(8.dp)) }
         }
+    }
+}
+
+@Composable
+private fun SectionHeader(text: String) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold),
+        color = MaterialTheme.colorScheme.primary,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
+        modifier = Modifier.padding(top = 4.dp, bottom = 4.dp)
+    )
+}
+
+@Composable
+private fun PrimaryWideButton(text: String, onClick: () -> Unit) {
+    Button(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.primary
+        ),
+        shape = RoundedCornerShape(100.dp),
+        onClick = onClick
+    ) {
+        Text(
+            text = text,
+            style = AppTypography.titleMedium.copy(
+                color = MaterialTheme.colorScheme.onPrimary
+            )
+        )
     }
 }
 
@@ -183,62 +195,61 @@ fun DepositItem(
     iconRes: Int,
     onClick: (depositId: Long) -> Unit
 ) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
+    val shape = RoundedCornerShape(12.dp)
+    val backgroundColor = if (item.id == 1L) Color(0xFFFEF7FF) else Color(0xFFFFFFFF)
+    Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .height(72.dp)
-            .padding(vertical = 8.dp)
-            .clickable { onClick(item.id) }
-            .background(MaterialTheme.colorScheme.surface)
+            .clip(shape)
+            .clickable { onClick(item.id) },
+        shape = shape,
+        color = backgroundColor
     ) {
-        Card(
-            modifier = Modifier.padding(start = 22.dp),
-            shape = RoundedCornerShape(8.dp)
-        ) {
-            Image(
-                modifier = Modifier
-                    .size(40.dp)
-                    .background(MaterialTheme.colorScheme.background),
-                painter = painterResource(id = iconRes),
-                contentDescription = null,
-                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
-            )
-        }
-        Column(
+        androidx.compose.foundation.layout.Row(
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .padding(start = 31.dp, top = 16.dp, end = 31.dp)
-                .weight(1f)
+                .fillMaxWidth()
+                .height(72.dp)
         ) {
+            Card(
+                modifier = Modifier.padding(start = 22.dp),
+                shape = RoundedCornerShape(8.dp)
+            ) {
+                Image(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .background(MaterialTheme.colorScheme.background),
+                    painter = painterResource(id = iconRes),
+                    contentDescription = null,
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
+                )
+            }
+            androidx.compose.foundation.layout.Column(
+                modifier = Modifier
+                    .padding(start = 31.dp, top = 16.dp, bottom = 16.dp)
+                    .weight(1f)
+            ) {
+                Text(
+                    text = item.title,
+                    maxLines = 1,
+                    style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.SemiBold),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Text(
+                    text = item.balanceText,
+                    maxLines = 1,
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
             Text(
-                text = item.title,
+                modifier = Modifier.padding(end = 81.dp),
+                text = "${item.percentType}%",
                 maxLines = 1,
-                style = TextStyle(
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.SemiBold
-                ),
-            )
-            Text(
-                text = item.balanceText,
-                maxLines = 1,
-                style = TextStyle(
-                    color = MaterialTheme.colorScheme.primary,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.SemiBold
-                ),
+                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
-        Text(
-            modifier = Modifier.padding(end = 24.dp),
-            text = "${item.percentType} %",
-            maxLines = 1,
-            style = TextStyle(
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.SemiBold
-            ),
-        )
     }
 }
 
@@ -248,51 +259,57 @@ fun CreditItem(
     iconAutoRes: Int = R.drawable.ic_car,
     iconMortgageRes: Int = R.drawable.ic_mortage
 ) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
+    val shape = RoundedCornerShape(12.dp)
+
+    Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .height(72.dp)
-            .padding(vertical = 8.dp)
+            .clip(shape),
+        shape = shape,
+        color = MaterialTheme.colorScheme.onPrimary
     ) {
-        Card(
-            modifier = Modifier.padding(start = 22.dp),
-            shape = RoundedCornerShape(8.dp)
-        ) {
-            Image(
-                modifier = Modifier
-                    .size(40.dp)
-                    .background(MaterialTheme.colorScheme.background),
-                painter = painterResource(
-                    id = if (item.name == "Автокредит") iconAutoRes else iconMortgageRes
-                ),
-                contentDescription = null,
-                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
-            )
-        }
-        Column(
+        androidx.compose.foundation.layout.Row(
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .padding(start = 31.dp, top = 16.dp, end = 31.dp)
-                .weight(1f)
+                .fillMaxWidth()
+                .height(72.dp)
         ) {
-            Text(
-                text = item.name,
-                maxLines = 1,
-                style = TextStyle(
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.SemiBold
-                ),
-            )
-            Text(
-                text = item.amountText,
-                maxLines = 1,
-                style = TextStyle(
-                    color = MaterialTheme.colorScheme.primary,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.SemiBold
-                ),
-            )
+            Card(
+                modifier = Modifier.padding(start = 22.dp),
+                shape = RoundedCornerShape(8.dp)
+            ) {
+                Image(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .background(MaterialTheme.colorScheme.background),
+                    painter = painterResource(
+                        id = when (item.type) {
+                            CreditType.Auto -> iconAutoRes
+                            CreditType.Mortgage -> iconMortgageRes
+                        }
+                    ),
+                    contentDescription = null,
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
+                )
+            }
+            androidx.compose.foundation.layout.Column(
+                modifier = Modifier
+                    .padding(start = 24.dp, top = 16.dp, end = 16.dp)
+                    .weight(1f)
+            ) {
+                Text(
+                    text = item.name,
+                    maxLines = 1,
+                    style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.SemiBold),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Text(
+                    text = item.amountText,
+                    maxLines = 1,
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
         }
     }
 }
