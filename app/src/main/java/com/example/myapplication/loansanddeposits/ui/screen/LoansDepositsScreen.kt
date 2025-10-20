@@ -75,7 +75,7 @@ data class Credit(
 
 @Composable
 fun LoansDepositsScreen(
-    _navController: NavHostController,
+    navController: NavHostController,
     viewModel: LoansDepositsViewModel = koinViewModel(),
     onApplyCreditClick: () -> Unit,
 ) {
@@ -332,7 +332,7 @@ fun CreditItem(
 fun LoansDepositsScreenPreview() {
     MaterialTheme {
         LoansDepositsScreen(
-            _navController = rememberNavController(),
+            navController = rememberNavController(),
             viewModel = LoansDepositsViewModel(),
             onApplyCreditClick = {}
         )
