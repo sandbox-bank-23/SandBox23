@@ -41,6 +41,8 @@ import com.example.myapplication.core.ui.theme.PaddingQuarter
 import com.example.myapplication.core.ui.theme.ZeroPadding
 import java.text.DecimalFormat
 
+const val CENTS_DIVIDE = 100
+
 @Composable
 fun CardItem(
     cardHolderName: String,
@@ -159,7 +161,7 @@ private fun CardBalance(balance: Long?) {
     ) {
         if (balance != null) {
             balanceFormat = DecimalFormat("#,##0.00 \u20BD")
-                .format(BigDecimal(balance).divide(BigDecimal(100)))
+                .format(balance / CENTS_DIVIDE)
         }
         Text(
             modifier = Modifier.height(28.dp),

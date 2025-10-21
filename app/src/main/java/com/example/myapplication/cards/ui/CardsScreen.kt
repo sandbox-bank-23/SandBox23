@@ -25,11 +25,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.myapplication.R
 import com.example.myapplication.cards.domain.models.CardsState
+import com.example.myapplication.cards.navigation.CardsRoutes
 import com.example.myapplication.core.ui.components.BasicDialog
 import com.example.myapplication.core.ui.components.CardItem
 import com.example.myapplication.core.ui.theme.AppTypography
@@ -41,14 +42,17 @@ import com.example.myapplication.core.ui.theme.surfaceContainerLight
 import org.koin.androidx.compose.koinViewModel
 
 const val CARD_BALANCE_DEF = 100_000_000L
+const val CARD_ID_TEMP = 4_000_123_432_157_893L
 const val FRACTION_05 = 0.5f
 
 @Composable
 fun CardsScreen(
+    navController: NavHostController,
     viewModel: CardsViewModel = koinViewModel<CardsViewModel>()
 ) {
     val cardsState = viewModel.cardsState.collectAsState().value
 
+    val cardId = CARD_ID_TEMP
     val cardHolderName = stringResource(R.string.card_holder_default)
     var cardBalance: Long?
     var cardType: String? = null
@@ -96,6 +100,8 @@ fun CardsScreen(
             ) {
                 if (cardsState is CardsState.Empty) {
                     openCardDialog.value = true
+                } else {
+                    navController.navigate("${CardsRoutes.CARD_DETAILS}/$cardId")
                 }
             }
         }
@@ -161,10 +167,4 @@ private fun CreateCardButton(text: String, isCredit: Boolean, onClick: () -> Uni
             )
         },
     )
-}
-
-@Preview(showSystemUi = true)
-@Composable
-fun CardsScreenPreview() {
-    CardsScreen()
 }
