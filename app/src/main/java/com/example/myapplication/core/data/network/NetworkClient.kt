@@ -13,10 +13,16 @@ class NetworkClient(private val client: HttpClient) {
 
     suspend operator fun invoke(data: Response): Response =
         runCatching {
-            client.post("https://postman-echo.com/post") {
+            val response = client.post("https://postman-echo.com/post") {
                 contentType(ContentType.Application.Json)
                 setBody(data)
-            }.body<PostmanPostResponse>().json
+            }
+            val body = response.body<PostmanPostResponse>()
+            Response(
+                code = response.status.value,
+                description = response.status.description,
+                response = body.json.toString()
+            )
         }.getOrElse { e ->
             println("Error: ${e.localizedMessage}")
             Response(

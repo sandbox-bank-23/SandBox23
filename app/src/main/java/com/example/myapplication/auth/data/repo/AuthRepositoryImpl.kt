@@ -1,6 +1,5 @@
 package com.example.myapplication.auth.data.repo
 
-import com.example.myapplication.auth.data.mock.AuthMock
 import com.example.myapplication.auth.domain.model.AuthData
 import com.example.myapplication.auth.domain.repo.AuthRepository
 import com.example.myapplication.auth.domain.state.Result
@@ -13,49 +12,45 @@ import com.example.myapplication.core.data.network.ResponseCodes.REGISTER_SUCCES
 import com.example.myapplication.core.data.network.ResponseCodes.UNKNOWN_ERROR
 import com.example.myapplication.core.data.network.ResponseCodes.USER_EXISTS
 
-class AuthRepositoryImpl(val client: NetworkClient, val authMock: AuthMock) : AuthRepository {
+class AuthRepositoryImpl(
+    private val client: NetworkClient
+) : AuthRepository {
 
-    override suspend fun login(
-        email: String,
-        password: String
-    ): Result<AuthData> {
-        val data = client(authMock.getLogin())
+    override suspend fun login(email: String, password: String): Result<AuthData> {
+        val request = Response(
+            code = 0,
+            description = "",
+            response = """
+                "email": "$email"
+                "password": "$password"
+            """.trimIndent()
+        )
+
+        val data = client(request)
 
         return when (data.code) {
-            LOGIN_SUCCESS -> {
-                val parsed = parseAuthResponse(data)
-                Result.Success(parsed)
-            }
-
-            INVALID_REQUEST, NO_RESPONSE -> {
-                Result.Error(data.description)
-            }
-
-            else -> {
-                Result.Error(UNKNOWN_ERROR)
-            }
+            LOGIN_SUCCESS -> Result.Success(parseAuthResponse(data))
+            INVALID_REQUEST, NO_RESPONSE -> Result.Error(data.description)
+            else -> Result.Error(UNKNOWN_ERROR)
         }
     }
 
-    override suspend fun register(
-        email: String,
-        password: String
-    ): Result<AuthData> {
-        val data = client(authMock.getRegister())
+    override suspend fun register(email: String, password: String): Result<AuthData> {
+        val request = Response(
+            code = 0,
+            description = "",
+            response = """
+                "email": "$email"
+                "password": "$password"
+            """.trimIndent()
+        )
+
+        val data = client(request)
 
         return when (data.code) {
-            REGISTER_SUCCESS, USER_EXISTS -> {
-                val parsed = parseAuthResponse(data)
-                Result.Success(parsed)
-            }
-
-            INVALID_REQUEST, NO_RESPONSE -> {
-                Result.Error(data.description)
-            }
-
-            else -> {
-                Result.Error(UNKNOWN_ERROR)
-            }
+            REGISTER_SUCCESS, USER_EXISTS -> Result.Success(parseAuthResponse(data))
+            INVALID_REQUEST, NO_RESPONSE -> Result.Error(data.description)
+            else -> Result.Error(UNKNOWN_ERROR)
         }
     }
 
@@ -82,10 +77,7 @@ class AuthRepositoryImpl(val client: NetworkClient, val authMock: AuthMock) : Au
                     val key = parts[0].trim('"', ' ', '\n')
                     val value = parts[1].trim('"', ' ', '\n')
                     key to value
-                } else {
-                    null
-                }
+                } else null
             }.toMap()
     }
-
 }
