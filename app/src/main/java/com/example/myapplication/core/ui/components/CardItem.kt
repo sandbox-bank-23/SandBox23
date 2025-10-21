@@ -1,6 +1,5 @@
 package com.example.myapplication.core.ui.components
 
-import android.icu.math.BigDecimal
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
