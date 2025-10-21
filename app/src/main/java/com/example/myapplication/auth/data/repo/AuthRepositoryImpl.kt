@@ -6,6 +6,12 @@ import com.example.myapplication.auth.domain.repo.AuthRepository
 import com.example.myapplication.auth.domain.state.Result
 import com.example.myapplication.core.data.network.NetworkClient
 import com.example.myapplication.core.data.network.Response
+import com.example.myapplication.core.data.network.ResponseCodes.INVALID_REQUEST
+import com.example.myapplication.core.data.network.ResponseCodes.LOGIN_SUCCESS
+import com.example.myapplication.core.data.network.ResponseCodes.NO_RESPONSE
+import com.example.myapplication.core.data.network.ResponseCodes.REGISTER_SUCCESS
+import com.example.myapplication.core.data.network.ResponseCodes.UNKNOWN_ERROR
+import com.example.myapplication.core.data.network.ResponseCodes.USER_EXISTS
 
 class AuthRepositoryImpl(val client: NetworkClient, val authMock: AuthMock) : AuthRepository {
 
@@ -80,15 +86,6 @@ class AuthRepositoryImpl(val client: NetworkClient, val authMock: AuthMock) : Au
                     null
                 }
             }.toMap()
-    }
-
-    companion object {
-        private const val LOGIN_SUCCESS = 200
-        private const val REGISTER_SUCCESS = 201
-        private const val INVALID_REQUEST = 400
-        private const val USER_EXISTS = 409
-        private const val NO_RESPONSE = 420
-        private const val UNKNOWN_ERROR = "Unknown error"
     }
 
 }
