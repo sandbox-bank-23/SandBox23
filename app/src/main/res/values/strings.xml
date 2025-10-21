@@ -43,6 +43,11 @@
     <string name="spaces_in_password_error">Пароль не должен содержать пробелы!</string>
     <string name="short_password_error">Пароль не может быть короче 6ти символов!</string>
     <string name="unsupported_key">Unsupported key: %1$s</string>
+    <string name="loans_and_deposits">Вклады и кредиты</string>
+    <string name="deposits">Вклады</string>
+    <string name="loans">Кредиты</string>
+    <string name="open_deposit">Открыть вклад</string>
+    <string name="open_loan">Оформить кредит</string>
     <string name="card_holder">Держатель карты</string>
     <string name="card_number">Номер карты</string>
     <string name="card_date">Карта действует до</string>
