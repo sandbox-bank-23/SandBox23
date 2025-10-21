@@ -4,13 +4,16 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
+import com.example.myapplication.core.data.mock.SkyMock
 import androidx.room.Room
 import com.example.myapplication.core.data.db.AppDatabase
 import com.example.myapplication.core.data.mappers.CardDbConverter
 import com.example.myapplication.core.data.repo.AppRepositoryImpl
+import com.example.myapplication.core.data.repo.SkyRepositoryImpl
 import com.example.myapplication.core.data.repo.CardRepositoryImpl
 import com.example.myapplication.core.data.storage.AppStorage
 import com.example.myapplication.core.domain.api.AppRepository
+import com.example.myapplication.core.domain.api.SkyRepository
 import com.example.myapplication.core.domain.api.CardRepository
 import com.google.gson.Gson
 import org.koin.android.ext.koin.androidContext
@@ -47,6 +50,12 @@ val coreDataModule = module {
     }
 
     factory<CardDbConverter> { CardDbConverter() }
+
+    single<SkyRepository> {
+        SkyRepositoryImpl(get(), get())
+    }
+
+    single<SkyMock> { SkyMock() }
 
     factory<Gson> { Gson() }
 }
