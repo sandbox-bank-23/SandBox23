@@ -4,14 +4,20 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
+import androidx.room.Room
+import com.example.myapplication.core.data.db.AppDatabase
+import com.example.myapplication.core.data.mappers.CardDbConverter
 import com.example.myapplication.core.data.repo.AppRepositoryImpl
+import com.example.myapplication.core.data.repo.CardRepositoryImpl
 import com.example.myapplication.core.data.storage.AppStorage
 import com.example.myapplication.core.domain.api.AppRepository
+import com.example.myapplication.core.domain.api.CardRepository
 import com.google.gson.Gson
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 private const val APP_STORAGE = "app_storage"
+private const val DB_NAME = "database.db"
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
     name = APP_STORAGE
@@ -29,6 +35,18 @@ val coreDataModule = module {
             context = androidContext()
         )
     }
+
+    single<AppDatabase> {
+        Room.databaseBuilder(androidContext(), AppDatabase::class.java, DB_NAME)
+            .fallbackToDestructiveMigration(true)
+            .build()
+    }
+
+    single<CardRepository> {
+        CardRepositoryImpl(get(), get())
+    }
+
+    factory<CardDbConverter> { CardDbConverter() }
 
     factory<Gson> { Gson() }
 }
