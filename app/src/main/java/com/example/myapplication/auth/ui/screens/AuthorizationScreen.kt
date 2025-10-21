@@ -43,7 +43,7 @@ fun AuthorizationScreen(
     ) {
         HeadingText(stringResource(R.string.authorization), false)
         Spacer(modifier = Modifier.Companion.height(Height80))
-        when(screenState){
+        when (screenState) {
             AuthScreenState.Default -> {
                 InputTextField(
                     state = TextInputState(
@@ -55,16 +55,22 @@ fun AuthorizationScreen(
                 InputTextField(
                     state = TextInputState(
                         label = stringResource(R.string.password),
-                        supportingText = stringResource(R.string.pass_constraint),
                         isPassword = true
                     ),
                     onTextChange = { authVm.onPasswordChange(it) }
                 )
             }
+
             is AuthScreenState.ErrorState -> {
                 InputTextField(
                     state = TextInputState(
                         label = stringResource(R.string.email),
+                        valueText = authVm.email.collectAsState().value,
+                        supportingText = if (!screenState.emailLengthError || !screenState.emailConsistError) {
+                            stringResource(R.string.login_is_not_email_error)
+                        } else {
+                            ""
+                        },
                         isError = !screenState.emailLengthError || !screenState.emailConsistError
                     ),
                     onTextChange = { authVm.onLoginChange(it) }
@@ -73,7 +79,12 @@ fun AuthorizationScreen(
                 InputTextField(
                     state = TextInputState(
                         label = stringResource(R.string.password),
-                        supportingText = stringResource(R.string.pass_constraint),
+                        valueText = authVm.password.collectAsState().value,
+                        supportingText = if (!screenState.passLengthError || !screenState.passEmptyError) {
+                            stringResource(R.string.pass_constraint)
+                        } else {
+                            ""
+                        },
                         isError = !screenState.passLengthError || !screenState.passEmptyError,
                         isPassword = true
                     ),
