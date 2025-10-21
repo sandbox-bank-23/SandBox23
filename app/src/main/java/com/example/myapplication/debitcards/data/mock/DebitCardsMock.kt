@@ -35,7 +35,7 @@ class DebitCardsMock {
             owner = listOf("Michael Johnson", "Emily Davis", "Chris Miller").random(),
             type = CardType.DEBIT,
             percent = Random.nextDouble(0.5, 3.0),
-            balance = Random.nextLong(0, 1_000_000)
+            balance = Random.nextLong(0, 1_000_000_00)
         )
 
         val jsonCard = Json.encodeToString(card)
