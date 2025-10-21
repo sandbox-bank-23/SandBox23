@@ -147,6 +147,7 @@ private fun CardData(cardType: String?, cardNumber: String?) {
     }
 }
 
+@Suppress("MagicNumber")
 @Composable
 private fun CardBalance(balance: Long?) {
     var balanceFormat = ""
