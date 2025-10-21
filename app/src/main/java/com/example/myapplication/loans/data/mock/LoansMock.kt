@@ -6,7 +6,7 @@ import com.example.myapplication.core.data.network.Response
 import com.example.myapplication.core.domain.models.Product
 import com.example.myapplication.core.domain.models.ProductType
 import com.example.myapplication.loans.data.mock.model.Credit
-import com.example.myapplication.loans.data.mock.model.Pay
+import com.example.myapplication.loans.data.mock.model.OuterPay
 import com.example.myapplication.loans.data.mock.utils.calculatePay
 import kotlinx.serialization.json.Json
 import java.math.BigDecimal
@@ -41,7 +41,7 @@ class LoansMock {
     }
 
     fun calculateLoan(sum: BigDecimal, period: Long, percent: Int): Response {
-        val pay = Pay(
+        val pay = OuterPay(
             sum = calculatePay(
                 sum = sum,
                 period = period,
@@ -84,7 +84,7 @@ class LoansMock {
     }
 
     fun createLoan(loanJson: String): Response {
-        //percentType = 2 - ежемесячно
+        // percentType = 2 - ежемесячно
         val loanFromClient = Json.decodeFromString<Credit>(loanJson)
 
         val credit = Credit(

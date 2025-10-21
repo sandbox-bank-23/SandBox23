@@ -3,6 +3,8 @@ package com.example.myapplication.loans.data.mock.utils
 import java.math.BigDecimal
 import java.math.RoundingMode
 
+private const val SCALE = 10
+
 fun calculatePay(sum: BigDecimal, period: Long, percent: Int): BigDecimal {
     val p = percent.toBigDecimal()
         .divide(
@@ -19,8 +21,8 @@ fun calculatePay(sum: BigDecimal, period: Long, percent: Int): BigDecimal {
     val monthPay = sum.multiply(
         p.add(
             p.divide(
-                (one.add(p).pow(period.toInt()) - one),
-                10,
+                one.add(p).pow(period.toInt()) - one,
+                SCALE,
                 RoundingMode.DOWN
             )
         )

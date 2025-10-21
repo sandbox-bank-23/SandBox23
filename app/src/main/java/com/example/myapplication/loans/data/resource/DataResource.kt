@@ -1,8 +1,8 @@
 package com.example.myapplication.loans.data.resource
 
 import com.example.myapplication.loans.data.mock.LoansMock
+import com.example.myapplication.loans.data.mock.model.OuterPay
 import com.example.myapplication.loans.domain.model.Pay
-import com.example.myapplication.loans.data.mock.model.Pay as OuterPay
 import kotlinx.serialization.json.Json
 import java.math.BigDecimal
 

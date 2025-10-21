@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 import java.math.BigDecimal
 
 @Serializable
-data class Pay(
+data class OuterPay(
     @Serializable(with = BigDecimalAsStringSerializer::class)
     val sum: BigDecimal
 )

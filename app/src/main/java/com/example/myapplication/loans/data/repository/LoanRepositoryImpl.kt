@@ -10,7 +10,6 @@ import com.example.myapplication.loans.domain.model.Pay
 import com.example.myapplication.loans.domain.repository.LoanRepository
 import kotlinx.serialization.json.Json
 import java.math.BigDecimal
-import java.time.LocalDate
 
 class LoanRepositoryImpl(
     private val networkClient: NetworkClient,

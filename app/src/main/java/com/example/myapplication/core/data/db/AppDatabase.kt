@@ -10,7 +10,8 @@ import com.example.myapplication.core.data.db.entity.LoanEntity
 import com.example.myapplication.core.data.db.entity.UserEntity
 
 @Database(
-    version = 3, entities = [
+    version = 3,
+    entities = [
         CardEntity::class,
         UserEntity::class,
         LoanEntity::class

@@ -15,7 +15,7 @@ import org.koin.dsl.module
 val loansModule = module {
     single<LoansMock> { LoansMock() }
 
-    //From Andre
+    // From Andre
     single<LoansRepository> {
         LoansRepositoryImpl(
             client = get<NetworkClient>(),
@@ -23,7 +23,7 @@ val loansModule = module {
         )
     }
 
-    //From GH-48
+    // From GH-48
     single<LoanRepository> {
         LoanRepositoryImpl(
             dataResource = get(),
