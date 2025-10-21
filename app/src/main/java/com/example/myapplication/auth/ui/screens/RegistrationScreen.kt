@@ -33,106 +33,157 @@ fun RegistrationScreen(
     registerVm: RegistrationViewModel = koinViewModel(),
     navController: NavController
 ) {
-    // Состояния для экрана из ViewModel
     val screenState = registerVm.screenState.collectAsState().value
 
     Box(modifier = modifier) {
-        Column(
+        SimpleTopBar(
+            title = stringResource(R.string.authorization),
+            onBackClick = { navController.navigateUp() }
+        )
+
+        RegistrationContent(
             modifier = modifier
                 .fillMaxSize()
                 .padding(PaddingBase),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            HeadingText(stringResource(R.string.registration), false)
-            Spacer(modifier = Modifier.Companion.height(Height80))
-            when (screenState) {
-                is RegScreenState.Default -> {
-                    InputTextField(
-                        state = TextInputState(
-                            label = stringResource(R.string.email)
-                        ),
-                        onTextChange = { registerVm.onLoginChange(it) }
-                    )
-                    Spacer(modifier = Modifier.Companion.height(PaddingBase))
-                    InputTextField(
-                        state = TextInputState(
-                            label = stringResource(R.string.password),
-                            isPassword = true
-                        ),
-                        onTextChange = { registerVm.onPasswordChange(it) }
-                    )
-                    Spacer(modifier = Modifier.Companion.height(PaddingBase))
-                    InputTextField(
-                        state = TextInputState(
-                            label = stringResource(R.string.repeat_password),
-                            isPassword = true
-                        ),
-                        onTextChange = { registerVm.onPassword2Change(it) }
-                    )
-                }
-
-                is RegScreenState.ErrorState -> {
-                    InputTextField(
-                        state = TextInputState(
-                            label = stringResource(R.string.email),
-                            valueText = registerVm.loginState.collectAsState().value,
-                            isError = (!screenState.emailLengthError || !screenState.emailConsistError),
-                            supportingText = if (!screenState.emailLengthError || !screenState.emailConsistError) {
-                                stringResource(R.string.login_is_not_email_error)
-                            } else {
-                                ""
-                            }
-                        ),
-                        onTextChange = { registerVm.onLoginChange(it) }
-                    )
-                    Spacer(modifier = Modifier.Companion.height(PaddingBase))
-                    InputTextField(
-                        state = TextInputState(
-                            label = stringResource(R.string.password),
-                            valueText = registerVm.passwordState.collectAsState().value,
-                            isError = !screenState.passLengthError || !screenState.passEmptyError,
-                            supportingText = if (!screenState.passLengthError || !screenState.passEmptyError) {
-                                stringResource(R.string.pass_constraint)
-                            } else {
-                                ""
-                            },
-                            isPassword = true
-                        ),
-                        onTextChange = { registerVm.onPasswordChange(it) }
-                    )
-                    Spacer(modifier = Modifier.Companion.height(PaddingBase))
-                    InputTextField(
-                        state = TextInputState(
-                            label = stringResource(R.string.repeat_password),
-                            valueText = registerVm.password2State.collectAsState().value,
-                            isError = !screenState.passDiffError,
-                            supportingText = if (!screenState.passDiffError) {
-                                stringResource(R.string.passwords_are_different)
-                            } else {
-                                ""
-                            },
-                            isPassword = true
-                        ),
-                        onTextChange = { registerVm.onPassword2Change(it) }
-                    )
-                }
-
-                is RegScreenState.Successful -> {
-                    navController.navigate(route = AuthScreen.PinPadCreate.route)
-                }
-            }
-            Spacer(modifier = Modifier.Companion.height(Height60))
-            // Блок кнопок
-            PrimaryButton(stringResource(R.string.register)) {
-                registerVm.register()
-            }
-        }
-        SimpleTopBar(
-            title = stringResource(R.string.authorization),
-            onBackClick = {
-                navController.navigateUp()
-            }
+            screenState = screenState,
+            login = registerVm.loginState.collectAsState().value,
+            pass = registerVm.passwordState.collectAsState().value,
+            pass2 = registerVm.password2State.collectAsState().value,
+            onLoginChange = registerVm::onLoginChange,
+            onPassChange = registerVm::onPasswordChange,
+            onPass2Change = registerVm::onPassword2Change,
+            onRegisterClick = registerVm::register,
+            onSuccess = { navController.navigate(AuthScreen.PinPadCreate.route) }
         )
     }
+}
+
+@Composable
+private fun RegistrationContent(
+    modifier: Modifier,
+    screenState: RegScreenState,
+    login: String,
+    pass: String,
+    pass2: String,
+    onLoginChange: (String) -> Unit,
+    onPassChange: (String) -> Unit,
+    onPass2Change: (String) -> Unit,
+    onRegisterClick: () -> Unit,
+    onSuccess: () -> Unit
+) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        HeadingText(stringResource(R.string.registration), false)
+        Spacer(modifier = Modifier.height(Height80))
+
+        when (screenState) {
+            is RegScreenState.Default -> {
+                RegistrationDefaultFields(
+                    onLoginChange,
+                    onPassChange,
+                    onPass2Change
+                )
+            }
+
+            is RegScreenState.ErrorState -> {
+                RegistrationErrorFields(
+                    state = screenState,
+                    login = login,
+                    pass = pass,
+                    pass2 = pass2,
+                    onLoginChange = onLoginChange,
+                    onPassChange = onPassChange,
+                    onPass2Change = onPass2Change
+                )
+            }
+
+            is RegScreenState.Successful -> onSuccess()
+        }
+
+        Spacer(modifier = Modifier.height(Height60))
+        PrimaryButton(
+            stringResource(R.string.register),
+            onClick = onRegisterClick
+        )
+    }
+}
+
+@Composable
+private fun RegistrationDefaultFields(
+    onLoginChange: (String) -> Unit,
+    onPassChange: (String) -> Unit,
+    onPass2Change: (String) -> Unit
+) {
+    InputTextField(
+        state = TextInputState(label = stringResource(R.string.email)),
+        onTextChange = onLoginChange
+    )
+    Spacer(modifier = Modifier.height(PaddingBase))
+    InputTextField(
+        state = TextInputState(label = stringResource(R.string.password), isPassword = true),
+        onTextChange = onPassChange
+    )
+    Spacer(modifier = Modifier.height(PaddingBase))
+    InputTextField(
+        state = TextInputState(label = stringResource(R.string.repeat_password), isPassword = true),
+        onTextChange = onPass2Change
+    )
+}
+
+@Composable
+private fun RegistrationErrorFields(
+    state: RegScreenState.ErrorState,
+    login: String,
+    pass: String,
+    pass2: String,
+    onLoginChange: (String) -> Unit,
+    onPassChange: (String) -> Unit,
+    onPass2Change: (String) -> Unit
+) {
+    InputTextField(
+        state = TextInputState(
+            label = stringResource(R.string.email),
+            valueText = login,
+            isError = state.emailLengthError || state.emailConsistError,
+            supportingText = if (state.emailLengthError || state.emailConsistError) {
+                stringResource(R.string.login_is_not_email_error)
+            } else {
+                ""
+            }
+        ),
+        onTextChange = onLoginChange
+    )
+    Spacer(modifier = Modifier.height(PaddingBase))
+    InputTextField(
+        state = TextInputState(
+            label = stringResource(R.string.password),
+            valueText = pass,
+            isError = state.passLengthError || state.passEmptyError,
+            supportingText = if (state.passLengthError || state.passEmptyError) {
+                stringResource(R.string.pass_constraint)
+            } else {
+                ""
+            },
+            isPassword = true
+        ),
+        onTextChange = onPassChange
+    )
+    Spacer(modifier = Modifier.height(PaddingBase))
+    InputTextField(
+        state = TextInputState(
+            label = stringResource(R.string.repeat_password),
+            valueText = pass2,
+            isError = state.passDiffError,
+            supportingText = if (state.passDiffError) {
+                stringResource(R.string.passwords_are_different)
+            } else {
+                ""
+            },
+            isPassword = true
+        ),
+        onTextChange = onPass2Change
+    )
 }

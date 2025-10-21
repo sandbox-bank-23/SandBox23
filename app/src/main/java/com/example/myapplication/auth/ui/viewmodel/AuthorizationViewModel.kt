@@ -26,10 +26,10 @@ class AuthorizationViewModel(
     val screenState: StateFlow<AuthScreenState> = _screenState.asStateFlow()
 
     private var _email = MutableStateFlow("")
-    val email: StateFlow<String> =_email
+    val email: StateFlow<String> = _email
 
     private var _password = MutableStateFlow("")
-    val password: StateFlow<String> =_password
+    val password: StateFlow<String> = _password
 
     fun onLoginChange(login: String) {
         _email.value = login
@@ -42,7 +42,11 @@ class AuthorizationViewModel(
     fun authorize() {
         val emailCheck = ValidationUtils.isEmailValid(email.value)
         val passwordCheck = ValidationUtils.isPasswordValid(password.value)
-        if(!emailCheck.first || !emailCheck.second || !passwordCheck.first || !passwordCheck.second){
+
+        val isEmailError = emailCheck.first || emailCheck.second
+        val isPasswordError = passwordCheck.first || passwordCheck.second
+
+        if (isEmailError || isPasswordError) {
             _screenState.value = AuthScreenState.ErrorState(
                 emailLengthError = emailCheck.first,
                 emailConsistError = emailCheck.second,
@@ -51,12 +55,14 @@ class AuthorizationViewModel(
             )
         } else {
             viewModelScope.launch {
-                processResult(authInteractor.login(
-                    authRequest = AuthRequest(
-                        email = email.value,
-                        password = password.value
+                processResult(
+                    authInteractor.login(
+                        authRequest = AuthRequest(
+                            email = email.value,
+                            password = password.value
+                        )
                     )
-                ))
+                )
             }
         }
     }
@@ -74,10 +80,10 @@ class AuthorizationViewModel(
 
             is Result.Error -> {
                 _screenState.value = AuthScreenState.ErrorState(
-                    emailLengthError = true,
-                    emailConsistError = true,
-                    passEmptyError = true,
-                    passLengthError = true
+                    emailLengthError = false,
+                    emailConsistError = false,
+                    passEmptyError = false,
+                    passLengthError = false
                 )
             }
         }

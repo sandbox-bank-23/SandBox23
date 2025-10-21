@@ -33,6 +33,38 @@ fun AuthorizationScreen(
     navController: NavController
 ) {
     val screenState = authVm.screenState.collectAsState().value
+    val email = authVm.email.collectAsState().value
+    val password = authVm.password.collectAsState().value
+
+    AuthorizationContent(
+        modifier = modifier,
+        screenState = screenState,
+        email = email,
+        password = password,
+        onEmailChange = authVm::onLoginChange,
+        onPasswordChange = authVm::onPasswordChange,
+        onLoginClick = { authVm.authorize() },
+        onRegistrationClick = { navController.navigate(AuthScreen.Registration.route) },
+        onSuccess = { navController.navigate(AuthScreen.PinPadCreate.route) }
+    )
+}
+
+@Composable
+private fun AuthorizationContent(
+    modifier: Modifier,
+    screenState: AuthScreenState,
+    email: String,
+    password: String,
+    onEmailChange: (String) -> Unit,
+    onPasswordChange: (String) -> Unit,
+    onLoginClick: () -> Unit,
+    onRegistrationClick: () -> Unit,
+    onSuccess: () -> Unit
+) {
+    if (screenState is AuthScreenState.Successful) {
+        onSuccess()
+        return
+    }
 
     Column(
         modifier = modifier
@@ -42,66 +74,81 @@ fun AuthorizationScreen(
         verticalArrangement = Arrangement.Center
     ) {
         HeadingText(stringResource(R.string.authorization), false)
-        Spacer(modifier = Modifier.Companion.height(Height80))
+        Spacer(modifier = Modifier.height(Height80))
+
         when (screenState) {
-            AuthScreenState.Default -> {
-                InputTextField(
-                    state = TextInputState(
-                        label = stringResource(R.string.email)
-                    ),
-                    onTextChange = { authVm.onLoginChange(it) }
-                )
-                Spacer(modifier = Modifier.Companion.height(PaddingBase))
-                InputTextField(
-                    state = TextInputState(
-                        label = stringResource(R.string.password),
-                        isPassword = true
-                    ),
-                    onTextChange = { authVm.onPasswordChange(it) }
-                )
-            }
+            AuthScreenState.Default ->
+                AuthTextFields(email, password, onEmailChange, onPasswordChange)
 
-            is AuthScreenState.ErrorState -> {
-                InputTextField(
-                    state = TextInputState(
-                        label = stringResource(R.string.email),
-                        valueText = authVm.email.collectAsState().value,
-                        supportingText = if (!screenState.emailLengthError || !screenState.emailConsistError) {
-                            stringResource(R.string.login_is_not_email_error)
-                        } else {
-                            ""
-                        },
-                        isError = !screenState.emailLengthError || !screenState.emailConsistError
-                    ),
-                    onTextChange = { authVm.onLoginChange(it) }
-                )
-                Spacer(modifier = Modifier.Companion.height(PaddingBase))
-                InputTextField(
-                    state = TextInputState(
-                        label = stringResource(R.string.password),
-                        valueText = authVm.password.collectAsState().value,
-                        supportingText = if (!screenState.passLengthError || !screenState.passEmptyError) {
-                            stringResource(R.string.pass_constraint)
-                        } else {
-                            ""
-                        },
-                        isError = !screenState.passLengthError || !screenState.passEmptyError,
-                        isPassword = true
-                    ),
-                    onTextChange = { authVm.onPasswordChange(it) }
-                )
-            }
+            is AuthScreenState.ErrorState ->
+                AuthErrorFields(screenState, email, password, onEmailChange, onPasswordChange)
 
-            AuthScreenState.Successful -> {
-                navController.navigate(route = AuthScreen.PinPadCreate.route)
-            }
+            else -> Unit
         }
-        Spacer(modifier = Modifier.Companion.height(Height60))
-        // Блок кнопок
-        PrimaryButton(stringResource(R.string.enter)) { authVm.authorize() }
-        Spacer(modifier = Modifier.Companion.height(PaddingBase))
-        SecondaryButton(stringResource(R.string.registration)) {
-            navController.navigate(route = AuthScreen.Registration.route)
-        }
+
+        Spacer(modifier = Modifier.height(Height60))
+        PrimaryButton(stringResource(R.string.enter)) { onLoginClick() }
+        Spacer(modifier = Modifier.height(PaddingBase))
+        SecondaryButton(stringResource(R.string.registration)) { onRegistrationClick() }
     }
+}
+
+@Composable
+private fun AuthTextFields(
+    email: String,
+    password: String,
+    onEmailChange: (String) -> Unit,
+    onPasswordChange: (String) -> Unit
+) {
+    InputTextField(
+        state = TextInputState(label = stringResource(R.string.email), valueText = email),
+        onTextChange = onEmailChange
+    )
+    Spacer(modifier = Modifier.height(PaddingBase))
+    InputTextField(
+        state = TextInputState(
+            label = stringResource(R.string.password),
+            isPassword = true,
+            valueText = password
+        ),
+        onTextChange = onPasswordChange
+    )
+}
+
+@Composable
+private fun AuthErrorFields(
+    errorState: AuthScreenState.ErrorState,
+    email: String,
+    password: String,
+    onEmailChange: (String) -> Unit,
+    onPasswordChange: (String) -> Unit
+) {
+    InputTextField(
+        state = TextInputState(
+            label = stringResource(R.string.email),
+            valueText = email,
+            isError = errorState.emailLengthError || errorState.emailConsistError,
+            supportingText = if (errorState.emailLengthError || errorState.emailConsistError) {
+                stringResource(R.string.login_is_not_email_error)
+            } else {
+                ""
+            }
+        ),
+        onTextChange = onEmailChange
+    )
+    Spacer(modifier = Modifier.height(PaddingBase))
+    InputTextField(
+        state = TextInputState(
+            label = stringResource(R.string.password),
+            valueText = password,
+            isError = errorState.passLengthError || errorState.passEmptyError,
+            isPassword = true,
+            supportingText = if (errorState.passLengthError || errorState.passEmptyError) {
+                stringResource(R.string.pass_constraint)
+            } else {
+                ""
+            }
+        ),
+        onTextChange = onPasswordChange
+    )
 }

@@ -9,32 +9,32 @@ object ValidationUtils {
     fun isEmailValid(email: String): Pair<Boolean, Boolean> {
         return when {
             email.isEmpty() -> Pair(
-                false,
-                true
-            )
-
-            !Patterns.EMAIL_ADDRESS.matcher(email).matches() -> Pair(
                 true,
                 false
             )
 
-            else -> Pair(true, true)
+            !Patterns.EMAIL_ADDRESS.matcher(email).matches() -> Pair(
+                false,
+                true
+            )
+
+            else -> Pair(false, false)
         }
     }
 
     fun isPasswordValid(password: String): Pair<Boolean, Boolean> {
         return when {
             password.contains(' ') -> Pair(
-                false,
-                true
-            )
-
-            password.length < PASSWORD_MIN_LENGTH -> Pair(
                 true,
                 false
             )
 
-            else -> Pair(true, true)
+            password.length < PASSWORD_MIN_LENGTH -> Pair(
+                false,
+                true
+            )
+
+            else -> Pair(false, false)
         }
     }
 }

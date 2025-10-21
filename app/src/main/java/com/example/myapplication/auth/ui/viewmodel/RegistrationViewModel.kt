@@ -40,16 +40,17 @@ class RegistrationViewModel(
     fun register() {
         val emailCheck = ValidationUtils.isEmailValid(loginState.value)
         val passwordCheck = ValidationUtils.isPasswordValid(passwordState.value)
-        if (!emailCheck.first || !emailCheck.second ||
-            !passwordCheck.first || !passwordCheck.second ||
-            passwordState.value != password2State.value
-        ) {
+
+        val isEmailError = emailCheck.first || emailCheck.second
+        val isPasswordError = passwordCheck.first || passwordCheck.second
+
+        if (isEmailError || isPasswordError || passwordState.value != password2State.value) {
             _screenState.value = RegScreenState.ErrorState(
                 emailLengthError = emailCheck.first,
                 emailConsistError = emailCheck.second,
                 passEmptyError = passwordCheck.first,
                 passLengthError = passwordCheck.second,
-                passDiffError = passwordState.value == password2State.value
+                passDiffError = passwordState.value != password2State.value
             )
         } else {
             viewModelScope.launch {
@@ -90,11 +91,11 @@ class RegistrationViewModel(
 
             is Result.Error -> {
                 _screenState.value = RegScreenState.ErrorState(
-                    emailLengthError = true,
-                    emailConsistError = true,
-                    passEmptyError = true,
-                    passLengthError = true,
-                    passDiffError = true
+                    emailLengthError = false,
+                    emailConsistError = false,
+                    passEmptyError = false,
+                    passLengthError = false,
+                    passDiffError = false
                 )
             }
         }
