@@ -4,9 +4,12 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
+import com.example.myapplication.core.data.mock.SkyMock
 import com.example.myapplication.core.data.repo.AppRepositoryImpl
+import com.example.myapplication.core.data.repo.SkyRepositoryImpl
 import com.example.myapplication.core.data.storage.AppStorage
 import com.example.myapplication.core.domain.api.AppRepository
+import com.example.myapplication.core.domain.api.SkyRepository
 import com.google.gson.Gson
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
@@ -29,6 +32,12 @@ val coreDataModule = module {
             context = androidContext()
         )
     }
+
+    single<SkyRepository> {
+        SkyRepositoryImpl(get(), get())
+    }
+
+    single<SkyMock> { SkyMock() }
 
     factory<Gson> { Gson() }
 }
