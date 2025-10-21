@@ -140,7 +140,7 @@ fun CreditCardsScreen(
             ) {
                 CardItem(
                     cardHolderName = stringResource(R.string.card_holder_default),
-                    cardBalance = 100000000F
+                    cardBalance = 100000000
                 ) { }
                 Text(
                     modifier = Modifier.padding(horizontal = 12.dp, vertical = 24.dp),
