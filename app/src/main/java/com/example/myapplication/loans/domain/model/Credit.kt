@@ -2,23 +2,25 @@ package com.example.myapplication.loans.domain.model
 
 import java.math.BigDecimal
 
+private const val CREDIT_NAME = "Потребительский кредит"
+
 //monthPay - месячный платеж
 //balance - сумма кредита
 //orderDate - дата оформления заявки
+//endDate - дата завершения кредита
 //period - срок кредита
-//interestRate - процентная ставка
+//percent - процентная ставка
 
 data class Credit(
+    val id: Long,
     val userId: Long,
-    val monthPay: BigDecimal,
+    val name: String = CREDIT_NAME,
     val balance: BigDecimal,
-    val orderDate: Long,
     val period: Long,
-    val interestRate: Long,
-) {
-    val name = listOf(
-        "Автокредит",
-        "Ипотека",
-        "Кредит наличными"
-    ).random()
-}
+
+    val orderDate: Long? = null,
+    val endDate: Long? = null,
+    val percent: Long? = null,
+    val isClose: Boolean? = null,
+    val monthPay: BigDecimal? = null,
+)

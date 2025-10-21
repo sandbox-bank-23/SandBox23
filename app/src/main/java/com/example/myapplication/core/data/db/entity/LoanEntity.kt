@@ -7,6 +7,13 @@ import java.math.BigDecimal
 @Entity
 data class LoanEntity(
     @PrimaryKey(autoGenerate = true)
-    val id: Long,
-    val sum: BigDecimal
+    val id: Long = 0,
+    val userId: Long,
+    val type: String,
+    val balance: BigDecimal,
+    val period: Long,
+    val start: Long? = null,
+    val end: Long? = null,
+    val percent: Long? = null,
+    val isClose: Boolean? = null,
 )

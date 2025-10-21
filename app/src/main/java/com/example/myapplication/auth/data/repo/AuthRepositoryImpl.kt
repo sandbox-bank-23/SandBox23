@@ -17,12 +17,21 @@ class AuthRepositoryImpl(
     val dao: UserDao
 ) : AuthRepository {
 
+    private suspend fun createUser(email: String) {
+        dao.createUser(
+            UserEntity(
+                firstName = demoFirstName,
+                lastName = demoLastName,
+                email = email
+            )
+        )
+    }
+
     override suspend fun login(
         email: String,
         password: String
     ): Result<AuthData> {
         val data = client(authMock.getLogin())
-
         return when (data.code) {
             LOGIN_SUCCESS -> {
                 val parsed = parseAuthResponse(data)
@@ -48,13 +57,7 @@ class AuthRepositoryImpl(
         return when (data.code) {
             REGISTER_SUCCESS -> {
                 val parsed = parseAuthResponse(data)
-                dao.createUser(
-                    UserEntity(
-                        firstName = demoFirstName,
-                        lastName = demoLastName,
-                        email = email
-                    )
-                )
+                createUser(email = email)
                 Result.Success(parsed)
             }
             USER_EXISTS -> {
