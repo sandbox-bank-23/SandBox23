@@ -4,6 +4,7 @@ interface CreditCardsState {
     data object Offline : CreditCardsState
     data object Online : CreditCardsState
     data object Success : CreditCardsState
+    data object Loading : CreditCardsState
     data object Error : CreditCardsState
     data object Content : CreditCardsState
 }

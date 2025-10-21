@@ -9,12 +9,14 @@ import kotlinx.coroutines.flow.asStateFlow
 class CreditCardsViewModel : ViewModel() {
 
     private val _creditCardsState = MutableStateFlow<CreditCardsState>(
-        value = CreditCardsState.Content
+        value = CreditCardsState.Error
     )
     val creditCardsState: StateFlow<CreditCardsState> = _creditCardsState.asStateFlow()
+    var creditLimitValue = 0L
+
 
     fun openCard() {
-        renderState(CreditCardsState.Offline)
+        renderState(CreditCardsState.Success)
     }
 
     private fun renderState(state: CreditCardsState) {

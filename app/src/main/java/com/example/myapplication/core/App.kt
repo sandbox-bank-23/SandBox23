@@ -11,6 +11,7 @@ import com.example.myapplication.core.di.data.coreDataModule
 import com.example.myapplication.core.di.data.networkModule
 import com.example.myapplication.core.di.domain.coreInteractorModule
 import com.example.myapplication.creditcards.di.data.creditCardsModule
+import com.example.myapplication.creditcards.di.viewmodel.creditCardsViewModelModule
 import com.example.myapplication.debitcards.di.data.debitCardsModule
 import com.example.myapplication.deposits.di.data.depositsModule
 import com.example.myapplication.loans.di.data.loansModule
@@ -39,8 +40,8 @@ class App : Application() {
                 loansModule,
                 loansAndDepositsModule,
                 transferModule,
-                cardsViewModelModule,
-                cardDetailsViewModelModule
+                cardDetailsViewModelModule,
+                creditCardsViewModelModule
             )
         }
     }

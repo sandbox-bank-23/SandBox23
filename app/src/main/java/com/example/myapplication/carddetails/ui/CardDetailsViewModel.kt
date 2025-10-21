@@ -30,6 +30,8 @@ class CardDetailsViewModel(private val cardID: Long) : ViewModel() {
         renderState(CardDetailsState.Offline)
     }
 
+
+
     private fun renderState(state: CardDetailsState) {
         _cardDetailsState.value = state
     }
