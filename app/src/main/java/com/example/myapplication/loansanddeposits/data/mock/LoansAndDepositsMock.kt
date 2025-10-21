@@ -30,7 +30,7 @@ class LoansAndDepositsMock {
                 percentType = Random.nextLong(1, 4),
                 period = listOf(3, 6, 12, 24, 36).random().toLong(),
                 percent = Random.nextLong(8, 22),
-                balance = Random.nextLong(0, 10_000_000)
+                balance = Random.nextLong(0, 100_000_000)
             )
         }
 

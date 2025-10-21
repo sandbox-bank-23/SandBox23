@@ -35,7 +35,7 @@ class CreditCardsMock {
             owner = listOf("Michael Johnson", "Emily Davis", "Chris Miller").random(),
             type = CardType.CREDIT,
             percent = Random.nextDouble(0.5, 3.0), // Процент для дебетовых карт обычно ниже
-            balance = Random.nextLong(0, 1_000_000) // Баланс дебетовой карты положительный
+            balance = Random.nextLong(0, 1_000_000_00) // Баланс дебетовой карты положительный
         )
 
         val jsonCard = Json.encodeToString(card)

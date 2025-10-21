@@ -1,5 +1,6 @@
 package com.example.myapplication.core.ui.components
 
+import android.icu.math.BigDecimal
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -43,7 +44,7 @@ import java.text.DecimalFormat
 @Composable
 fun CardItem(
     cardHolderName: String,
-    cardBalance: Float?,
+    cardBalance: Long?,
     cardType: String? = null,
     cardNumber: String? = null,
     onClick: () -> Unit
@@ -145,9 +146,10 @@ private fun CardData(cardType: String?, cardNumber: String?) {
     }
 }
 
+@Suppress("MagicNumber")
 @Composable
-private fun CardBalance(balance: Float?) {
-    var balanceFormat: String = ""
+private fun CardBalance(balance: Long?) {
+    var balanceFormat = ""
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -156,7 +158,8 @@ private fun CardBalance(balance: Float?) {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         if (balance != null) {
-            balanceFormat = DecimalFormat("#,##0 \u20BD").format(balance)
+            balanceFormat = DecimalFormat("#,##0.00 \u20BD")
+                .format(BigDecimal(balance).divide(BigDecimal(100)))
         }
         Text(
             modifier = Modifier.height(28.dp),
