@@ -113,7 +113,7 @@ fun CardsScreen(
             CreateCardButton(
                 stringResource(R.string.card_create_debit),
                 false
-            ) {}
+            ) { navController.navigate(CardsRoutes.CARD_DEBIT.route) }
             CreateCardButton(
                 stringResource(R.string.card_create_credit),
                 true

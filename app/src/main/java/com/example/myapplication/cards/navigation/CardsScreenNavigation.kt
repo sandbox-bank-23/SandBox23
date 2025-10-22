@@ -10,6 +10,7 @@ import com.example.myapplication.carddetails.ui.CardDetailsScreen
 import com.example.myapplication.carddetails.ui.CardDetailsViewModel
 import com.example.myapplication.cards.ui.CardsScreen
 import com.example.myapplication.creditcards.ui.CreditCardsScreen
+import com.example.myapplication.debitcards.ui.DebitCardsScreen
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -19,6 +20,7 @@ fun NavGraphBuilder.cardsScreenNavigation(navController: NavHostController) {
         route = CardsRoutes.CARDS_NAVIGATION.route
     ) {
         composable(CardsRoutes.CARDS.route) { CardsScreen(navController) }
+        composable(CardsRoutes.CARD_DEBIT.route) { DebitCardsScreen(navController) }
         composable(CardsRoutes.CARD_CREDIT.route) { CreditCardsScreen(navController) }
         composable(
             CardsRoutes.CARD_DETAILS.route,

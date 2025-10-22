@@ -1,6 +1,5 @@
 package com.example.myapplication.creditcards.ui
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,10 +14,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
@@ -35,7 +32,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.myapplication.R
@@ -44,13 +40,12 @@ import com.example.myapplication.core.ui.components.CardItem
 import com.example.myapplication.core.ui.components.PrimaryButton
 import com.example.myapplication.core.ui.components.SimpleIconDialog
 import com.example.myapplication.core.ui.components.SimpleTopBar
+import com.example.myapplication.core.ui.components.CardInfoBox
 import com.example.myapplication.core.ui.theme.AppTypography
 import com.example.myapplication.core.ui.theme.CornerRadiusLarge
-import com.example.myapplication.core.ui.theme.NavTextInactiveDark
 import com.example.myapplication.core.ui.theme.Padding12dp
 import com.example.myapplication.core.ui.theme.Padding8dp
 import com.example.myapplication.core.ui.theme.PaddingBase
-import com.example.myapplication.core.ui.theme.PaddingQuarter
 import com.example.myapplication.creditcards.domain.models.CreditCardsState
 import org.koin.androidx.compose.koinViewModel
 import java.text.DecimalFormat
@@ -143,25 +138,25 @@ fun CreditCardsScreen(
                     text = stringResource(R.string.card_credit),
                     style = AppTypography.headlineSmall
                 )
-                CardInfoRowBox(
+                CardInfoBox(
                     stringResource(R.string.card_credit_info_title1),
                     stringResource(
                         R.string.card_credit_info_text1,
                         serviceCost
                     )
                 )
-                CardInfoRowBox(
+                CardInfoBox(
                     stringResource(
                         R.string.card_credit_info_title2,
                         creditLimitMax
                     ),
                     stringResource(R.string.card_credit_info_text2)
                 )
-                CardInfoRowBox(
+                CardInfoBox(
                     stringResource(R.string.card_credit_info_title3),
                     stringResource(R.string.card_credit_info_text3)
                 )
-                CardInfoRowBox(
+                CardInfoBox(
                     stringResource(R.string.card_credit_info_title4),
                     stringResource(
                         R.string.card_credit_info_text4,
@@ -191,39 +186,6 @@ fun CreditCardsScreen(
                 }
                 Spacer(modifier = Modifier.Companion.height(Padding12dp))
             }
-        }
-    }
-}
-
-@Composable
-private fun CardInfoRowBox(title: String? = null, text: String) {
-    OutlinedCard(
-        modifier = Modifier.fillMaxWidth().padding(vertical = PaddingQuarter),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.onSecondary,
-            contentColor = MaterialTheme.colorScheme.onSurface
-        ),
-        border = BorderStroke(1.dp, NavTextInactiveDark),
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
-        ) {
-            if (!title.isNullOrEmpty()) {
-                Text(
-                    text = title,
-                    textAlign = TextAlign.Start,
-                    style = AppTypography.bodyMedium.copy(
-                        fontWeight = FontWeight.W600
-                    ),
-                    lineHeight = 24.sp
-                )
-            }
-            Text(
-                text = text,
-                textAlign = TextAlign.Start,
-                style = AppTypography.bodySmall,
-                lineHeight = 24.sp
-            )
         }
     }
 }
