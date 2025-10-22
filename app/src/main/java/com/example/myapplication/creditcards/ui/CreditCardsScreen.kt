@@ -59,6 +59,7 @@ import java.text.DecimalFormat
 const val SERVICE_COST = 990L
 const val CREDIT_LIMIT_MAX = 1_000_000L
 const val CASHBACK = 30
+const val CARD_BALANCE_DEF = 100_000_000L
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -66,7 +67,6 @@ fun CreditCardsScreen(
     navController: NavHostController,
     viewModel: CreditCardsViewModel = koinViewModel<CreditCardsViewModel>()
 ) {
-
     val creditCardsState = viewModel.creditCardsState.collectAsState().value
     val offlineCardDialog = remember { mutableStateOf(false) }
     val successCardDialog = remember { mutableStateOf(false) }
@@ -75,7 +75,6 @@ fun CreditCardsScreen(
     val serviceCost = SERVICE_COST
     val creditLimitMax = CREDIT_LIMIT_MAX
     val cashback = CASHBACK
-
 
     when (creditCardsState) {
         is CreditCardsState.Offline -> {
@@ -87,7 +86,7 @@ fun CreditCardsScreen(
         is CreditCardsState.Success -> {
             successCardDialog.value = true
         }
-        is CreditCardsState.Content -> {  }
+        is CreditCardsState.Content -> {}
         is CreditCardsState.Loading -> return
     }
 
@@ -121,7 +120,7 @@ fun CreditCardsScreen(
                 onDismissRequest = {
                     successCardDialog.value = false
                     navController.popBackStack()
-                                   },
+                },
                 dialogTitle = stringResource(R.string.saved_successfully),
                 dismissButtonText = stringResource(R.string.close),
                 icon = Icons.Default.Check
@@ -134,7 +133,7 @@ fun CreditCardsScreen(
             ) {
                 CardItem(
                     cardHolderName = stringResource(R.string.card_holder_default),
-                    cardBalance = 100000000
+                    cardBalance = CARD_BALANCE_DEF
                 ) { }
             }
             Column {
