@@ -67,7 +67,8 @@ class DebitCardsMock {
     )
 
     fun depositToDebitCard(cardId: Long, amount: Long): Response {
-        return if (Random.nextInt(1, 100) <= 90) {
+        val isValid = cardId > 0 && amount > 0
+        return if (isValid && Random.nextInt(1, 100) <= 90) {
             Response(
                 code = ApiCodes.SUCCESS,
                 description = "Deposit successful",

@@ -51,26 +51,22 @@ class LoansRepositoryImpl(
     }
 
     private suspend fun topUpRandomDebitCard(userId: Long, amount: Long) {
-        if (amount <= 0) return
+        val validAmount = amount.takeIf { it > 0 } ?: return
+        val cardsRes = cardsRepository.getCards(userId)
 
-        when (val cardsRes = cardsRepository.getCards(userId)) {
-            is Result.Success -> {
-                val target = cardsRes.data
-                    .asSequence()
-                    .filter { it.type == CardType.DEBIT }
-                    .toList()
-                    .randomOrNull() ?: return
+        val target = when (cardsRes) {
+            is Result.Success -> cardsRes.data
+                .asSequence()
+                .filter { it.type == CardType.DEBIT }
+                .toList()
+                .randomOrNull()
 
-                when (debitCardsRepository.depositToDebitCard(target.id, amount)) {
-                    is Result.Success -> Unit
-                    is Result.Error -> {
-                    }
-                }
-            }
+            is Result.Error -> null
+        } ?: return
 
-            is Result.Error -> {
-                return
-            }
+        when (debitCardsRepository.depositToDebitCard(target.id, validAmount)) {
+            is Result.Success -> Unit
+            is Result.Error -> Unit
         }
     }
 }
