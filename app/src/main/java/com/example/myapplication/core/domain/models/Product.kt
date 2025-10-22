@@ -18,7 +18,6 @@ data class Product(
     val balance: Long
 )
 
-// Обновляем StringDef, чтобы включить новое значение
 @StringDef(LOAN, DEPOSIT)
 @Retention(AnnotationRetention.SOURCE)
 annotation class ProductType {
