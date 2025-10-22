@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.math.BigDecimal
 
-@Entity
+@Entity(tableName = "loans")
 data class LoanEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
@@ -12,7 +12,7 @@ data class LoanEntity(
     val type: String,
     val balance: BigDecimal,
     val period: Long,
-    val start: Long? = null,
+    val start: Long,
     val end: Long? = null,
     val percent: Long? = null,
     val isClose: Boolean? = null,

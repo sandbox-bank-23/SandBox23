@@ -12,7 +12,7 @@ import com.example.myapplication.deposits.data.db.DepositDao
 import com.example.myapplication.deposits.data.db.DepositEntity
 
 @Database(
-    version = 3,
+    version = 4,
     entities = [
         CardEntity::class,
         UserEntity::class,

@@ -8,12 +8,15 @@ import com.example.myapplication.core.domain.models.CardType
 import com.example.myapplication.core.domain.models.Result
 import com.example.myapplication.debitcards.domain.api.DebitCardsRepository
 import com.example.myapplication.loans.data.mock.LoansMock
+import com.example.myapplication.loans.data.repository.dto.RequestData
+import com.example.myapplication.loans.data.repository.dto.ResponseData
 import com.example.myapplication.loans.data.resource.DataResource
 import com.example.myapplication.loans.domain.model.Credit
 import com.example.myapplication.loans.domain.model.Pay
 import com.example.myapplication.loans.domain.repository.LoanRepository
 import kotlinx.serialization.json.Json
 import java.math.BigDecimal
+import kotlin.random.Random
 
 class LoanRepositoryImpl(
     private val networkClient: NetworkClient,
@@ -55,16 +58,31 @@ class LoanRepositoryImpl(
     }
 
     override suspend fun create(loan: Credit) {
-        val creditJson = Json.encodeToString(value = loan)
+        val requestData = RequestData(
+            userId = loan.userId,
+            loanName = loan.name,
+            balance = loan.balance,
+            period = loan.period,
+            orderDate = loan.orderDate,
+            //TODO can give from db
+            currentCreditNumber = 1,
+            requestNumber = Random.nextLong()
+        )
+        val creditJson = Json.encodeToString(value = requestData)
         val response = networkClient(loansMock.createLoan(creditJson))
         response.response?.let { json ->
-            val newCredit = Json.decodeFromString<Credit>(string = json)
-            val amount = newCredit.balance
-
-            if (amount > BigDecimal.ZERO) {
-                topUpRandomDebitCard(userId = newCredit.userId, amount = amount)
+            val responseData = Json.decodeFromString<ResponseData>(string = json)
+            val credit = responseData.body
+            if (response.code == 201) {
+                if (credit != null) {
+                    val amount = credit.balance
+                    if (false/*amount > BigDecimal.ZERO*/) {
+                        topUpRandomDebitCard(userId = credit.userId, amount = amount)
+                    }
+                    //dao.create(loan = map(credit = newCredit))
+                }
             }
-            dao.create(loan = map(credit = newCredit))
+
         }
     }
 
