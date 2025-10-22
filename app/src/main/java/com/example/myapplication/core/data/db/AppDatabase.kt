@@ -20,13 +20,12 @@ import com.example.myapplication.deposits.data.db.DepositEntity
         DepositEntity::class
     ]
 )
-
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun cardDao(): CardDao
-  
+
     abstract fun depositDao(): DepositDao
-  
+
     abstract fun userDao(): UserDao
 
     abstract fun loanDao(): LoanDao
