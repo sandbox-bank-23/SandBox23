@@ -21,6 +21,6 @@ interface DepositDao {
     @Query("SELECT * FROM deposits WHERE id = :id")
     suspend fun getDepositById(id: Long): DepositEntity?
 
-    @Query("SELECT * FROM deposits ORDER BY id DESC")
+    @Query("SELECT * FROM deposits ORDER BY id ASC")
     fun observeAll(): Flow<List<DepositEntity>>
 }
