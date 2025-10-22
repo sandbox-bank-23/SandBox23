@@ -1,53 +1,58 @@
 package com.example.myapplication.core.data.network
 
-import com.example.myapplication.core.data.dto.PostmanPostResponse
-import com.example.myapplication.core.data.network.ResponseCodes.BAD_REQUEST
-import com.example.myapplication.core.data.network.ResponseCodes.CONFLICT
-import com.example.myapplication.core.data.network.ResponseCodes.CREATED
-import com.example.myapplication.core.data.network.ResponseCodes.FORBIDDEN
-import com.example.myapplication.core.data.network.ResponseCodes.NOT_FOUND
-import com.example.myapplication.core.data.network.ResponseCodes.NO_RESPONSE
-import com.example.myapplication.core.data.network.ResponseCodes.SUCCESS
 import io.ktor.client.HttpClient
-import io.ktor.client.call.body
+import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 
+@Suppress("MagicNumber", "LongMethod")
 class NetworkClient(private val client: HttpClient) {
 
     suspend operator fun invoke(data: Response): Response =
         runCatching {
-            val response = client.post("https://postman-echo.com/post") {
-                contentType(ContentType.Application.Json)
-                setBody(data)
-            }
-            val body = response.body<PostmanPostResponse>()
-
-            // Успех побольше положил в список для частых успешных запросов по рандомному выбору
+            // успешные запросы чаще
             val code = listOf(
-                SUCCESS,
-                SUCCESS,
-                SUCCESS,
-                SUCCESS,
-                CREATED,
-                BAD_REQUEST,
-                FORBIDDEN,
-                NOT_FOUND,
-                CONFLICT,
+                NetworkParams.SUCCESS_CODE,
+                NetworkParams.SUCCESS_CODE,
+                NetworkParams.CREATED_CODE,
+                NetworkParams.CREATED_CODE,
+                NetworkParams.BAD_REQUEST_CODE,
+                NetworkParams.FORBIDDEN,
+                NetworkParams.NOT_FOUND_CODE,
+                NetworkParams.EXISTING_CODE,
+                NetworkParams.SERVER_ERROR_CODE
             ).random()
 
-            Response(
-                code = code,
-                description = response.status.description,
-                response = body.json.toString()
-            )
+            if (code in 200..299) {
+                val response = client.post("https://postman-echo.com/post") {
+                    contentType(ContentType.Application.Json)
+                    setBody(data)
+                }
+                val body = response.bodyAsText()
+
+                Response(
+                    code = response.status.value,
+                    description = response.status.description,
+                    response = body
+                )
+            } else {
+                val response = client.get("https://postman-echo.com/status/$code")
+                val body = response.bodyAsText()
+
+                Response(
+                    code = response.status.value,
+                    description = response.status.description,
+                    response = body
+                )
+            }
         }.getOrElse { e ->
             println("Error: ${e.localizedMessage}")
             Response(
-                code = NO_RESPONSE,
-                description = "Остутствует соединение с интернетом",
+                code = NetworkParams.NO_CONNECTION_CODE,
+                description = "Нет соединения с интернетом",
                 response = null
             )
         }
