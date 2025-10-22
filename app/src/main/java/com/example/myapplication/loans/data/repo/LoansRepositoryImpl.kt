@@ -55,11 +55,12 @@ class LoansRepositoryImpl(
         val cardsRes = cardsRepository.getCards(userId)
 
         val target = when (cardsRes) {
-            is Result.Success -> cardsRes.data
-                .asSequence()
-                .filter { it.type == CardType.DEBIT }
-                .toList()
-                .randomOrNull()
+            is Result.Success ->
+                cardsRes.data
+                    .asSequence()
+                    .filter { it.type == CardType.DEBIT }
+                    .toList()
+                    .randomOrNull()
 
             is Result.Error -> null
         } ?: return
