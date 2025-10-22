@@ -71,4 +71,17 @@
     <string name="success_icon_dialog_content_descr">Successfully</string>
     <string name="card_limit">%s из %s ₽</string>
     <string name="card_debt">%s ₽</string>
+    <string name="card_open">+  Оформить карту</string>
+    <string name="card_credit">Виртуальная кредитная карта SandboxBank</string>
+    <string name="card_credit_info_title1">Бесплатное обслуживание</string>
+    <string name="card_credit_info_text1">в 1-й год, далее %s ₽ в год</string>
+    <string name="card_credit_info_title2">%s ₽</string>
+    <string name="card_credit_info_text2">максимальный кредитный лимит</string>
+    <string name="card_credit_info_title3">60 дней без %</string>
+    <string name="card_credit_info_text3">на любые покупки</string>
+    <string name="card_credit_info_title4">Кэшбек каждый месяц</string>
+    <string name="card_credit_info_text4">до %s за покупки у партнёров</string>
+    <string name="card_credit_limit">Выбор кредитного лимита</string>
+    <string name="card_credit_limit_value">%s ₽</string>
+    <string name="card_count_max">Можно открыть только 5 карт.\nЧтобы открыть новую, необходимо закрыть предыдущую карту.</string>
 </resources>

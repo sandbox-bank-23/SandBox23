@@ -5,6 +5,7 @@ import androidx.compose.ui.unit.dp
 // Отступы
 val PaddingBase = 16.dp
 val PaddingQuarter = 4.dp
+val Padding8dp = 8.dp
 val Padding12dp = 12.dp
 val Padding16dp = 16.dp
 val Padding18dp = 18.dp
@@ -21,6 +22,7 @@ val CornerRadiusSmall = 4.dp
 val CornerRadiusRegular = 8.dp
 val CornerRadiusMedium = 18.dp
 val CornerRadiusDialog = 28.dp
+val CornerRadiusLarge = 100.dp
 
 // Размеры
 val NavBarSize = 77.dp
