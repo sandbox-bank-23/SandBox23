@@ -84,4 +84,6 @@
     <string name="card_credit_limit">Выбор кредитного лимита</string>
     <string name="card_credit_limit_value">%s ₽</string>
     <string name="card_count_max">Можно открыть только 5 карт.\nЧтобы открыть новую, необходимо закрыть предыдущую карту.</string>
+    <string name="no_loans_message">У вас ещё нет кредитов.</string>
+    <string name="no_deposits_message">У вас ещё нет вкладов.</string>
 </resources>
