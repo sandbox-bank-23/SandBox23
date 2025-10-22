@@ -5,6 +5,7 @@ package com.example.myapplication.debitcards.data.mock
 import com.example.myapplication.core.data.network.Response
 import com.example.myapplication.core.domain.models.Card
 import com.example.myapplication.core.domain.models.CardType
+import com.example.myapplication.core.utils.ApiCodes
 import kotlinx.serialization.json.Json
 import kotlin.random.Random
 
@@ -64,4 +65,21 @@ class DebitCardsMock {
         description = "Card with current number already exists",
         response = null
     )
+
+    fun depositToDebitCard(cardId: Long, amount: Long): Response {
+        return if (Random.nextInt(1, 100) <= 90) {
+            Response(
+                code = ApiCodes.SUCCESS,
+                description = "Deposit successful",
+                response = Json.encodeToString(true)
+            )
+        } else {
+            Response(
+                code = ApiCodes.NO_RESPONSE,
+                description = "Deposit failed",
+                response = null
+            )
+        }
+    }
+
 }

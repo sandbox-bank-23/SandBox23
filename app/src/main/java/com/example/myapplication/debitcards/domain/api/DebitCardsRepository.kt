@@ -9,4 +9,6 @@ interface DebitCardsRepository {
         requestNumber: Long,
         userId: Long
     ): Result<Card>
+
+    suspend fun depositToDebitCard(cardId: Long, amount: Long): Result<Unit>
 }

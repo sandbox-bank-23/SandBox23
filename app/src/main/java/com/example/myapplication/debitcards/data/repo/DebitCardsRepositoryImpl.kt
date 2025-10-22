@@ -33,4 +33,17 @@ class DebitCardsRepositoryImpl(
             else -> Result.Error(ApiCodes.UNKNOWN_ERROR)
         }
     }
+
+    override suspend fun depositToDebitCard(
+        cardId: Long,
+        amount: Long
+    ): Result<Unit> {
+        val response = debitCardsMock.depositToDebitCard(cardId, amount)
+        return when (response.code) {
+            ApiCodes.SUCCESS -> Result.Success(Unit)
+            ApiCodes.INVALID_REQUEST -> Result.Error("Invalid request while depositing to card")
+            ApiCodes.NO_RESPONSE -> Result.Error("No response from mock server")
+            else -> Result.Error("Unknown error: ${response.description}")
+        }
+    }
 }

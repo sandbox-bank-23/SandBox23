@@ -1,6 +1,8 @@
 package com.example.myapplication.loans.di
 
+import com.example.myapplication.cards.domain.api.CardsRepository
 import com.example.myapplication.core.data.network.NetworkClient
+import com.example.myapplication.debitcards.domain.api.DebitCardsRepository
 import com.example.myapplication.loans.data.mock.LoansMock
 import com.example.myapplication.loans.data.repo.LoansRepositoryImpl
 import com.example.myapplication.loans.data.repository.LoanRepositoryImpl
@@ -19,7 +21,9 @@ val loansModule = module {
     single<LoansRepository> {
         LoansRepositoryImpl(
             client = get<NetworkClient>(),
-            loansMock = get<LoansMock>()
+            loansMock = get<LoansMock>(),
+            cardsRepository = get<CardsRepository>(),
+            debitCardsRepository = get<DebitCardsRepository>()
         )
     }
 
