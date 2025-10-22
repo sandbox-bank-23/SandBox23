@@ -7,6 +7,7 @@ import com.example.myapplication.core.domain.models.Card
 import com.example.myapplication.core.domain.models.CardType
 import com.example.myapplication.core.utils.ApiCodes
 import kotlinx.serialization.json.Json
+import java.math.BigDecimal
 import kotlin.random.Random
 
 class DebitCardsMock {
@@ -66,8 +67,8 @@ class DebitCardsMock {
         response = null
     )
 
-    fun depositToDebitCard(cardId: Long, amount: Long): Response {
-        val isValid = cardId > 0 && amount > 0
+    fun depositToDebitCard(cardId: Long, amount: BigDecimal): Response {
+        val isValid = cardId > 0 && amount > BigDecimal.ZERO
         return if (isValid && Random.nextInt(1, 100) <= 90) {
             Response(
                 code = ApiCodes.SUCCESS,

@@ -8,6 +8,7 @@ import com.example.myapplication.core.utils.ApiCodes
 import com.example.myapplication.debitcards.data.mock.DebitCardsMock
 import com.example.myapplication.debitcards.domain.api.DebitCardsRepository
 import kotlinx.serialization.json.Json
+import java.math.BigDecimal
 
 class DebitCardsRepositoryImpl(
     private val debitCardsMock: DebitCardsMock,
@@ -36,7 +37,7 @@ class DebitCardsRepositoryImpl(
 
     override suspend fun depositToDebitCard(
         cardId: Long,
-        amount: Long
+        amount: BigDecimal
     ): Result<Unit> {
         val response = debitCardsMock.depositToDebitCard(cardId, amount)
         return when (response.code) {
