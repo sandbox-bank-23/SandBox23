@@ -34,6 +34,7 @@ import com.example.myapplication.core.ui.theme.onPrimaryLight
 import com.example.myapplication.core.ui.theme.onSurfaceLight
 import com.example.myapplication.core.ui.theme.surfaceContainerLowestLight
 
+@Suppress("CognitiveComplexMethod")
 @Composable
 fun NotificationDialog(
     title: String? = null,
@@ -121,7 +122,6 @@ fun NotificationDialog(
                     TextButton(
                         modifier = Modifier
                             .height(BasicDialogButtonHeight)
-
                             .padding(horizontal = 2.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = onPrimaryLight,
@@ -150,7 +150,7 @@ fun NotificationPreview() {
             icon = R.drawable.fingerprint,
             onConfirm = {},
             confirmButtonText = "Закрыть",
-            onDismiss = {  },
+            onDismiss = {},
             dismissButtonText = "",
         )
     }
