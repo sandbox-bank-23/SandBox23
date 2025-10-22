@@ -44,20 +44,19 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.myapplication.R
 import com.example.myapplication.core.ui.components.BasicDialog
+import com.example.myapplication.core.ui.components.CardInfoBox
 import com.example.myapplication.core.ui.components.CardItem
 import com.example.myapplication.core.ui.components.PrimaryButton
 import com.example.myapplication.core.ui.components.SimpleIconDialog
 import com.example.myapplication.core.ui.components.SimpleTopBar
-import com.example.myapplication.core.ui.components.CardInfoBox
 import com.example.myapplication.core.ui.theme.AppTypography
 import com.example.myapplication.core.ui.theme.CornerRadiusLarge
 import com.example.myapplication.core.ui.theme.Padding12dp
 import com.example.myapplication.core.ui.theme.Padding8dp
 import com.example.myapplication.core.ui.theme.PaddingBase
 import com.example.myapplication.creditcards.domain.models.CreditCardsState
-import org.koin.androidx.compose.koinViewModel
 import java.text.DecimalFormat
-
+import org.koin.androidx.compose.koinViewModel
 
 const val SERVICE_COST = 990L
 const val CREDIT_LIMIT_MAX = 1_000_000L
@@ -217,12 +216,14 @@ fun CreditLimitSlider(min: Long = 0L, max: Long = 1_000_000L, viewModel: CreditC
             Text(
                 modifier = Modifier
                     .align(Alignment.TopCenter)
-                    .offset(x = calculateTextOffset(
-                        creditLimitValue,
-                        min.toFloat(),
-                        max.toFloat(),
-                        sliderWidth
-                    ))
+                    .offset(
+                        x = calculateTextOffset(
+                            creditLimitValue,
+                            min.toFloat(),
+                            max.toFloat(),
+                            sliderWidth
+                        )
+                    )
                     .background(
                         color = MaterialTheme.colorScheme.inverseSurface,
                         shape = RoundedCornerShape(CornerRadiusLarge)
@@ -232,7 +233,7 @@ fun CreditLimitSlider(min: Long = 0L, max: Long = 1_000_000L, viewModel: CreditC
                         detectDragGestures(
                             onDrag = { change, dragAmount ->
                                 change.consume()
-                                val valueChange = (dragAmount.x / sliderWidth) * (max - min).toFloat()
+                                val valueChange = (max - min) * dragAmount.x / sliderWidth
                                 val newValue = creditLimitValue + valueChange
                                 creditLimitValue = newValue.coerceIn(min.toFloat(), max.toFloat())
                             },
@@ -241,7 +242,9 @@ fun CreditLimitSlider(min: Long = 0L, max: Long = 1_000_000L, viewModel: CreditC
                             }
                         )
                     },
-                text = DecimalFormat("#,##0 \u20BD").format(creditLimitValue),
+                text = DecimalFormat(
+                    stringResource(R.string.balance_pattern)
+                ).format(creditLimitValue),
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.surface,
                 style = AppTypography.labelLarge.copy(
@@ -281,7 +284,9 @@ fun CreditLimitSlider(min: Long = 0L, max: Long = 1_000_000L, viewModel: CreditC
             Text(
                 modifier = Modifier.weight(1f),
                 textAlign = TextAlign.Start,
-                text = DecimalFormat("#,##0 \u20BD").format(min),
+                text = DecimalFormat(
+                    stringResource(R.string.balance_pattern)
+                ).format(min),
                 style = AppTypography.bodyMedium.copy(
                     fontWeight = FontWeight.W500
                 )
@@ -289,7 +294,9 @@ fun CreditLimitSlider(min: Long = 0L, max: Long = 1_000_000L, viewModel: CreditC
             Text(
                 modifier = Modifier.weight(1f),
                 textAlign = TextAlign.End,
-                text = DecimalFormat("#,##0 \u20BD").format(max),
+                text = DecimalFormat(
+                    stringResource(R.string.balance_pattern)
+                ).format(max),
                 style = AppTypography.bodyMedium.copy(
                     fontWeight = FontWeight.W500
                 )
@@ -298,6 +305,7 @@ fun CreditLimitSlider(min: Long = 0L, max: Long = 1_000_000L, viewModel: CreditC
     }
 }
 
+@Suppress("MagicNumber")
 @Composable
 private fun calculateTextOffset(
     currentValue: Float,

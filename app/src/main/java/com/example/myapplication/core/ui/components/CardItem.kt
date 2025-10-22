@@ -106,11 +106,7 @@ private fun CardHolderName(name: String = "", isTemplate: Boolean = false) {
         modifier = Modifier.padding(horizontal = Padding24dp),
         color = CardTextDark,
         textAlign = TextAlign.Start,
-        text = if (isTemplate) {
-            stringResource(R.string.card_holder_default)
-        } else { 
-            name
-        },
+        text = if (isTemplate) stringResource(R.string.card_holder_default) else name,
         maxLines = 1,
         style = AppTypography.titleLarge.copy(
             fontSize = 24.sp,

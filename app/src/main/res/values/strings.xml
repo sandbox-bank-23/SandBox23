@@ -22,6 +22,7 @@
     <string name="card_type_default">Amazon Platinum</string>
     <string name="card_number_default">0000 ···· ···· 0000</string>
     <string name="card_balance_default">1 000 000 ₽</string>
+    <string name="balance_pattern">#,##0 ₽</string>
     <string name="card_dialog_title">Нет созданных виртуальных карт</string>
     <string name="card_dialog_confirm">Оформить</string>
     <string name="card_dialog_dismiss">В другой раз</string>

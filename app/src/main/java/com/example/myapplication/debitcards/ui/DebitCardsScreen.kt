@@ -47,7 +47,6 @@ fun DebitCardsScreen(
     navController: NavHostController,
     viewModel: DebitCardsViewModel = koinViewModel<DebitCardsViewModel>()
 ) {
-
     val debitCardsState = viewModel.debitCardsState.collectAsState().value
     val offlineCardDialog = remember { mutableStateOf(false) }
     val successCardDialog = remember { mutableStateOf(false) }
