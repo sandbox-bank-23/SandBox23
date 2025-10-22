@@ -55,8 +55,8 @@ import com.example.myapplication.core.ui.theme.Padding12dp
 import com.example.myapplication.core.ui.theme.Padding8dp
 import com.example.myapplication.core.ui.theme.PaddingBase
 import com.example.myapplication.creditcards.domain.models.CreditCardsState
-import java.text.DecimalFormat
 import org.koin.androidx.compose.koinViewModel
+import java.text.DecimalFormat
 
 const val SERVICE_COST = 990L
 const val CREDIT_LIMIT_MAX = 1_000_000L
