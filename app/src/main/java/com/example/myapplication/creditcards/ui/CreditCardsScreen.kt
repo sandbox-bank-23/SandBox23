@@ -1,19 +1,20 @@
 package com.example.myapplication.creditcards.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -29,9 +30,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.myapplication.R
@@ -81,8 +89,8 @@ fun CreditCardsScreen(
         is CreditCardsState.Success -> {
             successCardDialog.value = true
         }
-        is CreditCardsState.Content -> {}
         is CreditCardsState.Loading -> return
+        else -> {}
     }
 
     Scaffold(
@@ -116,9 +124,9 @@ fun CreditCardsScreen(
                     successCardDialog.value = false
                     navController.popBackStack()
                 },
-                dialogTitle = stringResource(R.string.saved_successfully),
+                dialogTitle = stringResource(R.string.card_open_success),
                 dismissButtonText = stringResource(R.string.close),
-                icon = Icons.Default.Check
+                icon = ImageVector.vectorResource(id = R.drawable.ic_card_open_ok)
             )
 
             Column(
@@ -193,6 +201,8 @@ fun CreditCardsScreen(
 @Composable
 fun CreditLimitSlider(min: Long = 0L, max: Long = 1_000_000L, viewModel: CreditCardsViewModel) {
     var creditLimitValue by remember { mutableFloatStateOf(((max - min) / 2).toFloat()) }
+    var sliderWidth by remember { mutableFloatStateOf(0f) }
+
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -204,36 +214,69 @@ fun CreditLimitSlider(min: Long = 0L, max: Long = 1_000_000L, viewModel: CreditC
                 fontWeight = FontWeight.W600
             )
         )
-        Text(
+
+        Box(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .offset(x = calculateTextOffset(
+                        creditLimitValue,
+                        min.toFloat(),
+                        max.toFloat(),
+                        sliderWidth
+                    ))
+                    .background(
+                        color = MaterialTheme.colorScheme.onSurface,
+                        shape = RoundedCornerShape(CornerRadiusLarge)
+                    )
+                    .padding(vertical = Padding12dp, horizontal = PaddingBase)
+                    .pointerInput(Unit) {
+                        detectDragGestures(
+                            onDrag = { change, dragAmount ->
+                                change.consume()
+                                val valueChange = (dragAmount.x / sliderWidth) * (max - min).toFloat()
+                                val newValue = creditLimitValue + valueChange
+                                creditLimitValue = newValue.coerceIn(min.toFloat(), max.toFloat())
+                            },
+                            onDragEnd = {
+                                viewModel.creditLimitValue = creditLimitValue.toLong()
+                            }
+                        )
+                    },
+                text = DecimalFormat("#,##0 \u20BD").format(creditLimitValue),
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.surface,
+                style = AppTypography.labelLarge.copy(
+                    fontSize = 14.sp
+                ),
+            )
+        }
+        Box(
             modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .background(
-                    color = MaterialTheme.colorScheme.onSurface,
-                    shape = RoundedCornerShape(CornerRadiusLarge)
-                )
-                .padding(vertical = Padding12dp, horizontal = PaddingBase),
-            text = DecimalFormat("#,##0 \u20BD").format(creditLimitValue),
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.surface,
-            style = AppTypography.labelLarge.copy(
-                fontSize = 14.sp
-            ),
-        )
-        Slider(
-            modifier = Modifier.padding(Padding8dp),
-            value = creditLimitValue,
-            onValueChange = { creditLimitValue = it },
-            onValueChangeFinished = {
-                viewModel.creditLimitValue = creditLimitValue.toLong()
-            },
-            colors = SliderDefaults.colors(
-                thumbColor = MaterialTheme.colorScheme.secondary,
-                activeTrackColor = MaterialTheme.colorScheme.primary,
-                inactiveTrackColor = MaterialTheme.colorScheme.secondaryContainer,
-            ),
-            steps = 0,
-            valueRange = min.toFloat()..max.toFloat()
-        )
+                .fillMaxWidth()
+                .padding(horizontal = Padding8dp)
+                .onGloballyPositioned { layoutCoordinates ->
+                    sliderWidth = layoutCoordinates.size.width.toFloat()
+                }
+        ) {
+            Slider(
+                modifier = Modifier.fillMaxWidth(),
+                value = creditLimitValue,
+                onValueChange = { creditLimitValue = it },
+                onValueChangeFinished = {
+                    viewModel.creditLimitValue = creditLimitValue.toLong()
+                },
+                colors = SliderDefaults.colors(
+                    thumbColor = MaterialTheme.colorScheme.secondary,
+                    activeTrackColor = MaterialTheme.colorScheme.primary,
+                    inactiveTrackColor = MaterialTheme.colorScheme.secondaryContainer,
+                ),
+                steps = 0,
+                valueRange = min.toFloat()..max.toFloat()
+            )
+        }
         Row(
             modifier = Modifier.fillMaxWidth().padding(horizontal = Padding8dp),
             horizontalArrangement = Arrangement.SpaceAround
@@ -255,5 +298,20 @@ fun CreditLimitSlider(min: Long = 0L, max: Long = 1_000_000L, viewModel: CreditC
                 )
             )
         }
+    }
+}
+
+@Composable
+private fun calculateTextOffset(
+    currentValue: Float,
+    minValue: Float,
+    maxValue: Float,
+    sliderWidth: Float
+): Dp {
+    if (sliderWidth == 0f) return 0.dp
+    val progress = (currentValue - minValue) / (maxValue - minValue)
+    val offsetFraction = (progress - 0.5f) * 0.9f
+    return with(LocalDensity.current) {
+        (offsetFraction * sliderWidth).toDp()
     }
 }

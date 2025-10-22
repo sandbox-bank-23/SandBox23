@@ -14,7 +14,7 @@ class DebitCardsViewModel : ViewModel() {
     val debitCardsState: StateFlow<DebitCardsState> = _debitCardsState.asStateFlow()
 
     fun openCard() {
-        renderState(DebitCardsState.Offline)
+        renderState(DebitCardsState.Success)
     }
 
     private fun renderState(state: DebitCardsState) {

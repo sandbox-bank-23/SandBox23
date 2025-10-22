@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -21,9 +19,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.myapplication.R
 import com.example.myapplication.core.ui.components.BasicDialog
@@ -34,6 +36,7 @@ import com.example.myapplication.core.ui.components.SimpleIconDialog
 import com.example.myapplication.core.ui.components.SimpleTopBar
 import com.example.myapplication.core.ui.theme.AppTypography
 import com.example.myapplication.core.ui.theme.Padding12dp
+import com.example.myapplication.debitcards.domain.models.DebitCardsState
 import org.koin.androidx.compose.koinViewModel
 
 const val CASHBACK = 30
@@ -46,9 +49,26 @@ fun DebitCardsScreen(
     viewModel: DebitCardsViewModel = koinViewModel<DebitCardsViewModel>()
 ) {
 
-    val cardDetailsState = viewModel.debitCardsState.collectAsState().value
+    val debitCardsState = viewModel.debitCardsState.collectAsState().value
     val offlineCardDialog = remember { mutableStateOf(false) }
     val successCardDialog = remember { mutableStateOf(false) }
+
+    // Сходить в репу за этим
+    val cashback = CASHBACK
+
+    when (debitCardsState) {
+        is DebitCardsState.Offline -> {
+            offlineCardDialog.value = true
+        }
+        is DebitCardsState.Online -> {
+            offlineCardDialog.value = false
+        }
+        is DebitCardsState.Success -> {
+            successCardDialog.value = true
+        }
+        is DebitCardsState.Loading -> return
+        else -> {}
+    }
 
     Scaffold(
         topBar = {
@@ -81,9 +101,9 @@ fun DebitCardsScreen(
                     successCardDialog.value = false
                     navController.popBackStack()
                 },
-                dialogTitle = stringResource(R.string.saved_successfully),
+                dialogTitle = stringResource(R.string.card_open_success),
                 dismissButtonText = stringResource(R.string.close),
-                icon = Icons.Default.Check
+                icon = ImageVector.vectorResource(id = R.drawable.ic_card_open_ok)
             )
             Column(
                 modifier = Modifier.fillMaxWidth().padding(vertical = Padding12dp),
@@ -109,7 +129,7 @@ fun DebitCardsScreen(
                 CardInfoBox(
                     stringResource(
                         R.string.card_debit_info_title2,
-                        CASHBACK
+                        cashback
                     ),
                     stringResource(R.string.card_debit_info_text2)
                 )
@@ -117,8 +137,24 @@ fun DebitCardsScreen(
                     text = stringResource(R.string.card_debit_info_text3)
                 )
                 Spacer(modifier = Modifier.Companion.height(Padding12dp))
-                PrimaryButton(stringResource(R.string.card_open)) {
-                    viewModel.openCard()
+                if (debitCardsState is DebitCardsState.Error) {
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = stringResource(R.string.card_count_max),
+                        textAlign = TextAlign.Center,
+                        style = AppTypography.labelLarge.copy(
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.W500
+                        ),
+                        lineHeight = 24.sp,
+                        color = MaterialTheme.colorScheme.onErrorContainer
+                    )
+                    Spacer(modifier = Modifier.Companion.height(Padding12dp))
+                    PrimaryButton(stringResource(R.string.card_open), isEnabled = false) {}
+                } else {
+                    PrimaryButton(stringResource(R.string.card_open)) {
+                        viewModel.openCard()
+                    }
                 }
                 Spacer(modifier = Modifier.Companion.height(Padding12dp))
             }

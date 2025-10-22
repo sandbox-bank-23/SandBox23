@@ -91,4 +91,5 @@
     <string name="card_debit_info_text2">Получайте суперкэшбэк рублями каждый месяц и
         бесплатно снимайте наличные в любых банкоматах</string>
     <string name="card_debit_info_text3">Платите через SandBox Pay или по QR-коду</string>
+    <string name="card_open_success">Карта успешно оформлена</string>
 </resources>
