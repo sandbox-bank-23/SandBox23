@@ -62,7 +62,6 @@ import java.text.DecimalFormat
 const val SERVICE_COST = 990L
 const val CREDIT_LIMIT_MAX = 1_000_000L
 const val CASHBACK = 30
-const val CARD_BALANCE_DEF = 100_000_000L
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -134,10 +133,7 @@ fun CreditCardsScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
             ) {
-                CardItem(
-                    cardHolderName = stringResource(R.string.card_holder_default),
-                    cardBalance = CARD_BALANCE_DEF
-                ) { }
+                CardItem(isTemplate = true)
             }
             Column {
                 Text(
@@ -228,7 +224,7 @@ fun CreditLimitSlider(min: Long = 0L, max: Long = 1_000_000L, viewModel: CreditC
                         sliderWidth
                     ))
                     .background(
-                        color = MaterialTheme.colorScheme.onSurface,
+                        color = MaterialTheme.colorScheme.inverseSurface,
                         shape = RoundedCornerShape(CornerRadiusLarge)
                     )
                     .padding(vertical = Padding12dp, horizontal = PaddingBase)
@@ -249,7 +245,8 @@ fun CreditLimitSlider(min: Long = 0L, max: Long = 1_000_000L, viewModel: CreditC
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.surface,
                 style = AppTypography.labelLarge.copy(
-                    fontSize = 14.sp
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.W500
                 ),
             )
         }
@@ -284,17 +281,17 @@ fun CreditLimitSlider(min: Long = 0L, max: Long = 1_000_000L, viewModel: CreditC
             Text(
                 modifier = Modifier.weight(1f),
                 textAlign = TextAlign.Start,
-                text = stringResource(R.string.card_credit_limit_value, min),
+                text = DecimalFormat("#,##0 \u20BD").format(min),
                 style = AppTypography.bodyMedium.copy(
-                    fontWeight = FontWeight.W600
+                    fontWeight = FontWeight.W500
                 )
             )
             Text(
                 modifier = Modifier.weight(1f),
                 textAlign = TextAlign.End,
-                text = stringResource(R.string.card_credit_limit_value, max),
+                text = DecimalFormat("#,##0 \u20BD").format(max),
                 style = AppTypography.bodyMedium.copy(
-                    fontWeight = FontWeight.W600
+                    fontWeight = FontWeight.W500
                 )
             )
         }

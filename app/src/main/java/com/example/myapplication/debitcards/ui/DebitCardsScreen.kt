@@ -40,7 +40,6 @@ import com.example.myapplication.debitcards.domain.models.DebitCardsState
 import org.koin.androidx.compose.koinViewModel
 
 const val CASHBACK = 30
-const val CARD_BALANCE_DEF = 100_000_000L
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -110,10 +109,7 @@ fun DebitCardsScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
             ) {
-                CardItem(
-                    cardHolderName = stringResource(R.string.card_holder_default),
-                    cardBalance = CARD_BALANCE_DEF
-                ) { }
+                CardItem(isTemplate = true)
             }
             Column {
                 Text(

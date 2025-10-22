@@ -24,7 +24,7 @@ fun CardInfoBox(title: String? = null, text: String) {
         modifier = Modifier.fillMaxWidth().padding(vertical = PaddingQuarter),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.onSecondary,
-            contentColor = MaterialTheme.colorScheme.onSurface
+            contentColor = MaterialTheme.colorScheme.inverseSurface
         ),
         border = BorderStroke(1.dp, NavTextInactiveDark),
     ) {

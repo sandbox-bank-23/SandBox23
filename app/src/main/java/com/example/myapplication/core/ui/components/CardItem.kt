@@ -42,13 +42,16 @@ import java.text.DecimalFormat
 
 const val CENTS_DIVIDE = 100
 
+
+
 @Composable
 fun CardItem(
-    cardHolderName: String,
-    cardBalance: Long?,
+    cardHolderName: String = "",
+    cardBalance: Long? = null,
     cardType: String? = null,
     cardNumber: String? = null,
-    onClick: () -> Unit
+    isTemplate: Boolean = false,
+    onClick: (() -> Unit)? = null
 ) {
     Box(
         modifier = Modifier
@@ -60,7 +63,7 @@ fun CardItem(
                 shape = RoundedCornerShape(CornerRadiusMedium)
             )
             .clip(RoundedCornerShape(CornerRadiusMedium))
-            .clickable { onClick.invoke() }
+            .clickable { onClick?.invoke() }
     ) {
         Box(
             modifier = Modifier
@@ -87,10 +90,10 @@ fun CardItem(
                 .padding(vertical = Padding24dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            CardHolderName(cardHolderName)
+            CardHolderName(cardHolderName, isTemplate)
             Column {
-                CardData(cardType, cardNumber)
-                CardBalance(cardBalance)
+                CardData(cardType, cardNumber, isTemplate)
+                CardBalance(cardBalance, isTemplate)
             }
         }
     }
@@ -98,12 +101,16 @@ fun CardItem(
 
 
 @Composable
-private fun CardHolderName(name: String) {
+private fun CardHolderName(name: String = "", isTemplate: Boolean = false) {
     Text(
         modifier = Modifier.padding(horizontal = Padding24dp),
         color = CardTextDark,
         textAlign = TextAlign.Start,
-        text = name,
+        text = if (isTemplate) {
+            stringResource(R.string.card_holder_default)
+        } else { 
+            name
+        },
         maxLines = 1,
         style = AppTypography.titleLarge.copy(
             fontSize = 24.sp,
@@ -114,43 +121,46 @@ private fun CardHolderName(name: String) {
 
 
 @Composable
-private fun CardData(cardType: String?, cardNumber: String?) {
-    Column {
-        if (!cardType.isNullOrEmpty()) {
-            Text(
-                modifier = Modifier
-                    .padding(horizontal = Padding24dp, vertical = PaddingQuarter)
-                    .height(16.dp),
-                color = CardTextDark,
-                textAlign = TextAlign.Start,
-                text = cardType,
-                maxLines = 1,
-                style = AppTypography.bodyMedium.copy(
-                    fontWeight = FontWeight.W500
+private fun CardData(cardType: String?, cardNumber: String?, isTemplate: Boolean = false) {
+    if (!isTemplate) {
+        Column {
+            if (!cardType.isNullOrEmpty()) {
+                Text(
+                    modifier = Modifier
+                        .padding(horizontal = Padding24dp, vertical = PaddingQuarter)
+                        .height(16.dp),
+                    color = CardTextDark,
+                    textAlign = TextAlign.Start,
+                    text = cardType,
+                    maxLines = 1,
+                    style = AppTypography.bodyMedium.copy(
+                        fontWeight = FontWeight.W500
+                    )
                 )
-            )
-        }
-        if (!cardNumber.isNullOrEmpty()) {
-            Text(
-                modifier = Modifier
-                    .padding(horizontal = Padding18dp, vertical = PaddingQuarter)
-                    .height(24.dp),
-                color = CardTextDark,
-                textAlign = TextAlign.Start,
-                text = cardNumber,
-                maxLines = 1,
-                style = AppTypography.bodyLarge.copy(
-                    fontWeight = FontWeight.W500
+            }
+            if (!cardNumber.isNullOrEmpty()) {
+                Text(
+                    modifier = Modifier
+                        .padding(horizontal = Padding18dp, vertical = PaddingQuarter)
+                        .height(24.dp),
+                    color = CardTextDark,
+                    textAlign = TextAlign.Start,
+                    text = cardNumber,
+                    maxLines = 1,
+                    style = AppTypography.bodyLarge.copy(
+                        fontWeight = FontWeight.W500
+                    )
                 )
-            )
+            }
         }
     }
 }
 
 @Suppress("MagicNumber")
 @Composable
-private fun CardBalance(balance: Long?) {
+private fun CardBalance(balance: Long? = null, isTemplate: Boolean = false) {
     var balanceFormat = ""
+    if (isTemplate) balanceFormat = stringResource(R.string.card_balance_default)
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -158,7 +168,7 @@ private fun CardBalance(balance: Long?) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        if (balance != null) {
+        if (balance != null && !isTemplate) {
             balanceFormat = DecimalFormat("#,##0.00 \u20BD")
                 .format(balance / CENTS_DIVIDE)
         }
