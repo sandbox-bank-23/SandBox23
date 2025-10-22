@@ -4,6 +4,10 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
+import androidx.room.Room
+import com.example.myapplication.core.data.db.AppDatabase
+import com.example.myapplication.core.data.db.dao.LoanDao
+import com.example.myapplication.core.data.db.dao.UserDao
 import com.example.myapplication.core.data.repo.AppRepositoryImpl
 import com.example.myapplication.core.data.storage.AppStorage
 import com.example.myapplication.core.domain.api.AppRepository
@@ -18,9 +22,21 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
 )
 
 val coreDataModule = module {
+    single {
+        Room.databaseBuilder(
+            androidContext(),
+            AppDatabase::class.java,
+            "sandbox_bank23.db"
+        ).build()
+    }
+
     single<AppRepository> {
         AppRepositoryImpl(get())
     }
+
+    single<UserDao> { get<AppDatabase>().userDao() }
+
+    single<LoanDao> { get<AppDatabase>().loanDao() }
 
     single<AppStorage> {
         AppStorage(

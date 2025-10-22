@@ -5,7 +5,9 @@ package com.example.myapplication.debitcards.data.mock
 import com.example.myapplication.core.data.network.Response
 import com.example.myapplication.core.domain.models.Card
 import com.example.myapplication.core.domain.models.CardType
+import com.example.myapplication.core.utils.ApiCodes
 import kotlinx.serialization.json.Json
+import java.math.BigDecimal
 import kotlin.random.Random
 
 class DebitCardsMock {
@@ -35,7 +37,7 @@ class DebitCardsMock {
             owner = listOf("Michael Johnson", "Emily Davis", "Chris Miller").random(),
             type = CardType.DEBIT,
             percent = Random.nextDouble(0.5, 3.0),
-            balance = Random.nextLong(0, 1_000_000)
+            balance = Random.nextLong(0, 1_000_000_00)
         )
 
         val jsonCard = Json.encodeToString(card)
@@ -64,4 +66,22 @@ class DebitCardsMock {
         description = "Card with current number already exists",
         response = null
     )
+
+    fun depositToDebitCard(cardId: Long, amount: BigDecimal): Response {
+        val isValid = cardId > 0 && amount > BigDecimal.ZERO
+        return if (isValid && Random.nextInt(1, 100) <= 90) {
+            Response(
+                code = ApiCodes.SUCCESS,
+                description = "Deposit successful",
+                response = Json.encodeToString(true)
+            )
+        } else {
+            Response(
+                code = ApiCodes.NO_RESPONSE,
+                description = "Deposit failed",
+                response = null
+            )
+        }
+    }
+
 }
