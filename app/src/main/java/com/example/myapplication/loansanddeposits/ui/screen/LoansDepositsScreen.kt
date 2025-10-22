@@ -128,12 +128,21 @@ fun LoansDepositsScreen(
         ) {
             item { SectionHeader(text = stringResource(R.string.deposits)) }
 
-            items(depositsUi, key = { it.id }) { item ->
-                DepositItem(
-                    item = Deposit(item.id, item.title, item.balanceText, item.percentType),
-                    iconRes = R.drawable.ic_deposit,
-                    onClick = { /* открыть вклад по id */ }
-                )
+            if (depositsUi.isEmpty()) {
+                item {
+                    EmptyStateCard(
+                        iconRes = R.drawable.ic_deposit,
+                        message = stringResource(R.string.no_deposits_message)
+                    )
+                }
+            } else {
+                items(depositsUi, key = { it.id }) { item ->
+                    DepositItem(
+                        item = Deposit(item.id, item.title, item.balanceText, item.percentType),
+                        iconRes = R.drawable.ic_deposit,
+                        onClick = { /* открыть вклад по id */ }
+                    )
+                }
             }
 
             item {
@@ -148,10 +157,19 @@ fun LoansDepositsScreen(
                 SectionHeader(text = stringResource(R.string.loans))
             }
 
-            items(creditsUi, key = { it.id }) { item ->
-                CreditItem(
-                    item = Credit(item.id, item.name, item.amountText, item.type)
-                )
+            if (creditsUi.isEmpty()) {
+                item {
+                    EmptyStateCard(
+                        iconRes = R.drawable.ic_mortage,
+                        message = stringResource(R.string.no_loans_message)
+                    )
+                }
+            } else {
+                items(creditsUi, key = { it.id }) { item ->
+                    CreditItem(
+                        item = Credit(item.id, item.name, item.amountText, item.type)
+                    )
+                }
             }
 
             item {
@@ -321,6 +339,50 @@ fun CreditItem(
                     color = MaterialTheme.colorScheme.primary
                 )
             }
+        }
+    }
+}
+
+@Composable
+private fun EmptyStateCard(
+    iconRes: Int,
+    message: String,
+    modifier: Modifier = Modifier
+) {
+    val shape = RoundedCornerShape(Padding12dp)
+    Surface(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(shape),
+        shape = shape,
+        color = MaterialTheme.colorScheme.surfaceContainerLowest
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(Height72)
+                .padding(horizontal = Padding22dp)
+        ) {
+            Card(shape = RoundedCornerShape(CornerRadiusRegular)) {
+                Image(
+                    modifier = Modifier
+                        .size(CardIconHeight)
+                        .background(MaterialTheme.colorScheme.surfaceContainerLowest),
+                    painter = painterResource(id = iconRes),
+                    contentDescription = null,
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
+                )
+            }
+            Text(
+                text = message,
+                style = AppTypography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurfaceVariant),
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier
+                    .padding(start = Padding24dp)
+                    .weight(1f)
+            )
         }
     }
 }
