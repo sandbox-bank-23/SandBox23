@@ -5,6 +5,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.lifecycle.lifecycleScope
+import com.example.myapplication.core.domain.api.AppInteractor
+import com.example.myapplication.core.domain.api.StorageKey
 import com.example.myapplication.core.ui.compose.App
 import com.example.myapplication.core.ui.theme.SandBox23Theme
 import com.example.myapplication.loans.domain.interactor.Loan
@@ -15,17 +17,26 @@ import java.math.BigDecimal
 
 class MainActivity : ComponentActivity() {
     val loanInteractor: Loan by inject()
+    val appInteractor: AppInteractor by inject()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         lifecycleScope.launch {
-            val credit = Credit(
-                userId = 777,
-                balance = BigDecimal(400_000),
-                period = 24L,
-                orderDate = System.currentTimeMillis()
-            )
-            loanInteractor.create(loan = credit)
+            appInteractor.getAuthDataValue(storageKey = StorageKey.AUTHDATA).collect { authData ->
+                authData?.let { data ->
+                    val userId = data.userId
+                    userId?.let {
+                        val credit = Credit(
+                            userId = it.toLong(),
+                            balance = BigDecimal(400_000),
+                            period = 24L,
+                            orderDate = System.currentTimeMillis()
+                        )
+                        loanInteractor.create(loan = credit)
+                    }
+                }
+            }
         }
         setContent {
             SandBox23Theme {

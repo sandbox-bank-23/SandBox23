@@ -9,22 +9,38 @@ import com.example.myapplication.core.data.network.NetworkClient
 import com.example.myapplication.core.data.network.Response
 import com.example.myapplication.core.demo.demoFirstName
 import com.example.myapplication.core.demo.demoLastName
+import com.example.myapplication.core.domain.api.AppInteractor
+import com.example.myapplication.core.domain.api.StorageKey
 import com.example.myapplication.core.domain.models.Result
+import kotlin.random.Random
 
 class AuthRepositoryImpl(
+    val appInteractor: AppInteractor,
     val client: NetworkClient,
     val authMock: AuthMock,
     val dao: UserDao
 ) : AuthRepository {
 
     private suspend fun createUser(email: String) {
-        dao.createUser(
-            UserEntity(
-                firstName = demoFirstName,
-                lastName = demoLastName,
-                email = email
-            )
-        )
+        appInteractor.getAuthDataValue(storageKey = StorageKey.AUTHDATA).collect { authData ->
+            authData?.let { data ->
+                val userId = data.userId?.toLong() ?: Random.nextLong(1, Long.MAX_VALUE)
+                appInteractor.saveAuthDataValue(
+                    storageKey = StorageKey.AUTHDATA,
+                    value = authData.copy(
+                        userId = userId.toString()
+                    )
+                )
+                dao.createUser(
+                    UserEntity(
+                        id = userId,
+                        firstName = demoFirstName,
+                        lastName = demoLastName,
+                        email = email
+                    )
+                )
+            }
+        }
     }
 
     override suspend fun login(

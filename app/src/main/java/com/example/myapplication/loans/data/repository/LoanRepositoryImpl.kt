@@ -58,6 +58,7 @@ class LoanRepositoryImpl(
     }
 
     override suspend fun create(loan: Credit) {
+        val userWithLoans = dao.getUserWithLoans(userId = loan.userId)
         val requestData = RequestData(
             userId = loan.userId,
             loanName = loan.name,
@@ -72,12 +73,12 @@ class LoanRepositoryImpl(
         val response = networkClient(loansMock.createLoan(creditJson))
         response.response?.let { json ->
             val responseData = Json.decodeFromString<ResponseData>(string = json)
-            val credit = responseData.body
+            val newCredit = responseData.body
             if (response.code == 201) {
-                if (credit != null) {
-                    val amount = credit.balance
+                if (newCredit != null) {
+                    val amount = newCredit.balance
                     if (false/*amount > BigDecimal.ZERO*/) {
-                        topUpRandomDebitCard(userId = credit.userId, amount = amount)
+                        topUpRandomDebitCard(userId = newCredit.userId, amount = amount)
                     }
                     //dao.create(loan = map(credit = newCredit))
                 }
