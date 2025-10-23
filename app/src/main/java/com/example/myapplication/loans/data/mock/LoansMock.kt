@@ -7,9 +7,12 @@ import com.example.myapplication.core.domain.models.Product
 import com.example.myapplication.core.domain.models.ProductType
 import com.example.myapplication.loans.data.mock.model.Credit
 import com.example.myapplication.loans.data.mock.model.OuterPay
+import com.example.myapplication.loans.data.mock.model.RequestData
+import com.example.myapplication.loans.data.mock.model.ResponseData
 import com.example.myapplication.loans.data.mock.utils.calculatePay
 import kotlinx.serialization.json.Json
 import java.math.BigDecimal
+import java.util.Calendar
 import kotlin.random.Random
 
 class LoansMock {
@@ -83,29 +86,55 @@ class LoansMock {
         )
     }
 
-    fun createLoan(loanJson: String): Response {
-        // percentType = 2 - ежемесячно
-        val loanFromClient = Json.decodeFromString<Credit>(loanJson)
+    private fun getEndDate(start: Long, months: Long): Long {
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = start
+        calendar.add(Calendar.MONTH, months.toInt())
+        return calendar.timeInMillis
+    }
 
-        val credit = Credit(
-            id = Random.nextLong(),
-            name = loanFromClient.name,
-            userId = loanFromClient.userId,
-            period = loanFromClient.period,
-            balance = loanFromClient.balance,
-            percent = loanFromClient.percent,
-            isClose = false,
-            monthPay = loanFromClient.monthPay,
-            orderDate = loanFromClient.orderDate,
-            endDate = loanFromClient.endDate
+    fun createLoan(loanJson: String): Response {
+        var credit: Credit? = null
+        var httpCode: Int
+        val requestData = Json.decodeFromString<RequestData>(loanJson)
+        val totalNumber = requestData.currentCreditNumber + 1
+        if (totalNumber > MAX_COUNT || requestData.totalDept >= MAX_DEPT) {
+            httpCode = 400
+        } else {
+            val period = requestData.period
+            val endDate = getEndDate(
+                start = requestData.orderDate,
+                months = period
+            )
+            credit = Credit(
+                id = Random.nextLong(from = 1, until = Long.MAX_VALUE),
+                name = requestData.loanName,
+                userId = requestData.userId,
+                period = period,
+                balance = requestData.balance,
+                percent = getPercent(),
+                isClose = false,
+                monthPay = null,
+                orderDate = requestData.orderDate,
+                endDate = endDate
+            )
+            httpCode = 201
+        }
+
+
+        val response = ResponseData(
+            body = credit,
+
+            requestNumber = requestData.requestNumber,
+            currentCreditNumber = requestData.currentCreditNumber,
         )
 
-        val jsonProduct = Json.encodeToString(credit)
+        val json = Json.encodeToString(response)
 
         return Response(
-            code = 200,
+            code = httpCode,
             description = "OK",
-            response = jsonProduct
+            response = json
         )
     }
 
@@ -132,4 +161,9 @@ class LoansMock {
         description = "Loan with current number already exists",
         response = null
     )
+
+    companion object {
+        private const val MAX_COUNT = 3
+        private val MAX_DEPT = BigDecimal(5_000_000)
+    }
 }

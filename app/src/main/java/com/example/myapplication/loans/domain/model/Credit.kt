@@ -1,8 +1,10 @@
 package com.example.myapplication.loans.domain.model
 
+import com.example.myapplication.utils.BigDecimalAsStringSerializer
+import kotlinx.serialization.Serializable
 import java.math.BigDecimal
 
-private const val CREDIT_NAME = "Потребительский кредит"
+const val CREDIT_NAME = "Потребительский кредит"
 
 // monthPay - месячный платеж
 // balance - сумма кредита
@@ -11,16 +13,21 @@ private const val CREDIT_NAME = "Потребительский кредит"
 // period - срок кредита
 // percent - процентная ставка
 
+@Serializable
 data class Credit(
-    val id: Long,
+    val id: Long? = null,
     val userId: Long,
-    val name: String = CREDIT_NAME,
+    val name: String,
+
+    @Serializable(with = BigDecimalAsStringSerializer::class)
     val balance: BigDecimal,
     val period: Long,
+    val orderDate: Long,
 
-    val orderDate: Long? = null,
     val endDate: Long? = null,
     val percent: Long? = null,
     val isClose: Boolean? = null,
+
+    @Serializable(with = BigDecimalAsStringSerializer::class)
     val monthPay: BigDecimal? = null,
 )

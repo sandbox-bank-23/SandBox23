@@ -17,14 +17,17 @@ class AuthRepositoryImpl(
     val dao: UserDao
 ) : AuthRepository {
 
-    private suspend fun createUser(email: String) {
-        dao.createUser(
-            UserEntity(
-                firstName = demoFirstName,
-                lastName = demoLastName,
-                email = email
+    private suspend fun createUser(email: String, authData: AuthData) {
+        authData.userId?.let { userId ->
+            dao.createUser(
+                UserEntity(
+                    id = userId.toLong(),
+                    firstName = demoFirstName,
+                    lastName = demoLastName,
+                    email = email
+                )
             )
-        )
+        }
     }
 
     override suspend fun login(
@@ -57,7 +60,7 @@ class AuthRepositoryImpl(
         return when (data.code) {
             REGISTER_SUCCESS -> {
                 val parsed = parseAuthResponse(data)
-                createUser(email = email)
+                createUser(email = email, authData = parsed)
                 Result.Success(parsed)
             }
             USER_EXISTS -> {
