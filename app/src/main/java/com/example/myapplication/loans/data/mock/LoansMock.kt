@@ -97,7 +97,8 @@ class LoansMock {
         var credit: Credit? = null
         var httpCode: Int
         val requestData = Json.decodeFromString<RequestData>(loanJson)
-        if (requestData.currentCreditNumber > 3) {
+        val totalNumber = requestData.currentCreditNumber + 1
+        if (totalNumber > MAX_COUNT) {
             httpCode = 400
         } else {
             val period = requestData.period
@@ -160,4 +161,8 @@ class LoansMock {
         description = "Loan with current number already exists",
         response = null
     )
+
+    companion object {
+        private const val MAX_COUNT = 3
+    }
 }

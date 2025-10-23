@@ -4,7 +4,7 @@ import com.example.myapplication.utils.BigDecimalAsStringSerializer
 import kotlinx.serialization.Serializable
 import java.math.BigDecimal
 
-private const val CREDIT_NAME = "Потребительский кредит"
+const val CREDIT_NAME = "Потребительский кредит"
 
 // monthPay - месячный платеж
 // balance - сумма кредита
@@ -17,7 +17,8 @@ private const val CREDIT_NAME = "Потребительский кредит"
 data class Credit(
     val id: Long? = null,
     val userId: Long,
-    val name: String = CREDIT_NAME,
+    val name: String,
+
     @Serializable(with = BigDecimalAsStringSerializer::class)
     val balance: BigDecimal,
     val period: Long,
@@ -26,6 +27,7 @@ data class Credit(
     val endDate: Long? = null,
     val percent: Long? = null,
     val isClose: Boolean? = null,
+
     @Serializable(with = BigDecimalAsStringSerializer::class)
     val monthPay: BigDecimal? = null,
 )

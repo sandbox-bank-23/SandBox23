@@ -27,4 +27,10 @@ interface LoanDao {
 
     @Update
     suspend fun close(loan: LoanEntity)
+
+    @Transaction
+    suspend fun getCloseLoan(loanEntity: LoanEntity): LoanEntity {
+        close(loan = loanEntity)
+        return getLoan(loanId = loanEntity.id)
+    }
 }

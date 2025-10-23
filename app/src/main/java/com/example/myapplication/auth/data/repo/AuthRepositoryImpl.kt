@@ -15,31 +15,21 @@ import com.example.myapplication.core.domain.models.Result
 import kotlin.random.Random
 
 class AuthRepositoryImpl(
-    val appInteractor: AppInteractor,
     val client: NetworkClient,
     val authMock: AuthMock,
     val dao: UserDao
 ) : AuthRepository {
 
-    private suspend fun createUser(email: String) {
-        appInteractor.getAuthDataValue(storageKey = StorageKey.AUTHDATA).collect { authData ->
-            authData?.let { data ->
-                val userId = data.userId?.toLong() ?: Random.nextLong(1, Long.MAX_VALUE)
-                appInteractor.saveAuthDataValue(
-                    storageKey = StorageKey.AUTHDATA,
-                    value = authData.copy(
-                        userId = userId.toString()
-                    )
+    private suspend fun createUser(email: String, authData: AuthData) {
+        authData.userId?.let { userId ->
+            dao.createUser(
+                UserEntity(
+                    id = userId.toLong(),
+                    firstName = demoFirstName,
+                    lastName = demoLastName,
+                    email = email
                 )
-                dao.createUser(
-                    UserEntity(
-                        id = userId,
-                        firstName = demoFirstName,
-                        lastName = demoLastName,
-                        email = email
-                    )
-                )
-            }
+            )
         }
     }
 
@@ -73,7 +63,7 @@ class AuthRepositoryImpl(
         return when (data.code) {
             REGISTER_SUCCESS -> {
                 val parsed = parseAuthResponse(data)
-                createUser(email = email)
+                createUser(email = email, authData = parsed)
                 Result.Success(parsed)
             }
             USER_EXISTS -> {
