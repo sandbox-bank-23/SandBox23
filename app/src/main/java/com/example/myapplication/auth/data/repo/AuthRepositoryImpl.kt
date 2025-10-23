@@ -9,10 +9,7 @@ import com.example.myapplication.core.data.network.NetworkClient
 import com.example.myapplication.core.data.network.Response
 import com.example.myapplication.core.demo.demoFirstName
 import com.example.myapplication.core.demo.demoLastName
-import com.example.myapplication.core.domain.api.AppInteractor
-import com.example.myapplication.core.domain.api.StorageKey
 import com.example.myapplication.core.domain.models.Result
-import kotlin.random.Random
 
 class AuthRepositoryImpl(
     val client: NetworkClient,

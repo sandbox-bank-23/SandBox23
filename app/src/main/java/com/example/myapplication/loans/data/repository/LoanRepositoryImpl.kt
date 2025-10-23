@@ -60,6 +60,10 @@ class LoanRepositoryImpl(
         return dataResource.calculateLoan(sum = sum, percent = percent, period = period)
     }
 
+    private fun errorResult(error: String, status: String): LoanResult.Error {
+        return LoanResult.Error(error, status)
+    }
+
     override suspend fun create(loan: Credit): Flow<LoanResult> {
         return flow {
             val userWithLoans = dao.getUserWithLoans(userId = loan.userId)
@@ -80,46 +84,21 @@ class LoanRepositoryImpl(
                 val responseData = Json.decodeFromString<ResponseData>(string = json)
                 val newCredit = responseData.body
                 when (response.code) {
-                    201 -> {
+                    HTTP_CREATE_SUCCESS -> {
                         newCredit?.let { credit ->
                             val amount = credit.balance
                             if (amount > BigDecimal.ZERO) {
                                 topUpRandomDebitCard(userId = credit.userId, amount = amount)
                             }
                             dao.create(loan = map(credit = credit))
-                            emit(
-                                value = LoanResult.Success(
-                                    data = credit,
-                                    status = SUCCESS
-                                )
-                            )
-                        } ?: emit(
-                            value = LoanResult.Error(
-                                error = LOAN_CREATE_ERROR,
-                                status = ERROR
-                            )
-                        )
+                            emit(LoanResult.Success(credit, SUCCESS))
+                        } ?: emit(errorResult(LOAN_CREATE_ERROR, ERROR))
                     }
-                    400 -> emit(
-                        value = LoanResult.Error(
-                            error = LOAN_CREATE_ERROR,
-                            status = ERROR
-                        )
-                    )
-                    else -> emit(
-                        value = LoanResult.Error(
-                            error = SERVER_ERROR,
-                            status = ERROR
-                        )
-                    )
+                    HTTP_CREATE_ERROR -> emit(errorResult(LOAN_CREATE_ERROR, ERROR))
+                    else -> emit(errorResult(SERVER_ERROR, ERROR))
                 }
             } else {
-                emit(
-                    value = LoanResult.Error(
-                        error = SERVER_ERROR,
-                        status = ERROR
-                    )
-                )
+                emit(errorResult(SERVER_ERROR, ERROR))
             }
         }
     }
@@ -193,6 +172,8 @@ class LoanRepositoryImpl(
     }
 
     companion object {
+        private const val HTTP_CREATE_SUCCESS = 201
+        private const val HTTP_CREATE_ERROR = 400
         private const val LOAN_CLOSE_ERROR = "Loan closing error"
         private const val LOAN_CREATE_ERROR = "The maximum limit is allowed"
         private const val SERVER_ERROR = "Server error"

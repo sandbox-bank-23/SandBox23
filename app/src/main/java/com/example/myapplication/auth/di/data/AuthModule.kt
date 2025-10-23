@@ -5,7 +5,6 @@ import com.example.myapplication.auth.data.repo.AuthRepositoryImpl
 import com.example.myapplication.auth.domain.repo.AuthRepository
 import com.example.myapplication.core.data.db.dao.UserDao
 import com.example.myapplication.core.data.network.NetworkClient
-import com.example.myapplication.core.domain.api.AppInteractor
 import org.koin.dsl.module
 
 val authDataModule = module {
