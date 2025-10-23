@@ -98,7 +98,7 @@ class LoansMock {
         var httpCode: Int
         val requestData = Json.decodeFromString<RequestData>(loanJson)
         val totalNumber = requestData.currentCreditNumber + 1
-        if (totalNumber > MAX_COUNT) {
+        if (totalNumber > MAX_COUNT || requestData.totalDept >= MAX_DEPT) {
             httpCode = 400
         } else {
             val period = requestData.period
@@ -164,5 +164,6 @@ class LoansMock {
 
     companion object {
         private const val MAX_COUNT = 3
+        private val MAX_DEPT = BigDecimal(5_000_000)
     }
 }

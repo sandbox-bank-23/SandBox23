@@ -12,6 +12,8 @@ data class RequestData(
     val balance: BigDecimal,
     val period: Long,
     val orderDate: Long,
+    @Serializable(with = BigDecimalAsStringSerializer::class)
+    val totalDept: BigDecimal,
 
     val currentCreditNumber: Int,
     val requestNumber: Long,

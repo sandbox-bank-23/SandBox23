@@ -67,6 +67,7 @@ class LoanRepositoryImpl(
     override suspend fun create(loan: Credit): Flow<LoanResult> {
         return flow {
             val userWithLoans = dao.getUserWithLoans(userId = loan.userId)
+            val totalDept = userWithLoans.loans.sumOf { it.balance }
             val currentNumber = userWithLoans.loans.size
             val requestData = RequestData(
                 userId = loan.userId,
@@ -75,7 +76,8 @@ class LoanRepositoryImpl(
                 period = loan.period,
                 orderDate = loan.orderDate,
                 currentCreditNumber = currentNumber,
-                requestNumber = Random.nextLong()
+                requestNumber = Random.nextLong(),
+                totalDept = totalDept
             )
             val creditJson = Json.encodeToString(value = requestData)
             val response = networkClient(loansMock.createLoan(creditJson))
@@ -86,10 +88,7 @@ class LoanRepositoryImpl(
                 when (response.code) {
                     HTTP_CREATE_SUCCESS -> {
                         newCredit?.let { credit ->
-                            val amount = credit.balance
-                            if (amount > BigDecimal.ZERO) {
-                                topUpRandomDebitCard(userId = credit.userId, amount = amount)
-                            }
+                            topUpRandomDebitCard(credit)
                             dao.create(loan = map(credit = credit))
                             emit(LoanResult.Success(credit, SUCCESS))
                         } ?: emit(errorResult(LOAN_CREATE_ERROR, ERROR))
@@ -150,24 +149,28 @@ class LoanRepositoryImpl(
         }
     }
 
-    private suspend fun topUpRandomDebitCard(userId: Long, amount: BigDecimal) {
-        val validAmount = amount.takeIf { it > BigDecimal.ZERO } ?: return
-        val cardsRes = cardsRepository.getCards(userId)
+    private suspend fun topUpRandomDebitCard(credit: Credit) {
+        val amount = credit.balance
+        if (amount > BigDecimal.ZERO) {
+            val userId = credit.userId
+            val validAmount = amount.takeIf { it > BigDecimal.ZERO } ?: return
+            val cardsRes = cardsRepository.getCards(userId)
 
-        val target = when (cardsRes) {
-            is Result.Success ->
-                cardsRes.data
-                    .asSequence()
-                    .filter { it.type == CardType.DEBIT }
-                    .toList()
-                    .randomOrNull()
+            val target = when (cardsRes) {
+                is Result.Success ->
+                    cardsRes.data
+                        .asSequence()
+                        .filter { it.type == CardType.DEBIT }
+                        .toList()
+                        .randomOrNull()
 
-            is Result.Error -> null
-        } ?: return
+                is Result.Error -> null
+            } ?: return
 
-        when (debitCardsRepository.depositToDebitCard(target.id, validAmount)) {
-            is Result.Success -> Unit
-            is Result.Error -> Unit
+            when (debitCardsRepository.depositToDebitCard(target.id, validAmount)) {
+                is Result.Success -> Unit
+                is Result.Error -> Unit
+            }
         }
     }
 
