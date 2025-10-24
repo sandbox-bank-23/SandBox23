@@ -31,7 +31,6 @@ interface LoansDepositsUiMapper {
 class DefaultLoansDepositsUiMapper : LoansDepositsUiMapper {
 
     private val rubFormatter = NumberFormat.getCurrencyInstance(Locale("ru", "RU")).apply {
-        minimumFractionDigits = 2;
         maximumFractionDigits = 2
     }
     private val dayMonthFormatter = DateTimeFormatter.ofPattern("d MMMM", Locale("ru"))
