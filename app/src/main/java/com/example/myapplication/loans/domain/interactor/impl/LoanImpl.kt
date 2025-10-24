@@ -28,6 +28,10 @@ class LoanImpl(
         return repository.getLoan(loanId = loanId)
     }
 
+    override suspend fun getLoanList(userId: Long): Flow<List<Credit>> {
+        return repository.getLoanList(userId = userId)
+    }
+
     companion object {
         const val INTEREST_RATE = 25
     }

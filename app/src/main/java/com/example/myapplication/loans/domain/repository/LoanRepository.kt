@@ -12,5 +12,7 @@ interface LoanRepository {
 
     suspend fun getLoan(loanId: Long): Flow<LoanResult>
 
+    suspend fun getLoanList(userId: Long): Flow<List<Credit>>
+
     suspend fun close(loanId: Long): Flow<LoanResult>
 }

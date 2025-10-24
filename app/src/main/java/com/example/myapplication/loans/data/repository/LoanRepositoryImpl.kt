@@ -17,6 +17,7 @@ import com.example.myapplication.loans.domain.model.Pay
 import com.example.myapplication.loans.domain.repository.LoanRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.serialization.json.Json
 import java.math.BigDecimal
 import kotlin.random.Random
@@ -39,7 +40,8 @@ class LoanRepositoryImpl(
             orderDate = credit.start,
             endDate = credit.end,
             percent = credit.percent,
-            isClose = credit.isClose
+            isClose = credit.isClose,
+            monthPay = credit.monthPay
         )
     }
 
@@ -52,7 +54,8 @@ class LoanRepositoryImpl(
             start = credit.orderDate,
             end = credit.endDate,
             percent = credit.percent,
-            isClose = credit.isClose
+            isClose = credit.isClose,
+            monthPay = credit.monthPay ?: BigDecimal(0)
         )
     }
 
@@ -67,8 +70,9 @@ class LoanRepositoryImpl(
     override suspend fun create(loan: Credit): Flow<LoanResult> {
         return flow {
             val userWithLoans = dao.getUserWithLoans(userId = loan.userId)
-            val totalDept = userWithLoans.loans.sumOf { it.balance }
-            val currentNumber = userWithLoans.loans.size
+            val loans = userWithLoans.loans.filter { it.isClose != true }
+            val totalDept = loans.sumOf { it.balance }
+            val currentNumber = loans.size
             val requestData = RequestData(
                 userId = loan.userId,
                 loanName = loan.name,
@@ -104,49 +108,61 @@ class LoanRepositoryImpl(
 
     override suspend fun close(loanId: Long): Flow<LoanResult> {
         return flow {
-            val entity = dao.getLoan(loanId = loanId)
-            if (entity.isClose == false) {
-                val loan = map(entity)
-                val json = Json.encodeToString<Credit>(loan)
-                val response = networkClient(loansMock.closeLoan(loanJson = json))
-                response.response?.let { json ->
-                    val isClose = Json.decodeFromString<Boolean>(string = json)
-                    if (isClose) {
-                        val updateLoan = dao.getCloseLoan(loanEntity = entity.copy(isClose = true))
-                        emit(
-                            value = LoanResult.Success(
-                                data = map(credit = updateLoan),
-                                status = SUCCESS
-                            )
+            dao.getLoan(loanId = loanId).collect { entity ->
+                if (entity.isClose == false) {
+                    val loan = map(entity)
+                    val json = Json.encodeToString<Credit>(loan)
+                    val response = networkClient(loansMock.closeLoan(loanJson = json))
+                    response.response?.let { json ->
+                        val isClose = Json.decodeFromString<Boolean>(string = json)
+                        if (isClose) {
+                            val updateLoan = dao.getCloseLoan(loanEntity = entity.copy(isClose = true))
+                            updateLoan.collect {
+                                emit(
+                                    value = LoanResult.Success(
+                                        data = map(credit = it),
+                                        status = SUCCESS
+                                    )
+                                )
+                            }
+                        }
+                    } ?: emit(
+                        value = LoanResult.Error(
+                            error = SERVER_ERROR,
+                            status = ERROR
                         )
-                    }
-                } ?: emit(
-                    value = LoanResult.Error(
-                        error = SERVER_ERROR,
-                        status = ERROR
                     )
-                )
-            } else {
-                emit(
-                    value = LoanResult.Error(
-                        error = LOAN_CLOSE_ERROR,
-                        status = ERROR
+                } else {
+                    emit(
+                        value = LoanResult.Error(
+                            error = LOAN_CLOSE_ERROR,
+                            status = ERROR
+                        )
                     )
-                )
+                }
             }
         }
     }
 
     override suspend fun getLoan(loanId: Long): Flow<LoanResult> {
         return flow {
-            val entity = dao.getLoan(loanId = loanId)
-            emit(
-                value = LoanResult.Success(
-                    status = SUCCESS,
-                    data = map(credit = entity)
+            dao.getLoan(loanId = loanId).collect { entity ->
+                emit(
+                    value = LoanResult.Success(
+                        status = SUCCESS,
+                        data = map(credit = entity)
+                    )
                 )
-            )
+            }
         }
+    }
+
+    override suspend fun getLoanList(userId: Long): Flow<List<Credit>> {
+        val entityFlow = dao.getLoanList(userId = userId)
+        val loanFlow = entityFlow.map { entityList ->
+            entityList.map { map(it) }
+        }
+        return loanFlow
     }
 
     private suspend fun topUpRandomDebitCard(credit: Credit) {

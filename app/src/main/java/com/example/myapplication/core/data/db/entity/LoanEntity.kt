@@ -13,6 +13,7 @@ data class LoanEntity(
     val balance: BigDecimal,
     val period: Long,
     val start: Long,
+    val monthPay: BigDecimal,
     val end: Long? = null,
     val percent: Long? = null,
     val isClose: Boolean? = null,
