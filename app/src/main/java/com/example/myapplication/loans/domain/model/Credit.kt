@@ -24,10 +24,10 @@ data class Credit(
     val period: Long,
     val orderDate: Long,
 
+    @Serializable(with = BigDecimalAsStringSerializer::class)
+    val monthPay: BigDecimal?,
+
     val endDate: Long? = null,
     val percent: Long? = null,
     val isClose: Boolean? = null,
-
-    @Serializable(with = BigDecimalAsStringSerializer::class)
-    val monthPay: BigDecimal? = null,
 )

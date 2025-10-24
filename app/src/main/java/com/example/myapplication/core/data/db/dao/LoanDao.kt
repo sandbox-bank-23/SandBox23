@@ -3,10 +3,10 @@ package com.example.myapplication.core.data.db.dao
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import androidx.room.Transaction
 import androidx.room.Update
 import com.example.myapplication.core.data.db.entity.LoanEntity
 import com.example.myapplication.core.data.db.entity.UserWithLoans
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface LoanDao {
@@ -17,19 +17,19 @@ interface LoanDao {
         return loan.copy(id = create(loan))
     }
 
-    @Transaction
     @Query("SELECT * FROM loans WHERE id = :loanId")
-    suspend fun getLoan(loanId: Long): LoanEntity
+    fun getLoan(loanId: Long): Flow<LoanEntity>
 
-    @Transaction
+    @Query("SELECT * FROM loans WHERE userId = :userId AND isClose != 1 ORDER BY id DESC")
+    fun getLoanList(userId: Long): Flow<List<LoanEntity>>
+
     @Query("SELECT * FROM users WHERE id = :userId")
     suspend fun getUserWithLoans(userId: Long): UserWithLoans
 
     @Update
     suspend fun close(loan: LoanEntity)
 
-    @Transaction
-    suspend fun getCloseLoan(loanEntity: LoanEntity): LoanEntity {
+    suspend fun getCloseLoan(loanEntity: LoanEntity): Flow<LoanEntity> {
         close(loan = loanEntity)
         return getLoan(loanId = loanEntity.id)
     }

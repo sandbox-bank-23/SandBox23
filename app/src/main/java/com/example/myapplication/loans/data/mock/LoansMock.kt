@@ -93,6 +93,10 @@ class LoansMock {
         return calendar.timeInMillis
     }
 
+    private fun calculateMonthPay(sum: BigDecimal, period: Long, percent: Long): BigDecimal {
+        return calculatePay(sum, period, percent.toInt())
+    }
+
     fun createLoan(loanJson: String): Response {
         var credit: Credit? = null
         var httpCode: Int
@@ -101,32 +105,29 @@ class LoansMock {
         if (totalNumber > MAX_COUNT || requestData.totalDept >= MAX_DEPT) {
             httpCode = 400
         } else {
+            val percent = getPercent()
             val period = requestData.period
-            val endDate = getEndDate(
-                start = requestData.orderDate,
-                months = period
-            )
             credit = Credit(
                 id = Random.nextLong(from = 1, until = Long.MAX_VALUE),
                 name = requestData.loanName,
                 userId = requestData.userId,
                 period = period,
                 balance = requestData.balance,
-                percent = getPercent(),
+                percent = percent,
                 isClose = false,
-                monthPay = null,
+                monthPay = calculateMonthPay(requestData.balance, period, percent),
                 orderDate = requestData.orderDate,
-                endDate = endDate
+                endDate = getEndDate(
+                    start = requestData.orderDate,
+                    months = period
+                )
             )
             httpCode = 201
         }
-
-
         val response = ResponseData(
-            body = credit,
-
-            requestNumber = requestData.requestNumber,
-            currentCreditNumber = requestData.currentCreditNumber,
+            credit,
+            requestData.requestNumber,
+            requestData.currentCreditNumber,
         )
 
         val json = Json.encodeToString(response)
