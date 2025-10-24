@@ -6,7 +6,6 @@ plugins {
     alias(libs.plugins.kotlin.compose) apply false
     alias(libs.plugins.kapt) apply false
     alias(libs.plugins.detekt)
-    id("androidx.room") version "2.8.2" apply false
 }
 
 tasks.withType<Detekt>().configureEach {
