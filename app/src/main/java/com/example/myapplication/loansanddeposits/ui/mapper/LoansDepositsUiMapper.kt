@@ -1,3 +1,5 @@
+@file:Suppress("MagicNumber")
+
 package com.example.myapplication.loansanddeposits.ui.mapper
 
 import com.example.myapplication.core.domain.models.Product
