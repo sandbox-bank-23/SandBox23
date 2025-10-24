@@ -14,8 +14,11 @@ import com.example.myapplication.core.data.db.entity.UserEntity
 import com.example.myapplication.deposits.data.db.DepositDao
 import com.example.myapplication.deposits.data.db.DepositEntity
 
+private const val OLD = 4
+private const val NEW = 5
+
 @Database(
-    version = 5,
+    version = NEW,
     entities = [
         CardEntity::class,
         UserEntity::class,
@@ -24,7 +27,7 @@ import com.example.myapplication.deposits.data.db.DepositEntity
     ],
     exportSchema = true,
     autoMigrations = [
-        AutoMigration(from = 4, to = 5)
+        AutoMigration(from = OLD, to = NEW)
     ]
 )
 @TypeConverters(Converters::class)
@@ -38,7 +41,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun loanDao(): LoanDao
 
     companion object {
-        val MIGRATION_4_5 = object : Migration(4, 5) {
+        val MIGRATION_4_5 = object : Migration(OLD, NEW) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL("ALTER TABLE loans ADD COLUMN monthPay TEXT NOT NULL DEFAULT '0'")
             }

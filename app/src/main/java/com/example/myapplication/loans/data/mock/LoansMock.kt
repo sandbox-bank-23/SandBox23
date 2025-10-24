@@ -107,11 +107,6 @@ class LoansMock {
         } else {
             val percent = getPercent()
             val period = requestData.period
-            val monthPay = calculateMonthPay(requestData.balance, period, percent)
-            val endDate = getEndDate(
-                start = requestData.orderDate,
-                months = period
-            )
             credit = Credit(
                 id = Random.nextLong(from = 1, until = Long.MAX_VALUE),
                 name = requestData.loanName,
@@ -120,19 +115,19 @@ class LoansMock {
                 balance = requestData.balance,
                 percent = percent,
                 isClose = false,
-                monthPay = monthPay,
+                monthPay = calculateMonthPay(requestData.balance, period, percent),
                 orderDate = requestData.orderDate,
-                endDate = endDate
+                endDate = getEndDate(
+                    start = requestData.orderDate,
+                    months = period
+                )
             )
             httpCode = 201
         }
-
-
         val response = ResponseData(
-            body = credit,
-
-            requestNumber = requestData.requestNumber,
-            currentCreditNumber = requestData.currentCreditNumber,
+            credit,
+            requestData.requestNumber,
+            requestData.currentCreditNumber,
         )
 
         val json = Json.encodeToString(response)
