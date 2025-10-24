@@ -6,7 +6,6 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     kotlin("plugin.serialization") version "2.2.20"
     alias(libs.plugins.kapt)
-    id("androidx.room")
 }
 
 android {
@@ -43,10 +42,6 @@ android {
     }
     buildFeatures {
         compose = true
-    }
-
-    room {
-        schemaDirectory("$projectDir/schemas")
     }
 }
 

@@ -28,7 +28,7 @@ val coreDataModule = module {
             AppDatabase::class.java,
             "sandbox_bank23.db"
         )
-            .addMigrations(AppDatabase.MIGRATION_4_5)
+            .fallbackToDestructiveMigration(true)
             .build()
     }
 
