@@ -98,9 +98,9 @@ fun LoansDepositsScreen(
 
     Scaffold(
         contentWindowInsets = WindowInsets(0),
-        containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
         topBar = {
             TopAppBar(
+                windowInsets = WindowInsets(0),
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surface,
                     titleContentColor = MaterialTheme.colorScheme.onSurface,
@@ -116,7 +116,8 @@ fun LoansDepositsScreen(
                     )
                 }
             )
-        }
+        },
+        containerColor = MaterialTheme.colorScheme.background,
     ) { innerPadding ->
 
         LazyColumn(
