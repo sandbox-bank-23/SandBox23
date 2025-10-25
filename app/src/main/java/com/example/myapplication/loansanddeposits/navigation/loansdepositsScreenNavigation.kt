@@ -21,11 +21,11 @@ fun NavGraphBuilder.loansDepositsScreenNavigation(navController: NavHostControll
         }
 
         composable(LoansDepositsRoutes.OPEN_LOAN.route) {
-            // TODO: CreateLoanScreen(onDone = { navController.popBackStack() })
+            // CreateLoanScreen(onDone = { navController.popBackStack() })
         }
 
         composable(LoansDepositsRoutes.OPEN_DEPOSIT.route) {
-            // TODO: CreateDepositScreen(onDone = { navController.popBackStack() })
+            // CreateDepositScreen(onDone = { navController.popBackStack() })
         }
 
         composable(
@@ -33,7 +33,7 @@ fun NavGraphBuilder.loansDepositsScreenNavigation(navController: NavHostControll
             arguments = listOf(navArgument(LOAN_ID) { type = NavType.LongType })
         ) { backStackEntry ->
             val loanId = backStackEntry.arguments?.getLong(LOAN_ID) ?: 0L
-            // TODO: LoanDetailsScreen(loanId = loanId, onBack = { navController.popBackStack() })
+            // LoanDetailsScreen(loanId = loanId, onBack = { navController.popBackStack() })
         }
 
         composable(
@@ -41,7 +41,7 @@ fun NavGraphBuilder.loansDepositsScreenNavigation(navController: NavHostControll
             arguments = listOf(navArgument(DEPOSIT_ID) { type = NavType.LongType })
         ) { backStackEntry ->
             val depositId = backStackEntry.arguments?.getLong(DEPOSIT_ID) ?: 0L
-            // TODO: DepositDetailsScreen(depositId = depositId, onBack = { navController.popBackStack() })
+            // DepositDetailsScreen(depositId = depositId, onBack = { navController.popBackStack() })
         }
     }
 }
