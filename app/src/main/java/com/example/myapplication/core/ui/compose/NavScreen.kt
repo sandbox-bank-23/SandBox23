@@ -61,7 +61,7 @@ import com.example.myapplication.core.ui.theme.NavTextInactiveLight
 import com.example.myapplication.core.ui.theme.PinPadBackgroundColor
 import com.example.myapplication.core.ui.theme.RoundedCornerShapeSelector
 import com.example.myapplication.core.ui.theme.secondaryContainerDark
-import com.example.myapplication.loansanddeposits.ui.screen.LoansDepositsScreen
+import com.example.myapplication.loansanddeposits.navigation.loansDepositsScreenNavigation
 import org.koin.androidx.compose.koinViewModel
 
 const val ANIMATION_DELAY = 500
@@ -268,7 +268,7 @@ fun NavHostContent(
         modifier = Modifier.padding(padding)
     ) {
         cardsScreenNavigation(navController)
-        financeScreenNavigation(navController)
+        loansDepositsScreenNavigation(navController)
         transfersScreenNavigation()
         historyScreenNavigation()
         profileScreenNavigation()
@@ -299,15 +299,6 @@ fun PlaceholderScreen(title: String) {
             text = title,
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold
-        )
-    }
-}
-
-fun NavGraphBuilder.financeScreenNavigation(navController: NavHostController) {
-    composable(Routes.FINANCE.route) {
-        LoansDepositsScreen(
-            navController = navController,
-            onApplyCreditClick = { /* navController.navigate("loan/create") */ }
         )
     }
 }
