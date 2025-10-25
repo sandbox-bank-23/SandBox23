@@ -24,7 +24,7 @@ interface LoanDao {
     fun getLoanList(userId: Long): Flow<List<LoanEntity>>
 
     @Query("SELECT * FROM users WHERE id = :userId")
-    suspend fun getUserWithLoans(userId: Long): UserWithLoans
+    suspend fun getUserWithLoans(userId: Long): UserWithLoans?
 
     @Update
     suspend fun close(loan: LoanEntity)

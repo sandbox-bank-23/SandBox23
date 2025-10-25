@@ -38,6 +38,7 @@ import com.example.myapplication.core.ui.theme.Padding18dp
 import com.example.myapplication.core.ui.theme.Padding24dp
 import com.example.myapplication.core.ui.theme.PaddingQuarter
 import com.example.myapplication.core.ui.theme.ZeroPadding
+import java.math.BigDecimal
 import java.text.DecimalFormat
 
 const val CENTS_DIVIDE = 100
@@ -47,7 +48,7 @@ const val CENTS_DIVIDE = 100
 @Composable
 fun CardItem(
     cardHolderName: String = "",
-    cardBalance: Long? = null,
+    cardBalance: BigDecimal? = null,
     cardType: String? = null,
     cardNumber: String? = null,
     isTemplate: Boolean = false,
@@ -154,7 +155,7 @@ private fun CardData(cardType: String?, cardNumber: String?, isTemplate: Boolean
 
 @Suppress("MagicNumber")
 @Composable
-private fun CardBalance(balance: Long? = null, isTemplate: Boolean = false) {
+private fun CardBalance(balance: BigDecimal? = null, isTemplate: Boolean = false) {
     var balanceFormat = ""
     if (isTemplate) balanceFormat = stringResource(R.string.card_balance_default)
     Row(
@@ -166,7 +167,7 @@ private fun CardBalance(balance: Long? = null, isTemplate: Boolean = false) {
     ) {
         if (balance != null && !isTemplate) {
             balanceFormat = DecimalFormat("#,##0.00 \u20BD")
-                .format(balance / CENTS_DIVIDE)
+                .format(balance / CENTS_DIVIDE.toBigDecimal())
         }
         Text(
             modifier = Modifier.height(28.dp),

@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.room.Room
 import com.example.myapplication.core.data.db.AppDatabase
+import com.example.myapplication.core.data.db.CardDao
 import com.example.myapplication.core.data.db.dao.LoanDao
 import com.example.myapplication.core.data.db.dao.UserDao
 import com.example.myapplication.core.data.repo.AppRepositoryImpl
@@ -39,6 +40,8 @@ val coreDataModule = module {
     single<UserDao> { get<AppDatabase>().userDao() }
 
     single<LoanDao> { get<AppDatabase>().loanDao() }
+
+    single<CardDao> { get<AppDatabase>().cardDao() }
 
     single<AppStorage> {
         AppStorage(
