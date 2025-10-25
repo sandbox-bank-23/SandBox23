@@ -3,36 +3,42 @@
 package com.example.myapplication.loansanddeposits.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.example.myapplication.loansanddeposits.ui.state.CreditType
-import com.example.myapplication.loansanddeposits.ui.state.CreditUi
-import com.example.myapplication.loansanddeposits.ui.state.DepositUi
+import androidx.lifecycle.viewModelScope
+import com.example.myapplication.core.domain.models.Result
+import com.example.myapplication.core.utils.ApiCodes
+import com.example.myapplication.loansanddeposits.domain.api.LoansAndDepositsRepository
+import com.example.myapplication.loansanddeposits.ui.mapper.LoansDepositsUiMapper
 import com.example.myapplication.loansanddeposits.ui.state.LoansDepositsState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
-class LoansDepositsViewModel : ViewModel() {
+class LoansDepositsViewModel(
+    private val repository: LoansAndDepositsRepository,
+    private val mapper: LoansDepositsUiMapper
+) : ViewModel() {
 
     private val _state = MutableStateFlow<LoansDepositsState>(LoansDepositsState.Loading)
     val state: StateFlow<LoansDepositsState> = _state.asStateFlow()
 
-    fun requestData() {
-        val deposits = listOf(
-            DepositUi(1L, "Накопительный вклад", "10 000,00 ₽", 8),
-            DepositUi(2L, "До востребования", "30 000,00 ₽", 4),
-        )
-        val credits = listOf(
-            CreditUi(3L, "Автокредит", "15 июня спишем 23 700 ₽", CreditType.Auto),
-            CreditUi(4L, "Ипотека", "7 июня спишем 128 700 ₽", CreditType.Mortgage),
-        )
-        _state.value = LoansDepositsState.Content(deposits = deposits, credits = credits)
+    fun requestData() = viewModelScope.launch {
+        _state.value = LoansDepositsState.Loading
+        when (val res = repository.getAllLoansAndDeposits()) {
+            is Result.Success -> {
+                val (deposits, credits) = mapper.split(res.data)
+                _state.value = LoansDepositsState.Content(deposits, credits)
+            }
+
+            is Result.Error -> {
+                if (res.message.contains(ApiCodes.NO_RESPONSE.toString(), true)) {
+                    _state.value = LoansDepositsState.Offline
+                } else {
+                    _state.value = LoansDepositsState.Error(res.message)
+                }
+            }
+        }
     }
 
-    fun goOffline() {
-        _state.value = LoansDepositsState.Offline
-    }
-
-    fun showError(message: String) {
-        _state.value = LoansDepositsState.Error(message)
-    }
+    fun retry() = requestData()
 }
