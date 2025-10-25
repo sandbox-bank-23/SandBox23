@@ -32,16 +32,14 @@ fun NavGraphBuilder.loansDepositsScreenNavigation(navController: NavHostControll
             route = LoansDepositsRoutes.LOAN_DETAILS.route,
             arguments = listOf(navArgument(LOAN_ID) { type = NavType.LongType })
         ) { backStackEntry ->
-            val loanId = backStackEntry.arguments?.getLong(LOAN_ID) ?: 0L
-            // LoanDetailsScreen(loanId = loanId, onBack = { navController.popBackStack() })
+            // LoanDetailsScreen(loanId = requireNotNull(it.arguments?.getLong(LOAN_ID)))
         }
 
         composable(
             route = LoansDepositsRoutes.DEPOSIT_DETAILS.route,
             arguments = listOf(navArgument(DEPOSIT_ID) { type = NavType.LongType })
         ) { backStackEntry ->
-            val depositId = backStackEntry.arguments?.getLong(DEPOSIT_ID) ?: 0L
-            // DepositDetailsScreen(depositId = depositId, onBack = { navController.popBackStack() })
+            // DepositDetailsScreen(depositId = requireNotNull(it.arguments?.getLong(DEPOSIT_ID)))
         }
     }
 }
