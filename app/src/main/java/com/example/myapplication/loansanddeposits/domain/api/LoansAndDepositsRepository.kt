@@ -1,7 +1,8 @@
 package com.example.myapplication.loansanddeposits.domain.api
 
-import com.example.myapplication.core.data.network.Response
+import com.example.myapplication.core.domain.models.Product
+import com.example.myapplication.core.domain.models.Result
 
 interface LoansAndDepositsRepository {
-    suspend fun getAllLoansAndDeposits(): Response
+    suspend fun getAllLoansAndDeposits(): Result<List<Product>>
 }

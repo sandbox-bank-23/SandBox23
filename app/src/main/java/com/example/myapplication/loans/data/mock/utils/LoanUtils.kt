@@ -9,12 +9,12 @@ fun calculatePay(sum: BigDecimal, period: Long, percent: Int): BigDecimal {
     val p = percent.toBigDecimal()
         .divide(
             100.toBigDecimal(),
-            2,
+            SCALE,
             RoundingMode.DOWN
         )
         .divide(
             period.toBigDecimal(),
-            2,
+            SCALE,
             RoundingMode.DOWN
         )
     val one = BigDecimal(1)

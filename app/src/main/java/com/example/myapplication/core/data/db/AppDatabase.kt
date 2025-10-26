@@ -11,14 +11,17 @@ import com.example.myapplication.core.data.db.entity.UserEntity
 import com.example.myapplication.deposits.data.db.DepositDao
 import com.example.myapplication.deposits.data.db.DepositEntity
 
+private const val NEW = 5
+
 @Database(
-    version = 3,
+    version = NEW,
     entities = [
         CardEntity::class,
         UserEntity::class,
         LoanEntity::class,
         DepositEntity::class
-    ]
+    ],
+    exportSchema = true,
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {

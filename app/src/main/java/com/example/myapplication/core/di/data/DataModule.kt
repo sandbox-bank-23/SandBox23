@@ -27,7 +27,9 @@ val coreDataModule = module {
             androidContext(),
             AppDatabase::class.java,
             "sandbox_bank23.db"
-        ).build()
+        )
+            .fallbackToDestructiveMigration(true)
+            .build()
     }
 
     single<AppRepository> {
