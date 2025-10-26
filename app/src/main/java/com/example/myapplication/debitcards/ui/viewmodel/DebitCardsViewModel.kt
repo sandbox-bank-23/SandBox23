@@ -27,22 +27,21 @@ class DebitCardsViewModel(
 
     fun createCard(userId: Long) {
         viewModelScope.launch {
-            createDebitCardUseCase.createDebitCard(userId).collect {
-                result -> processResult(result)
+            createDebitCardUseCase.createDebitCard(userId).collect { result ->
+                processResult(result)
             }
         }
     }
 
     fun getDebitCardTerms(userId: Long) {
         viewModelScope.launch {
-            getDebitCardTermsUseCase.getDebitCardTerms().collect {
-                result ->
-                    debitCardMaxCount = (result as Result.Success).data.maxCount
-                    renderState(
-                        DebitCardsState.Content(result.data)
-                    )
+            getDebitCardTermsUseCase.getDebitCardTerms().collect { result ->
+                debitCardMaxCount = (result as Result.Success).data.maxCount
+                renderState(
+                    DebitCardsState.Content(result.data)
+                )
             }
-            if (checkDebitCardCountUseCase.isCardCountLimit(userId,debitCardMaxCount)) {
+            if (checkDebitCardCountUseCase.isCardCountLimit(userId, debitCardMaxCount)) {
                 renderState(DebitCardsState.Limit)
             }
         }

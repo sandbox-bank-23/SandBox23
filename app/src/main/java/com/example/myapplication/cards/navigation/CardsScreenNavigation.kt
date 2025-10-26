@@ -1,3 +1,5 @@
+@file:Suppress("LongMethod")
+
 package com.example.myapplication.cards.navigation
 
 import androidx.navigation.NavGraphBuilder

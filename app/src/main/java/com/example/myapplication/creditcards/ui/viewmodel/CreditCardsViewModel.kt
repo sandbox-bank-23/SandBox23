@@ -32,8 +32,8 @@ class CreditCardsViewModel(
             createCreditCardUseCase.createCreditCard(
                 userId,
                 creditLimitValue.toBigDecimal()
-            ).collect {
-                result -> processResult(result)
+            ).collect { result ->
+                processResult(result)
             }
         }
     }

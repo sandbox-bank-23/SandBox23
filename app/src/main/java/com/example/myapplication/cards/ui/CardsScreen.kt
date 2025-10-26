@@ -44,6 +44,7 @@ import org.koin.androidx.compose.koinViewModel
 const val CARD_BALANCE_DEF = 100_000_000L
 const val CARD_ID_TEMP = 4_000_123_432_157_893L
 const val FRACTION_05 = 0.5f
+const val USER_ID_DEF = 137L
 
 @Composable
 fun CardsScreen(
@@ -52,7 +53,7 @@ fun CardsScreen(
 ) {
     val cardsState = viewModel.cardsState.collectAsState().value
 
-    val userId = 137L
+    val userId = USER_ID_DEF
     val cardId = CARD_ID_TEMP
     val cardHolderName = stringResource(R.string.card_holder_default)
     var cardBalance: Long?
