@@ -1,6 +1,5 @@
 package com.example.myapplication.loans.data.repository
 
-import android.util.Log
 import com.example.myapplication.cards.domain.api.CardsRepository
 import com.example.myapplication.core.data.db.dao.LoanDao
 import com.example.myapplication.core.data.db.entity.LoanEntity

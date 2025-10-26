@@ -77,9 +77,9 @@ fun SliderBox(trackSlider: List<Int>, flagSlider: FlagSlider, dataSlider: (Int) 
             Text(
                 text = when (flagSlider) {
                     FlagSlider.PERIOD_CREDIT, FlagSlider.PERIOD_DEPOSIT -> trackSlider.first()
-                        .toInt().toString() + " мес"
+                        .toString() + " мес"
 
-                    FlagSlider.LIMIT_CREDIT -> trackSlider.first().toInt().toString() + " ₽"
+                    FlagSlider.LIMIT_CREDIT -> trackSlider.first().toString() + " ₽"
                 },
                 style = AppTypography.labelLarge.copy(
                     fontSize = 14.sp,
