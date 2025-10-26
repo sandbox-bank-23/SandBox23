@@ -1,4 +1,4 @@
-package com.example.myapplication.core.ui.components.Slider
+package com.example.myapplication.core.ui.components.slider
 
 enum class FlagSlider(val header: String) {
     PERIOD_CREDIT("Выберите срок кредита"),

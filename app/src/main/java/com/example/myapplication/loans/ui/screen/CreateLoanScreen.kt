@@ -1,6 +1,5 @@
 package com.example.myapplication.loans.ui.screen
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,11 +32,11 @@ import com.example.myapplication.R
 import com.example.myapplication.core.ui.components.BasicDialog
 import com.example.myapplication.core.ui.components.CardInfoBox
 import com.example.myapplication.core.ui.components.ExceededCreditDialog
-import com.example.myapplication.core.ui.components.Slider.FlagSlider
 import com.example.myapplication.core.ui.components.PrimaryButton
 import com.example.myapplication.core.ui.components.SimpleIconDialog
 import com.example.myapplication.core.ui.components.SimpleTopBar
-import com.example.myapplication.core.ui.components.Slider.SliderBox
+import com.example.myapplication.core.ui.components.slider.FlagSlider
+import com.example.myapplication.core.ui.components.slider.SliderBox
 import com.example.myapplication.core.ui.theme.Height56
 import com.example.myapplication.core.ui.theme.Padding16dp
 import com.example.myapplication.loans.ui.state.LoansState
@@ -52,7 +51,6 @@ fun CreateLoanScreen(
     viewModel: LoansViewModel = koinViewModel<LoansViewModel>(),
 ) {
     val loansState by viewModel.stateLoans.collectAsState()
-    Log.d("loansState", "$loansState")
     val initialCharacteristics = viewModel.initialCharacteristics.collectAsState().value
 
     var limitValue by remember { mutableIntStateOf(0) }
@@ -159,8 +157,8 @@ fun CreateLoanScreen(
                     SliderBox(
                         trackSlider = initialCharacteristics.moneyLimit,
                         flagSlider = FlagSlider.LIMIT_CREDIT,
-                        dataSlider = {
-                            value -> limitValue = value
+                        dataSlider = { value ->
+                            limitValue = value
                         }
                     )
 
@@ -171,8 +169,8 @@ fun CreateLoanScreen(
                     SliderBox(
                         trackSlider = initialCharacteristics.monthLimit,
                         flagSlider = FlagSlider.PERIOD_CREDIT,
-                        dataSlider = {
-                            value -> monthValue = value
+                        dataSlider = { value ->
+                            monthValue = value
                         }
                     )
 
@@ -194,7 +192,8 @@ fun CreateLoanScreen(
                         isEnabled = true,
                     ) {
                         viewModel.openLoan(
-                            limit = limitValue, month = monthValue
+                            limit = limitValue,
+                            month = monthValue
                         )
                     }
                 }
@@ -208,6 +207,7 @@ fun CreateLoanScreen(
 fun CheckLoansScreen() {
     val navController = rememberNavController()
     CreateLoanScreen(
-        modifier = Modifier, navController = navController
+        modifier = Modifier,
+        navController = navController
     )
 }
