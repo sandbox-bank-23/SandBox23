@@ -1,7 +1,10 @@
 package com.example.myapplication.debitcards.di.data
 
+import com.example.myapplication.core.data.db.CardDao
+import com.example.myapplication.core.data.network.NetworkClient
 import com.example.myapplication.debitcards.data.mock.DebitCardsMock
 import com.example.myapplication.debitcards.data.repo.DebitCardsRepositoryImpl
+import com.example.myapplication.debitcards.domain.api.CreateDebitCardUseCase
 import com.example.myapplication.debitcards.domain.api.DebitCardsRepository
 import org.koin.dsl.module
 
@@ -11,8 +14,15 @@ val debitCardsModule = module {
 
     single<DebitCardsRepository> {
         DebitCardsRepositoryImpl(
-            // client = get<NetworkClient>(),
-            debitCardsMock = get<DebitCardsMock>()
+            networkClient = get<NetworkClient>(),
+            dao = get<CardDao>(),
+            debitCardsMock = get<DebitCardsMock>(),
+        )
+    }
+
+    single<CreateDebitCardUseCase> {
+        CreateDebitCardUseCase(
+            debitCardRepository = get()
         )
     }
 }

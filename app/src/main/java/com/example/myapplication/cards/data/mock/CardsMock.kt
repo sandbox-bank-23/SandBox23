@@ -7,6 +7,7 @@ import com.example.myapplication.core.domain.models.Card
 import com.example.myapplication.core.domain.models.CardType
 import kotlinx.serialization.json.Json
 import kotlin.random.Random
+import kotlin.random.nextLong
 
 class CardsMock {
     fun getResponse(): Response =
@@ -33,7 +34,8 @@ class CardsMock {
                 owner = owners.random(),
                 type = listOf(CardType.CREDIT, CardType.DEBIT).random(),
                 percent = Random.nextDouble(0.0, 25.0),
-                balance = Random.nextLong(0, 1000000)
+                balance = Random.nextLong(0, 1000000).toBigDecimal(),
+                userId = Random.nextLong(1, Long.MAX_VALUE)
             )
         }
 
