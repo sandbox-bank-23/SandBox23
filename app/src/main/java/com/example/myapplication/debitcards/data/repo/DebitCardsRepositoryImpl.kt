@@ -12,9 +12,11 @@ import com.example.myapplication.core.domain.models.Card
 import com.example.myapplication.core.domain.models.Result
 import com.example.myapplication.core.utils.ApiCodes
 import com.example.myapplication.debitcards.data.mock.DebitCardsMock
+import com.example.myapplication.debitcards.data.mock.models.DebitCardTermsDto
 import com.example.myapplication.debitcards.data.repo.dto.RequestData
 import com.example.myapplication.debitcards.data.repo.dto.ResponseData
 import com.example.myapplication.debitcards.domain.api.DebitCardsRepository
+import com.example.myapplication.debitcards.domain.models.DebitCardTerms
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.serialization.json.Json
@@ -38,6 +40,14 @@ class DebitCardsRepositoryImpl(
             endDate = card.endDate,
             owner = card.owner,
             percent = card.percent
+        )
+    }
+
+    private fun map(debitCardTermsDto: DebitCardTermsDto): DebitCardTerms {
+        return DebitCardTerms(
+            cashback = debitCardTermsDto.cashback,
+            maxCount = debitCardTermsDto.maxCount,
+            serviceCost = debitCardTermsDto.serviceCost,
         )
     }
 
@@ -87,6 +97,16 @@ class DebitCardsRepositoryImpl(
         val cards = dao.getUserCardsByType(userId, TYPE)
         val numberCards = cards?.size ?: 0
         return numberCards >= limit
+    }
+
+    override suspend fun getDebitCardTerms(): Flow<Result<DebitCardTerms>> {
+        val responseData = debitCardsMock.getDebitCardTerms().response
+        val debitCardTerms = map(
+            Json.decodeFromString<DebitCardTermsDto>(responseData!!)
+        )
+        return flow {
+            emit(Result.Success(debitCardTerms))
+        }
     }
 
     override suspend fun depositToDebitCard(

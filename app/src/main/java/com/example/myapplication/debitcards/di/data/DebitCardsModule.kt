@@ -8,6 +8,7 @@ import com.example.myapplication.debitcards.data.repo.DebitCardsRepositoryImpl
 import com.example.myapplication.debitcards.domain.api.CheckDebitCardCountUseCase
 import com.example.myapplication.debitcards.domain.api.CreateDebitCardUseCase
 import com.example.myapplication.debitcards.domain.api.DebitCardsRepository
+import com.example.myapplication.debitcards.domain.api.GetDebitCardTermsUseCase
 import org.koin.dsl.module
 
 @Suppress("NoTrailingSpaces")
@@ -25,13 +26,19 @@ val debitCardsModule = module {
 
     single<CreateDebitCardUseCase> {
         CreateDebitCardUseCase(
-            debitCardRepository = get()
+            debitCardsRepository = get()
         )
     }
 
     single<CheckDebitCardCountUseCase> {
         CheckDebitCardCountUseCase(
             debitCardsRepository = get()
+        )
+    }
+
+    single<GetDebitCardTermsUseCase> {
+        GetDebitCardTermsUseCase(
+            debitCardsRepository = get(),
         )
     }
 }

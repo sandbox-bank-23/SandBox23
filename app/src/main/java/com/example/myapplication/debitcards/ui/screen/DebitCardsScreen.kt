@@ -15,6 +15,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -41,7 +43,9 @@ import com.example.myapplication.debitcards.ui.state.DebitCardsState
 import com.example.myapplication.debitcards.ui.viewmodel.DebitCardsViewModel
 import org.koin.androidx.compose.koinViewModel
 
-const val CASHBACK = 30
+const val CASHBACK = 0
+const val SERVICE_COST = 1_000L
+const val DEBIT_CARD_MAX_COUNT = 0
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,11 +58,12 @@ fun DebitCardsScreen(
     val offlineCardDialog = remember { mutableStateOf(false) }
     val successCardDialog = remember { mutableStateOf(false) }
 
-    // Сходить в репу за этим
-    val cashback = CASHBACK
+    val cashback = remember { mutableIntStateOf(CASHBACK) }
+    val serviceCost = remember { mutableLongStateOf(SERVICE_COST) }
+    val debitCardMaxCount = remember { mutableIntStateOf(DEBIT_CARD_MAX_COUNT) }
 
     LifecycleStartEffect(Unit) {
-        viewModel.checkCardCount(userId)
+        viewModel.getDebitCardTerms(userId)
         onStopOrDispose { }
     }
 
@@ -73,7 +78,12 @@ fun DebitCardsScreen(
             successCardDialog.value = true
         }
         is DebitCardsState.Loading -> return
-        else -> {}
+        is DebitCardsState.Content -> {
+            cashback.intValue = (debitCardsState.debitCardTerms.cashback * 100).toInt()
+            serviceCost.longValue = debitCardsState.debitCardTerms.serviceCost
+            debitCardMaxCount.intValue = debitCardsState.debitCardTerms.maxCount
+        }
+        DebitCardsState.Limit -> {}
     }
 
     Scaffold(
@@ -130,12 +140,19 @@ fun DebitCardsScreen(
                 )
                 CardInfoBox(
                     stringResource(R.string.card_debit_info_title1),
-                    stringResource(R.string.card_debit_info_text1)
+                    if (serviceCost.longValue == 0L) {
+                        stringResource(R.string.card_debit_info_text1)
+                    } else {
+                        stringResource(
+                            R.string.card_cost_template,
+                            serviceCost.longValue
+                        )
+                    }
                 )
                 CardInfoBox(
                     stringResource(
                         R.string.card_debit_info_title2,
-                        cashback
+                        cashback.intValue
                     ),
                     stringResource(R.string.card_debit_info_text2)
                 )
@@ -146,7 +163,10 @@ fun DebitCardsScreen(
                 if (debitCardsState is DebitCardsState.Limit) {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
-                        text = stringResource(R.string.card_count_max),
+                        text = stringResource(
+                            R.string.card_count_max,
+                            debitCardMaxCount.intValue
+                        ),
                         textAlign = TextAlign.Center,
                         style = AppTypography.labelLarge.copy(
                             fontSize = 14.sp,

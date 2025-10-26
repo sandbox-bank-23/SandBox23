@@ -6,6 +6,7 @@ import com.example.myapplication.core.domain.models.Card
 import com.example.myapplication.core.domain.models.Result
 import com.example.myapplication.debitcards.domain.api.CheckDebitCardCountUseCase
 import com.example.myapplication.debitcards.domain.api.CreateDebitCardUseCase
+import com.example.myapplication.debitcards.domain.api.GetDebitCardTermsUseCase
 import com.example.myapplication.debitcards.ui.state.DebitCardsState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,13 +15,15 @@ import kotlinx.coroutines.launch
 
 class DebitCardsViewModel(
     private val createDebitCardUseCase: CreateDebitCardUseCase,
-    private val checkDebitCardCountUseCase: CheckDebitCardCountUseCase
+    private val checkDebitCardCountUseCase: CheckDebitCardCountUseCase,
+    private val getDebitCardTermsUseCase: GetDebitCardTermsUseCase
 ) : ViewModel() {
 
     private val _debitCardsState = MutableStateFlow<DebitCardsState>(
-        value = DebitCardsState.Content
+        value = DebitCardsState.Loading
     )
     val debitCardsState: StateFlow<DebitCardsState> = _debitCardsState.asStateFlow()
+    var debitCardMaxCount: Int = 0
 
     fun createCard(userId: Long) {
         viewModelScope.launch {
@@ -30,9 +33,16 @@ class DebitCardsViewModel(
         }
     }
 
-    fun checkCardCount(userId: Long) {
+    fun getDebitCardTerms(userId: Long) {
         viewModelScope.launch {
-            if (checkDebitCardCountUseCase.isCardCountLimit(userId)) {
+            getDebitCardTermsUseCase.getDebitCardTerms().collect {
+                result ->
+                    debitCardMaxCount = (result as Result.Success).data.maxCount
+                    renderState(
+                        DebitCardsState.Content(result.data)
+                    )
+            }
+            if (checkDebitCardCountUseCase.isCardCountLimit(userId,debitCardMaxCount)) {
                 renderState(DebitCardsState.Limit)
             }
         }
