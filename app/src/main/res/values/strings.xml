@@ -96,4 +96,10 @@
         бесплатно снимайте наличные в любых банкоматах</string>
     <string name="card_debit_info_text3">Платите через SandBox Pay или по QR-коду</string>
     <string name="card_open_success">Карта успешно оформлена</string>
+    <string name="credit_registration">Оформление кредита</string>
+    <string name="select_conditiopns">Выберите условия</string>
+    <string name="percent_rate">Процентная ставка</string>
+    <string name="percent_rate_before_25">до 25% годовых</string>
+    <string name="monthly_payment">Ежемесячный платёж</string>
+    <string name="in_rubles">В рублях ₽</string>
 </resources>
