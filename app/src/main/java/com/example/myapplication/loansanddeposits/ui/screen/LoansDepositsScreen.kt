@@ -151,7 +151,7 @@ fun LoansDepositsScreen(
                 PrimaryWideButton(
                     text = stringResource(R.string.open_deposit),
 //                    onClick = onApplyCreditClick
-                ){navController.navigate(LoansDepositsRoutes.OPEN_DEPOSIT.route)}
+                ) { navController.navigate(LoansDepositsRoutes.OPEN_DEPOSIT.route) }
 
             }
 
@@ -179,7 +179,7 @@ fun LoansDepositsScreen(
                 PrimaryWideButton(
                     text = stringResource(R.string.open_loan),
 //                    onClick = onApplyCreditClick
-                ){navController.navigate(LoansDepositsRoutes.OPEN_LOAN.route)}
+                ) { navController.navigate(LoansDepositsRoutes.OPEN_LOAN.route) }
             }
 
             item { Spacer(Modifier.height(CornerRadiusRegular)) }

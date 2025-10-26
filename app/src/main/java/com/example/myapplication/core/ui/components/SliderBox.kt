@@ -39,7 +39,6 @@ enum class FlagSlider(val header: String) {
 
 @Composable
 fun SliderBox(trackSlider: List<Int>, flagSlider: FlagSlider, dataSlider: (Int) -> Unit) {
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -55,7 +54,6 @@ fun SliderBox(trackSlider: List<Int>, flagSlider: FlagSlider, dataSlider: (Int) 
                 fontWeight = FontWeight.W600
             )
         )
-
 
         Spacer(
             modifier = Modifier
@@ -73,7 +71,6 @@ fun SliderBox(trackSlider: List<Int>, flagSlider: FlagSlider, dataSlider: (Int) 
                 .height(24.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-
             Text(
                 text = when (flagSlider) {
                     FlagSlider.PERIOD_CREDIT, FlagSlider.PERIOD_DEPOSIT -> trackSlider.first()
@@ -122,7 +119,7 @@ fun CustomSlider(
                 sliderWidth = size.width.toFloat()
             }
     ) {
-        Column() {
+        Column {
             ValueLabel(
                 value = value,
                 sliderWidth = sliderWidth,
@@ -180,16 +177,17 @@ fun ValueLabel(
             .onSizeChanged { size -> boxWidth = size.width.toFloat() }
             .offset {
                 if (sliderWidth == 0f || boxWidth == 0f) {
-                    return@offset IntOffset(0, 0)
+                    IntOffset(0, 0)
+                } else {
+
+                    val fraction = value / (trackSlider.size - 1).toFloat()
+
+                    val offsetX = (fraction * sliderWidth - boxWidth / 2).coerceIn(
+                        0f,
+                        sliderWidth - boxWidth
+                    )
+                    IntOffset(offsetX.roundToInt(), 0)
                 }
-
-                val fraction = value / (trackSlider.size - 1).toFloat()
-
-                val offsetX = (fraction * sliderWidth - boxWidth / 2).coerceIn(
-                    0f,
-                    sliderWidth - boxWidth
-                )
-                IntOffset(offsetX.roundToInt(), 0)
             }
             .background(
                 color = MaterialTheme.colorScheme.inverseSurface,

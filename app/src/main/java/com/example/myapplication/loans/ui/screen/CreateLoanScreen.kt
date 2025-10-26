@@ -51,7 +51,6 @@ fun CreateLoanScreen(
     navController: NavHostController,
     viewModel: LoansViewModel = koinViewModel<LoansViewModel>(),
 ) {
-
     val loansState by viewModel.stateLoans.collectAsState()
     Log.d("loansState", "$loansState")
     val initialCharacteristics = viewModel.initialCharacteristics.collectAsState().value
@@ -97,8 +96,7 @@ fun CreateLoanScreen(
                 onDismissRequest = { dialogNetwork.value = false },
                 onConfirmation = {
                     viewModel.openLoan(
-                        limit = limitValue,
-                        month = monthValue
+                        limit = limitValue, month = monthValue
                     )
                 },
                 dialogTitle = stringResource(R.string.offline),
@@ -127,10 +125,9 @@ fun CreateLoanScreen(
                 dialogText = stringResource(R.string.credit_count_max)
             )
             Box(
-                modifier = modifier
-                    .padding(Padding16dp)
+                modifier = modifier.padding(Padding16dp)
             ) {
-                Column() {
+                Column {
                     Row(
                         modifier = modifier
                             .fillMaxWidth()
@@ -141,8 +138,7 @@ fun CreateLoanScreen(
 
                         ) {
                         Text(
-                            modifier = modifier
-                                .padding(start = Padding16dp),
+                            modifier = modifier.padding(start = Padding16dp),
                             text = stringResource(R.string.select_conditiopns)
                         )
                     }
@@ -159,16 +155,14 @@ fun CreateLoanScreen(
                     SliderBox(
                         trackSlider = initialCharacteristics.moneyLimit,
                         flagSlider = FlagSlider.LIMIT_CREDIT,
-                        dataSlider = { value -> limitValue = value }
-                    )
+                        dataSlider = { value -> limitValue = value })
 
                     Spacer(modifier = modifier.height(Padding16dp))
 
                     SliderBox(
                         trackSlider = initialCharacteristics.monthLimit,
                         flagSlider = FlagSlider.PERIOD_CREDIT,
-                        dataSlider = { value -> monthValue = value }
-                    )
+                        dataSlider = { value -> monthValue = value })
 
                     Spacer(modifier = modifier.height(Padding16dp))
 
@@ -184,8 +178,7 @@ fun CreateLoanScreen(
                         isEnabled = true,
                     ) {
                         viewModel.openLoan(
-                            limit = limitValue,
-                            month = monthValue
+                            limit = limitValue, month = monthValue
                         )
                     }
                 }
@@ -199,7 +192,6 @@ fun CreateLoanScreen(
 fun CheckLoansScreen() {
     val navController = rememberNavController()
     CreateLoanScreen(
-        modifier = Modifier,
-        navController = navController
+        modifier = Modifier, navController = navController
     )
 }

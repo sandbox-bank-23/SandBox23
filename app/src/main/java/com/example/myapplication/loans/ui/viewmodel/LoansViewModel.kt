@@ -43,16 +43,32 @@ class LoansViewModel(
     val initialCharacteristics = _initialCharacteristics.asStateFlow()
 
     companion object {
-
         const val CREDIT_LIMIT_MAX = 3_000_000
         const val CREDIT_LIMIT_MIN = 30_000
         const val STEP_CREDIT = 10_000
 
         const val CREDIT_NAME = "Потребительский кредит"
+
+        private const val THREE_MONTHS = 3
+
+        private const val SIX_MONTHS = 6
+
+        private const val NINE_MONTHS = 9
+
+        private const val TWELVE_MONTHS = 12
+
+        private const val TWENTY_FOUR_MONTHS = 24
+
     }
 
     init {
-        val monthLimit: List<Int> = listOf(3, 6, 9, 12, 24)
+        val monthLimit: List<Int> = listOf(
+            THREE_MONTHS,
+            SIX_MONTHS,
+            NINE_MONTHS,
+            TWELVE_MONTHS,
+            TWENTY_FOUR_MONTHS
+        )
         val trackSlider = getTrackSlider(CREDIT_LIMIT_MAX, CREDIT_LIMIT_MIN, STEP_CREDIT)
         _initialCharacteristics.value =
             InitialCharacteristics(

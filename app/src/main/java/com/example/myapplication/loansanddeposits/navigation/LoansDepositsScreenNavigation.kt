@@ -22,9 +22,9 @@ fun NavGraphBuilder.loansDepositsScreenNavigation(navController: NavHostControll
         }
 
         composable(LoansDepositsRoutes.OPEN_LOAN.route) {
-             CreateLoanScreen(
-                 navController = navController,
-             )
+            CreateLoanScreen(
+                navController = navController,
+            )
         }
 
         composable(LoansDepositsRoutes.OPEN_DEPOSIT.route) {
