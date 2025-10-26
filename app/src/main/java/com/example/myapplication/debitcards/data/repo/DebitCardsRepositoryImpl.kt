@@ -5,6 +5,7 @@ package com.example.myapplication.debitcards.data.repo
 import com.example.myapplication.core.data.db.CardDao
 import com.example.myapplication.core.data.db.CardEntity
 import com.example.myapplication.core.data.network.NetworkClient
+import com.example.myapplication.core.data.network.NetworkConnector
 import com.example.myapplication.core.demo.demoFirstName
 import com.example.myapplication.core.demo.demoLastName
 import com.example.myapplication.core.domain.models.Card
@@ -22,6 +23,7 @@ import kotlin.random.Random
 
 class DebitCardsRepositoryImpl(
     private val networkClient: NetworkClient,
+    private val networkConnector: NetworkConnector,
     private val dao: CardDao,
     private val debitCardsMock: DebitCardsMock,
     private val json: Json = Json
@@ -40,6 +42,11 @@ class DebitCardsRepositoryImpl(
     }
 
     override suspend fun createDebitCard(userId: Long): Flow<Result<Card>> {
+        if (!networkConnector.isConnected()) {
+            return flow {
+                emit(Result.Error(ApiCodes.SERVICE_UNAVAILABLE))
+            }
+        }
         return flow {
             val cards = dao.getUserCardsByType(userId, TYPE)
             val numberCards = cards?.size ?: 0

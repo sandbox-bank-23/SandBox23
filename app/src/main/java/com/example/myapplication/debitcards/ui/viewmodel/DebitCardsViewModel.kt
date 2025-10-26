@@ -1,10 +1,12 @@
-package com.example.myapplication.debitcards.ui
+package com.example.myapplication.debitcards.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.myapplication.core.domain.models.Card
+import com.example.myapplication.core.domain.models.Result
 import com.example.myapplication.debitcards.domain.api.CheckDebitCardCountUseCase
 import com.example.myapplication.debitcards.domain.api.CreateDebitCardUseCase
-import com.example.myapplication.debitcards.domain.models.DebitCardsState
+import com.example.myapplication.debitcards.ui.state.DebitCardsState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -22,16 +24,24 @@ class DebitCardsViewModel(
 
     fun createCard(userId: Long) {
         viewModelScope.launch {
-            // val response = createDebitCardUseCase.createDebitCard(userId)
+            createDebitCardUseCase.createDebitCard(userId).collect {
+                result -> processResult(result)
+            }
         }
-        renderState(DebitCardsState.Success)
     }
 
     fun checkCardCount(userId: Long) {
         viewModelScope.launch {
             if (checkDebitCardCountUseCase.isCardCountLimit(userId)) {
-                renderState(DebitCardsState.Error)
+                renderState(DebitCardsState.Limit)
             }
+        }
+    }
+
+    private fun processResult(result: Result<Card>) {
+        when (result) {
+            is Result.Error -> renderState(DebitCardsState.Error)
+            is Result.Success -> renderState(DebitCardsState.Success)
         }
     }
 

@@ -10,7 +10,7 @@ import com.example.myapplication.carddetails.ui.CardDetailsScreen
 import com.example.myapplication.carddetails.ui.CardDetailsViewModel
 import com.example.myapplication.cards.ui.CardsScreen
 import com.example.myapplication.creditcards.ui.CreditCardsScreen
-import com.example.myapplication.debitcards.ui.DebitCardsScreen
+import com.example.myapplication.debitcards.ui.screen.DebitCardsScreen
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 

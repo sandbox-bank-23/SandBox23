@@ -1,4 +1,4 @@
-package com.example.myapplication.debitcards.ui
+package com.example.myapplication.debitcards.ui.screen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -37,7 +37,8 @@ import com.example.myapplication.core.ui.components.SimpleIconDialog
 import com.example.myapplication.core.ui.components.SimpleTopBar
 import com.example.myapplication.core.ui.theme.AppTypography
 import com.example.myapplication.core.ui.theme.Padding12dp
-import com.example.myapplication.debitcards.domain.models.DebitCardsState
+import com.example.myapplication.debitcards.ui.state.DebitCardsState
+import com.example.myapplication.debitcards.ui.viewmodel.DebitCardsViewModel
 import org.koin.androidx.compose.koinViewModel
 
 const val CASHBACK = 30
@@ -62,7 +63,7 @@ fun DebitCardsScreen(
     }
 
     when (debitCardsState) {
-        is DebitCardsState.Offline -> {
+        is DebitCardsState.Error -> {
             offlineCardDialog.value = true
         }
         is DebitCardsState.Online -> {
@@ -92,7 +93,10 @@ fun DebitCardsScreen(
         ) {
             BasicDialog(
                 visible = offlineCardDialog.value,
-                onDismissRequest = { offlineCardDialog.value = false },
+                onDismissRequest = {
+                    offlineCardDialog.value = false
+                    navController.popBackStack()
+                },
                 onConfirmation = {
                     viewModel.createCard(userId)
                 },
@@ -139,7 +143,7 @@ fun DebitCardsScreen(
                     text = stringResource(R.string.card_debit_info_text3)
                 )
                 Spacer(modifier = Modifier.Companion.height(Padding12dp))
-                if (debitCardsState is DebitCardsState.Error) {
+                if (debitCardsState is DebitCardsState.Limit) {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
                         text = stringResource(R.string.card_count_max),

@@ -1,6 +1,6 @@
 package com.example.myapplication.debitcards.di.viewmodel
 
-import com.example.myapplication.debitcards.ui.DebitCardsViewModel
+import com.example.myapplication.debitcards.ui.viewmodel.DebitCardsViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
