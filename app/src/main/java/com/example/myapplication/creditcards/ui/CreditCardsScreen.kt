@@ -81,12 +81,15 @@ fun CreditCardsScreen(
         is CreditCardsState.Offline -> {
             offlineCardDialog.value = true
         }
+
         is CreditCardsState.Online -> {
             offlineCardDialog.value = false
         }
+
         is CreditCardsState.Success -> {
             successCardDialog.value = true
         }
+
         is CreditCardsState.Loading -> return
         else -> {}
     }
@@ -128,11 +131,20 @@ fun CreditCardsScreen(
             )
 
             Column(
-                modifier = Modifier.fillMaxWidth().padding(vertical = Padding12dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = Padding12dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
             ) {
-                CardItem(isTemplate = true)
+                CardItem(
+                    isTemplate = true,
+                    cardHolderName = TODO(),
+                    cardBalance = TODO(),
+                    cardType = TODO(),
+                    cardNumber = TODO(),
+                    onClick = TODO()
+                )
             }
             Column {
                 Text(
@@ -278,7 +290,9 @@ fun CreditLimitSlider(min: Long = 0L, max: Long = 1_000_000L, viewModel: CreditC
             )
         }
         Row(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = Padding8dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = Padding8dp),
             horizontalArrangement = Arrangement.SpaceAround
         ) {
             Text(

@@ -108,7 +108,14 @@ fun DebitCardsScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
             ) {
-                CardItem(isTemplate = true)
+                CardItem(
+                    isTemplate = true,
+                    cardHolderName = TODO(),
+                    cardBalance = TODO(),
+                    cardType = TODO(),
+                    cardNumber = TODO(),
+                    onClick = TODO()
+                )
             }
             Column {
                 Text(
