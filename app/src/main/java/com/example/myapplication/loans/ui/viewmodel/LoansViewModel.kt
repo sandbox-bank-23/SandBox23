@@ -43,11 +43,11 @@ class LoansViewModel(
     val initialCharacteristics = _initialCharacteristics.asStateFlow()
 
     companion object {
-        const val CREDIT_LIMIT_MAX = 3_000_000
-        const val CREDIT_LIMIT_MIN = 30_000
-        const val STEP_CREDIT = 10_000
+        private const val CREDIT_LIMIT_MAX = 3_000_000
+        private const val CREDIT_LIMIT_MIN = 30_000
+        private const val STEP_CREDIT = 10_000
 
-        const val CREDIT_NAME = "Потребительский кредит"
+        private const val CREDIT_NAME = "Потребительский кредит"
 
         private const val THREE_MONTHS = 3
 
@@ -58,6 +58,8 @@ class LoansViewModel(
         private const val TWELVE_MONTHS = 12
 
         private const val TWENTY_FOUR_MONTHS = 24
+
+        private const val KOPECK = 100
 
     }
 
@@ -100,7 +102,7 @@ class LoansViewModel(
     }
 
     fun openLoan(limit: Int, month: Int) {
-        val limitKopeck = BigDecimal(limit).multiply(BigDecimal(100))
+        val limitKopeck = BigDecimal(limit).multiply(BigDecimal(KOPECK))
         val userId = _authData.value.userId?.toLong() ?: 0
         val credit = Credit(
             id = null,

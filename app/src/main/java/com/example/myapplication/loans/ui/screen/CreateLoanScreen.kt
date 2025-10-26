@@ -33,11 +33,11 @@ import com.example.myapplication.R
 import com.example.myapplication.core.ui.components.BasicDialog
 import com.example.myapplication.core.ui.components.CardInfoBox
 import com.example.myapplication.core.ui.components.ExceededCreditDialog
-import com.example.myapplication.core.ui.components.FlagSlider
+import com.example.myapplication.core.ui.components.Slider.FlagSlider
 import com.example.myapplication.core.ui.components.PrimaryButton
 import com.example.myapplication.core.ui.components.SimpleIconDialog
 import com.example.myapplication.core.ui.components.SimpleTopBar
-import com.example.myapplication.core.ui.components.SliderBox
+import com.example.myapplication.core.ui.components.Slider.SliderBox
 import com.example.myapplication.core.ui.theme.Height56
 import com.example.myapplication.core.ui.theme.Padding16dp
 import com.example.myapplication.loans.ui.state.LoansState
@@ -96,7 +96,8 @@ fun CreateLoanScreen(
                 onDismissRequest = { dialogNetwork.value = false },
                 onConfirmation = {
                     viewModel.openLoan(
-                        limit = limitValue, month = monthValue
+                        limit = limitValue,
+                        month = monthValue
                     )
                 },
                 dialogTitle = stringResource(R.string.offline),
@@ -135,43 +136,58 @@ fun CreateLoanScreen(
                             .background(MaterialTheme.colorScheme.surfaceContainerHigh),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Start,
-
-                        ) {
+                    ) {
                         Text(
                             modifier = modifier.padding(start = Padding16dp),
                             text = stringResource(R.string.select_conditiopns)
                         )
                     }
 
-                    Spacer(modifier = modifier.height(Padding16dp))
+                    Spacer(
+                        modifier = modifier.height(Padding16dp)
+                    )
 
                     CardInfoBox(
                         title = stringResource(R.string.percent_rate),
                         text = stringResource(R.string.percent_rate_before_25)
                     )
 
-                    Spacer(modifier = modifier.height(Padding16dp))
+                    Spacer(
+                        modifier = modifier.height(Padding16dp)
+                    )
 
                     SliderBox(
                         trackSlider = initialCharacteristics.moneyLimit,
                         flagSlider = FlagSlider.LIMIT_CREDIT,
-                        dataSlider = { value -> limitValue = value })
+                        dataSlider = {
+                            value -> limitValue = value
+                        }
+                    )
 
-                    Spacer(modifier = modifier.height(Padding16dp))
+                    Spacer(
+                        modifier = modifier.height(Padding16dp)
+                    )
 
                     SliderBox(
                         trackSlider = initialCharacteristics.monthLimit,
                         flagSlider = FlagSlider.PERIOD_CREDIT,
-                        dataSlider = { value -> monthValue = value })
+                        dataSlider = {
+                            value -> monthValue = value
+                        }
+                    )
 
-                    Spacer(modifier = modifier.height(Padding16dp))
+                    Spacer(
+                        modifier = modifier.height(Padding16dp)
+                    )
 
                     CardInfoBox(
                         title = stringResource(R.string.monthly_payment),
                         text = stringResource(R.string.in_rubles)
                     )
 
-                    Spacer(modifier = modifier.height(Padding16dp))
+                    Spacer(
+                        modifier = modifier.height(Padding16dp)
+                    )
 
                     PrimaryButton(
                         label = stringResource(R.string.open_loan),

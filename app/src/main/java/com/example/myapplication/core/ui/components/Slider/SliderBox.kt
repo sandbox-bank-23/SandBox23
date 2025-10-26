@@ -1,4 +1,4 @@
-package com.example.myapplication.core.ui.components
+package com.example.myapplication.core.ui.components.Slider
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -30,12 +30,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.core.ui.theme.AppTypography
 import kotlin.math.roundToInt
-
-enum class FlagSlider(val header: String) {
-    PERIOD_CREDIT("Выберите срок кредита"),
-    LIMIT_CREDIT("Выбор кредитного лимита"),
-    PERIOD_DEPOSIT("Выберите срок вклада"),
-}
 
 @Composable
 fun SliderBox(trackSlider: List<Int>, flagSlider: FlagSlider, dataSlider: (Int) -> Unit) {
@@ -179,7 +173,6 @@ fun ValueLabel(
                 if (sliderWidth == 0f || boxWidth == 0f) {
                     IntOffset(0, 0)
                 } else {
-
                     val fraction = value / (trackSlider.size - 1).toFloat()
 
                     val offsetX = (fraction * sliderWidth - boxWidth / 2).coerceIn(
