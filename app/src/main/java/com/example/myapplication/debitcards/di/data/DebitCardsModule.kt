@@ -4,6 +4,7 @@ import com.example.myapplication.core.data.db.CardDao
 import com.example.myapplication.core.data.network.NetworkClient
 import com.example.myapplication.debitcards.data.mock.DebitCardsMock
 import com.example.myapplication.debitcards.data.repo.DebitCardsRepositoryImpl
+import com.example.myapplication.debitcards.domain.api.CheckDebitCardCountUseCase
 import com.example.myapplication.debitcards.domain.api.CreateDebitCardUseCase
 import com.example.myapplication.debitcards.domain.api.DebitCardsRepository
 import org.koin.dsl.module
@@ -22,6 +23,12 @@ val debitCardsModule = module {
 
     single<CreateDebitCardUseCase> {
         CreateDebitCardUseCase(
+            debitCardRepository = get()
+        )
+    }
+
+    single<CheckDebitCardCountUseCase> {
+        CheckDebitCardCountUseCase(
             debitCardRepository = get()
         )
     }

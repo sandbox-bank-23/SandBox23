@@ -6,6 +6,9 @@ import org.koin.dsl.module
 
 val debitCardsViewModelModule = module {
     viewModel {
-        DebitCardsViewModel()
+        DebitCardsViewModel(
+            createDebitCardUseCase = get(),
+            checkDebitCardCountUseCase = get()
+        )
     }
 }

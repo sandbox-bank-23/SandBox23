@@ -26,6 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.navigation.NavHostController
 import com.example.myapplication.R
 import com.example.myapplication.core.ui.components.BasicDialog
@@ -45,6 +46,7 @@ const val CASHBACK = 30
 @Composable
 fun DebitCardsScreen(
     navController: NavHostController,
+    userId: Long,
     viewModel: DebitCardsViewModel = koinViewModel<DebitCardsViewModel>()
 ) {
     val debitCardsState = viewModel.debitCardsState.collectAsState().value
@@ -53,6 +55,11 @@ fun DebitCardsScreen(
 
     // Сходить в репу за этим
     val cashback = CASHBACK
+
+    LifecycleStartEffect(Unit) {
+        viewModel.checkCardCount(userId)
+        onStopOrDispose { }
+    }
 
     when (debitCardsState) {
         is DebitCardsState.Offline -> {
@@ -87,7 +94,7 @@ fun DebitCardsScreen(
                 visible = offlineCardDialog.value,
                 onDismissRequest = { offlineCardDialog.value = false },
                 onConfirmation = {
-                    viewModel.openCard()
+                    viewModel.createCard(userId)
                 },
                 dialogTitle = stringResource(R.string.offline),
                 confirmButtonText = stringResource(R.string.try_again),
@@ -148,7 +155,7 @@ fun DebitCardsScreen(
                     PrimaryButton(stringResource(R.string.card_open), isEnabled = false) {}
                 } else {
                     PrimaryButton(stringResource(R.string.card_open)) {
-                        viewModel.openCard()
+                        viewModel.createCard(userId)
                     }
                 }
                 Spacer(modifier = Modifier.Companion.height(Padding12dp))

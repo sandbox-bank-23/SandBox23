@@ -52,6 +52,7 @@ fun CardsScreen(
 ) {
     val cardsState = viewModel.cardsState.collectAsState().value
 
+    val userId = 137L
     val cardId = CARD_ID_TEMP
     val cardHolderName = stringResource(R.string.card_holder_default)
     var cardBalance: Long?
@@ -113,7 +114,7 @@ fun CardsScreen(
             CreateCardButton(
                 stringResource(R.string.card_create_debit),
                 false
-            ) { navController.navigate(CardsRoutes.CARD_DEBIT.route) }
+            ) { navController.navigate("${CardsRoutes.CARD_DEBIT}/$userId") }
             CreateCardButton(
                 stringResource(R.string.card_create_credit),
                 true

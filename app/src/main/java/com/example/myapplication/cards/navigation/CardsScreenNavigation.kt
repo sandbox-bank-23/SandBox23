@@ -20,7 +20,20 @@ fun NavGraphBuilder.cardsScreenNavigation(navController: NavHostController) {
         route = CardsRoutes.CARDS_NAVIGATION.route
     ) {
         composable(CardsRoutes.CARDS.route) { CardsScreen(navController) }
-        composable(CardsRoutes.CARD_DEBIT.route) { DebitCardsScreen(navController) }
+        composable(
+            CardsRoutes.CARD_DEBIT.route,
+            arguments = listOf(
+                navArgument(USER_ID) {
+                    type = NavType.LongType
+                }
+            )
+        ) { backStackEntry ->
+            val userId = backStackEntry.arguments?.getLong(CARD_ID) ?: 0L
+            DebitCardsScreen(
+                navController = navController,
+                userId = userId
+            )
+        }
         composable(CardsRoutes.CARD_CREDIT.route) { CreditCardsScreen(navController) }
         composable(
             CardsRoutes.CARD_DETAILS.route,

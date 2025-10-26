@@ -39,7 +39,7 @@ class DebitCardsRepositoryImpl(
         )
     }
 
-    override suspend fun createDebitCard(userId: Long, balance: BigDecimal): Flow<Result<Card>> {
+    override suspend fun createDebitCard(userId: Long): Flow<Result<Card>> {
         return flow {
             val cards = dao.getUserCardsByType(userId, TYPE)
             val numberCards = cards?.size ?: 0
@@ -74,6 +74,12 @@ class DebitCardsRepositoryImpl(
                 emit(Result.Error(ApiCodes.UNKNOWN_ERROR))
             }
         }
+    }
+
+    override suspend fun isCardCountLimit(userId: Long, limit: Int): Boolean {
+        val cards = dao.getUserCardsByType(userId, TYPE)
+        val numberCards = cards?.size ?: 0
+        return numberCards >= limit
     }
 
     override suspend fun depositToDebitCard(

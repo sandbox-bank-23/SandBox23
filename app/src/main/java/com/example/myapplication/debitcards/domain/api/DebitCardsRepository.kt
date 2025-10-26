@@ -6,10 +6,9 @@ import kotlinx.coroutines.flow.Flow
 import java.math.BigDecimal
 
 interface DebitCardsRepository {
-    suspend fun createDebitCard(
-        userId: Long,
-        balance: BigDecimal
-    ): Flow<Result<Card>>
+    suspend fun createDebitCard(userId: Long): Flow<Result<Card>>
 
     suspend fun depositToDebitCard(cardId: Long, amount: BigDecimal): Result<Unit>
+
+    suspend fun isCardCountLimit(userId: Long, limit: Int): Boolean
 }
