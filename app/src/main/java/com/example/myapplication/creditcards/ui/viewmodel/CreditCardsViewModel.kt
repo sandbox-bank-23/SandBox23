@@ -6,6 +6,7 @@ import com.example.myapplication.core.domain.models.Card
 import com.example.myapplication.core.domain.models.Result
 import com.example.myapplication.creditcards.domain.api.CheckCreditCardCountUseCase
 import com.example.myapplication.creditcards.domain.api.CreateCreditCardUseCase
+import com.example.myapplication.creditcards.domain.api.GetCreditCardTermsUseCase
 import com.example.myapplication.creditcards.ui.state.CreditCardsState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,14 +15,16 @@ import kotlinx.coroutines.launch
 
 class CreditCardsViewModel(
     private val createCreditCardUseCase: CreateCreditCardUseCase,
-    private val checkCreditCardCountUseCase: CheckCreditCardCountUseCase
+    private val checkCreditCardCountUseCase: CheckCreditCardCountUseCase,
+    private val getCreditCardTermsUseCase: GetCreditCardTermsUseCase
 ) : ViewModel() {
 
     private val _creditCardsState = MutableStateFlow<CreditCardsState>(
-        value = CreditCardsState.Content
+        value = CreditCardsState.Loading
     )
     val creditCardsState: StateFlow<CreditCardsState> = _creditCardsState.asStateFlow()
     var creditLimitValue = 0L
+    var creditCardMaxCount: Int = 0
 
 
     fun createCard(userId: Long) {
@@ -35,9 +38,17 @@ class CreditCardsViewModel(
         }
     }
 
-    fun checkCardCount(userId: Long) {
+
+    fun getCreditCardTerms(userId: Long) {
         viewModelScope.launch {
-            if (checkCreditCardCountUseCase.isCardCountLimit(userId)) {
+            getCreditCardTermsUseCase.getCreditCardTerms().collect {
+                    result ->
+                creditCardMaxCount = (result as Result.Success).data.maxCount
+                renderState(
+                    CreditCardsState.Content(result.data)
+                )
+            }
+            if (checkCreditCardCountUseCase.isCardCountLimit(userId, creditCardMaxCount)) {
                 renderState(CreditCardsState.Limit)
             }
         }

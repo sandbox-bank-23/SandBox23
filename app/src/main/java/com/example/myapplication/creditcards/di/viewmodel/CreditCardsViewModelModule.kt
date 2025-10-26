@@ -8,7 +8,8 @@ val creditCardsViewModelModule = module {
     viewModel {
         CreditCardsViewModel(
             createCreditCardUseCase = get(),
-            checkCreditCardCountUseCase = get()
+            checkCreditCardCountUseCase = get(),
+            getCreditCardTermsUseCase = get()
         )
     }
 }

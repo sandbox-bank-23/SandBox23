@@ -8,6 +8,7 @@ import com.example.myapplication.creditcards.data.repo.CreditCardsRepositoryImpl
 import com.example.myapplication.creditcards.domain.api.CheckCreditCardCountUseCase
 import com.example.myapplication.creditcards.domain.api.CreateCreditCardUseCase
 import com.example.myapplication.creditcards.domain.api.CreditCardsRepository
+import com.example.myapplication.creditcards.domain.api.GetCreditCardTermsUseCase
 import org.koin.dsl.module
 
 @Suppress("NoTrailingSpaces")
@@ -31,6 +32,12 @@ val creditCardsModule = module {
 
     single<CheckCreditCardCountUseCase> {
         CheckCreditCardCountUseCase(
+            creditCardsRepository = get()
+        )
+    }
+
+    single<GetCreditCardTermsUseCase> {
+        GetCreditCardTermsUseCase(
             creditCardsRepository = get()
         )
     }

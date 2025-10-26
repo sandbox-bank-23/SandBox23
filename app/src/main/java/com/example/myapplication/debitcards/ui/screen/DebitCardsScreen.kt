@@ -15,10 +15,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -46,6 +48,7 @@ import org.koin.androidx.compose.koinViewModel
 const val CASHBACK = 0
 const val SERVICE_COST = 1_000L
 const val DEBIT_CARD_MAX_COUNT = 0
+const val CENTS_DIVIDE = 100
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,12 +58,12 @@ fun DebitCardsScreen(
     viewModel: DebitCardsViewModel = koinViewModel<DebitCardsViewModel>()
 ) {
     val debitCardsState = viewModel.debitCardsState.collectAsState().value
-    val offlineCardDialog = remember { mutableStateOf(false) }
-    val successCardDialog = remember { mutableStateOf(false) }
+    var offlineCardDialog by remember { mutableStateOf(false) }
+    var successCardDialog by remember { mutableStateOf(false) }
 
-    val cashback = remember { mutableIntStateOf(CASHBACK) }
-    val serviceCost = remember { mutableLongStateOf(SERVICE_COST) }
-    val debitCardMaxCount = remember { mutableIntStateOf(DEBIT_CARD_MAX_COUNT) }
+    var cashback by remember { mutableIntStateOf(CASHBACK) }
+    var serviceCost by remember { mutableLongStateOf(SERVICE_COST) }
+    var debitCardMaxCount by remember { mutableIntStateOf(DEBIT_CARD_MAX_COUNT) }
 
     LifecycleStartEffect(Unit) {
         viewModel.getDebitCardTerms(userId)
@@ -69,19 +72,19 @@ fun DebitCardsScreen(
 
     when (debitCardsState) {
         is DebitCardsState.Error -> {
-            offlineCardDialog.value = true
+            offlineCardDialog = true
         }
         is DebitCardsState.Online -> {
-            offlineCardDialog.value = false
+            offlineCardDialog = false
         }
         is DebitCardsState.Success -> {
-            successCardDialog.value = true
+            successCardDialog = true
         }
         is DebitCardsState.Loading -> return
         is DebitCardsState.Content -> {
-            cashback.intValue = (debitCardsState.debitCardTerms.cashback * 100).toInt()
-            serviceCost.longValue = debitCardsState.debitCardTerms.serviceCost
-            debitCardMaxCount.intValue = debitCardsState.debitCardTerms.maxCount
+            cashback = (debitCardsState.debitCardTerms.cashback * CENTS_DIVIDE).toInt()
+            serviceCost = debitCardsState.debitCardTerms.serviceCost
+            debitCardMaxCount = debitCardsState.debitCardTerms.maxCount
         }
         DebitCardsState.Limit -> {}
     }
@@ -102,9 +105,9 @@ fun DebitCardsScreen(
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             BasicDialog(
-                visible = offlineCardDialog.value,
+                visible = offlineCardDialog,
                 onDismissRequest = {
-                    offlineCardDialog.value = false
+                    offlineCardDialog = false
                     navController.popBackStack()
                 },
                 onConfirmation = {
@@ -115,9 +118,9 @@ fun DebitCardsScreen(
                 dismissButtonText = stringResource(R.string.close),
             )
             SimpleIconDialog(
-                visible = successCardDialog.value,
+                visible = successCardDialog,
                 onDismissRequest = {
-                    successCardDialog.value = false
+                    successCardDialog = false
                     navController.popBackStack()
                 },
                 dialogTitle = stringResource(R.string.card_open_success),
@@ -140,19 +143,19 @@ fun DebitCardsScreen(
                 )
                 CardInfoBox(
                     stringResource(R.string.card_debit_info_title1),
-                    if (serviceCost.longValue == 0L) {
+                    if (serviceCost == 0L) {
                         stringResource(R.string.card_debit_info_text1)
                     } else {
                         stringResource(
                             R.string.card_cost_template,
-                            serviceCost.longValue
+                            serviceCost
                         )
                     }
                 )
                 CardInfoBox(
                     stringResource(
                         R.string.card_debit_info_title2,
-                        cashback.intValue
+                        cashback
                     ),
                     stringResource(R.string.card_debit_info_text2)
                 )
@@ -165,7 +168,7 @@ fun DebitCardsScreen(
                         modifier = Modifier.fillMaxWidth(),
                         text = stringResource(
                             R.string.card_count_max,
-                            debitCardMaxCount.intValue
+                            debitCardMaxCount
                         ),
                         textAlign = TextAlign.Center,
                         style = AppTypography.labelLarge.copy(

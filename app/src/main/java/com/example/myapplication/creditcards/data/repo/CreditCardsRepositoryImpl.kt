@@ -12,9 +12,11 @@ import com.example.myapplication.core.domain.models.Card
 import com.example.myapplication.core.domain.models.Result
 import com.example.myapplication.core.utils.ApiCodes
 import com.example.myapplication.creditcards.data.mock.CreditCardsMock
+import com.example.myapplication.creditcards.data.mock.models.CreditCardTermsDto
 import com.example.myapplication.creditcards.data.repo.dto.RequestData
 import com.example.myapplication.creditcards.data.repo.dto.ResponseData
 import com.example.myapplication.creditcards.domain.api.CreditCardsRepository
+import com.example.myapplication.creditcards.domain.models.CreditCardTerms
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.serialization.json.Json
@@ -38,6 +40,15 @@ class CreditCardsRepositoryImpl(
             endDate = card.endDate,
             owner = card.owner,
             percent = card.percent,
+        )
+    }
+
+    private fun map(creditCardTermsDto: CreditCardTermsDto): CreditCardTerms {
+        return CreditCardTerms(
+            cashback = creditCardTermsDto.cashback,
+            maxCount = creditCardTermsDto.maxCount,
+            serviceCost = creditCardTermsDto.serviceCost,
+            maxCreditLimit = creditCardTermsDto.maxCreditLimit
         )
     }
 
@@ -91,6 +102,16 @@ class CreditCardsRepositoryImpl(
         val cards = dao.getUserCardsByType(userId, TYPE)
         val numberCards = cards?.size ?: 0
         return numberCards >= limit
+    }
+
+    override suspend fun getCreditCardTerms(): Flow<Result<CreditCardTerms>> {
+        val responseData = creditCardsMock.getCreditCardTerms().response
+        val creditCardTerms = map(
+            Json.decodeFromString<CreditCardTermsDto>(responseData!!)
+        )
+        return flow {
+            emit(Result.Success(creditCardTerms))
+        }
     }
 
     companion object {
