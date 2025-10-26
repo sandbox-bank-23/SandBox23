@@ -10,4 +10,5 @@ interface CreditCardsRepository {
         userId: Long,
         balance: BigDecimal
     ): Flow<Result<Card>>
+    suspend fun isCardCountLimit(userId: Long, limit: Int): Boolean
 }

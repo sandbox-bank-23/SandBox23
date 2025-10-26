@@ -31,7 +31,7 @@ val debitCardsModule = module {
 
     single<CheckDebitCardCountUseCase> {
         CheckDebitCardCountUseCase(
-            debitCardRepository = get()
+            debitCardsRepository = get()
         )
     }
 }

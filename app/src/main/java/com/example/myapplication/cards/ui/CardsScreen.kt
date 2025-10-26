@@ -118,7 +118,7 @@ fun CardsScreen(
             CreateCardButton(
                 stringResource(R.string.card_create_credit),
                 true
-            ) { navController.navigate(CardsRoutes.CARD_CREDIT.route) }
+            ) { navController.navigate("${CardsRoutes.CARD_CREDIT}/$userId") }
         }
     }
 }

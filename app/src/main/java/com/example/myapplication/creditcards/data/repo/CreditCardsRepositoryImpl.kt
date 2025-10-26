@@ -5,6 +5,7 @@ package com.example.myapplication.creditcards.data.repo
 import com.example.myapplication.core.data.db.CardDao
 import com.example.myapplication.core.data.db.CardEntity
 import com.example.myapplication.core.data.network.NetworkClient
+import com.example.myapplication.core.data.network.NetworkConnector
 import com.example.myapplication.core.demo.demoFirstName
 import com.example.myapplication.core.demo.demoLastName
 import com.example.myapplication.core.domain.models.Card
@@ -22,6 +23,7 @@ import kotlin.random.Random
 
 class CreditCardsRepositoryImpl(
     private val networkClient: NetworkClient,
+    private val networkConnector: NetworkConnector,
     private val dao: CardDao,
     private val creditCardsMock: CreditCardsMock,
     private val json: Json = Json
@@ -43,6 +45,11 @@ class CreditCardsRepositoryImpl(
         userId: Long,
         balance: BigDecimal
     ): Flow<Result<Card>> {
+        if (!networkConnector.isConnected()) {
+            return flow {
+                emit(Result.Error(ApiCodes.SERVICE_UNAVAILABLE))
+            }
+        }
         return flow {
             val cards = dao.getUserCardsByType(userId, TYPE)
             val numberCards = cards?.size ?: 0
@@ -78,6 +85,12 @@ class CreditCardsRepositoryImpl(
                 emit(Result.Error(ApiCodes.UNKNOWN_ERROR))
             }
         }
+    }
+
+    override suspend fun isCardCountLimit(userId: Long, limit: Int): Boolean {
+        val cards = dao.getUserCardsByType(userId, TYPE)
+        val numberCards = cards?.size ?: 0
+        return numberCards >= limit
     }
 
     companion object {

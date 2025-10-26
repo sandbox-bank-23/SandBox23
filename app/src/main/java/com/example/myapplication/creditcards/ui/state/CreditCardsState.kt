@@ -1,10 +1,10 @@
-package com.example.myapplication.creditcards.domain.models
+package com.example.myapplication.creditcards.ui.state
 
 interface CreditCardsState {
-    data object Offline : CreditCardsState
+    data object Error : CreditCardsState
     data object Online : CreditCardsState
     data object Success : CreditCardsState
     data object Loading : CreditCardsState
-    data object Error : CreditCardsState
+    data object Limit : CreditCardsState
     data object Content : CreditCardsState
 }

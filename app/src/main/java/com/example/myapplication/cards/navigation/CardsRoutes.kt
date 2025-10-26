@@ -7,5 +7,5 @@ enum class CardsRoutes(val route: String) {
     CARDS("cards"),
     CARD_DETAILS("card_details/{$CARD_ID}"),
     CARD_DEBIT("card_debit/{$USER_ID}"),
-    CARD_CREDIT("card_credit"),
+    CARD_CREDIT("card_credit/{$USER_ID}"),
 }
