@@ -70,7 +70,7 @@ class LoanRepositoryImpl(
     override suspend fun create(loan: Credit): Flow<LoanResult> {
         return flow {
             val userWithLoans = dao.getUserWithLoans(userId = loan.userId)
-            val loans = userWithLoans.loans.filter { it.isClose != true }
+            val loans = userWithLoans?.loans?.filter { it.isClose != true } ?: emptyList()
             val totalDept = loans.sumOf { it.balance }
             val currentNumber = loans.size
             val requestData = RequestData(

@@ -6,6 +6,8 @@ import com.example.myapplication.core.domain.models.Card
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlin.random.Random
+import kotlin.random.nextLong
 
 class CardDetailsViewModel(private val cardID: Long) : ViewModel() {
 
@@ -21,7 +23,8 @@ class CardDetailsViewModel(private val cardID: Long) : ViewModel() {
             owner = "Ivanova Oksana",
             type = "Credit",
             percent = 2.5,
-            balance = 500_000
+            balance = 500_000.toBigDecimal(),
+            userId = Random.nextLong(1, Long.MAX_VALUE)
         )
         renderState(CardDetailsState.Content(card))
     }
