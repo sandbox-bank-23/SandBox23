@@ -165,6 +165,6 @@ class LoansMock {
 
     companion object {
         private const val MAX_COUNT = 3
-        private val MAX_DEPT = BigDecimal(5_000_000)
+        private val MAX_DEPT = BigDecimal(5_000_000).multiply(BigDecimal(100))
     }
 }

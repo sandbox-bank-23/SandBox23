@@ -1,5 +1,6 @@
 package com.example.myapplication.loans.data.repository
 
+import android.util.Log
 import com.example.myapplication.cards.domain.api.CardsRepository
 import com.example.myapplication.core.data.db.dao.LoanDao
 import com.example.myapplication.core.data.db.entity.LoanEntity
@@ -97,6 +98,7 @@ class LoanRepositoryImpl(
                             emit(LoanResult.Success(credit, SUCCESS))
                         } ?: emit(errorResult(LOAN_CREATE_ERROR, ERROR))
                     }
+
                     HTTP_CREATE_ERROR -> emit(errorResult(LOAN_CREATE_ERROR, ERROR))
                     else -> emit(errorResult(SERVER_ERROR, ERROR))
                 }
@@ -116,7 +118,8 @@ class LoanRepositoryImpl(
                     response.response?.let { json ->
                         val isClose = Json.decodeFromString<Boolean>(string = json)
                         if (isClose) {
-                            val updateLoan = dao.getCloseLoan(loanEntity = entity.copy(isClose = true))
+                            val updateLoan =
+                                dao.getCloseLoan(loanEntity = entity.copy(isClose = true))
                             updateLoan.collect {
                                 emit(
                                     value = LoanResult.Success(

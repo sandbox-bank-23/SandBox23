@@ -102,4 +102,7 @@
     <string name="percent_rate_before_25">до 25% годовых</string>
     <string name="monthly_payment">Ежемесячный платёж</string>
     <string name="in_rubles">В рублях ₽</string>
+    <string name="credit_open_success">Кредит оформлен успешно</string>
+    <string name="exceeded_the_limit">Превышен кредитный лимит</string>
+    <string name="credit_count_max">Можно оформить\nдо 3 кредитов, при этом сумма\nих задолженности должна быть\nменее 5 000 000,00</string>
 </resources>

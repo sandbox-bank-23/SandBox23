@@ -23,7 +23,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
@@ -39,7 +38,7 @@ enum class FlagSlider(val header: String) {
 }
 
 @Composable
-fun SliderBox(trackSlider: List<Int>, flagSlider: FlagSlider) {
+fun SliderBox(trackSlider: List<Int>, flagSlider: FlagSlider, dataSlider: (Int) -> Unit) {
 
     Column(
         modifier = Modifier
@@ -64,7 +63,8 @@ fun SliderBox(trackSlider: List<Int>, flagSlider: FlagSlider) {
         )
         CustomSlider(
             flagSlider = flagSlider,
-            trackSlider = trackSlider
+            trackSlider = trackSlider,
+            dataValue = dataSlider
         )
 
         Row(
@@ -106,10 +106,13 @@ fun SliderBox(trackSlider: List<Int>, flagSlider: FlagSlider) {
 @Composable
 fun CustomSlider(
     flagSlider: FlagSlider,
-    trackSlider: List<Int>
+    trackSlider: List<Int>,
+    dataValue: (Int) -> Unit
 ) {
     var value by remember { mutableFloatStateOf((trackSlider.size / 2).toFloat()) }
     var sliderWidth by remember { mutableFloatStateOf(0f) }
+    val safeIndex = value.roundToInt().coerceIn(0, trackSlider.size - 1)
+    dataValue(trackSlider[safeIndex])
 
     Box(
         modifier = Modifier
@@ -134,7 +137,7 @@ fun CustomSlider(
             ViewSlider(
                 value = value,
                 trackSlider = trackSlider,
-                onSliderChange = { newValue -> value = newValue }
+                onSliderChange = { newValue -> value = newValue },
             )
         }
     }
@@ -144,11 +147,13 @@ fun CustomSlider(
 fun ViewSlider(
     value: Float,
     trackSlider: List<Int>,
-    onSliderChange: (Float) -> Unit
+    onSliderChange: (Float) -> Unit,
 ) {
     Slider(
         value = value,
-        onValueChange = { newValue -> onSliderChange(newValue) },
+        onValueChange = { newValue ->
+            onSliderChange(newValue)
+        },
         steps = maxOf(0, trackSlider.size - 2),
         valueRange = 0f..(trackSlider.size - 1).toFloat(),
         modifier = Modifier

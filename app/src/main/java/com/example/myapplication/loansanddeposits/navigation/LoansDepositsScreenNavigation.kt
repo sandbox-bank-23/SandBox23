@@ -6,6 +6,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
+import com.example.myapplication.loans.ui.screen.CreateLoanScreen
 import com.example.myapplication.loansanddeposits.ui.screen.LoansDepositsScreen
 
 fun NavGraphBuilder.loansDepositsScreenNavigation(navController: NavHostController) {
@@ -16,12 +17,14 @@ fun NavGraphBuilder.loansDepositsScreenNavigation(navController: NavHostControll
         composable(LoansDepositsRoutes.LOANS_DEPOSITS.route) {
             LoansDepositsScreen(
                 navController = navController,
-                onApplyCreditClick = { navController.navigate(LoansDepositsRoutes.OPEN_LOAN.route) },
+//                onApplyCreditClick = { navController.navigate(LoansDepositsRoutes.OPEN_LOAN.route) },
             )
         }
 
         composable(LoansDepositsRoutes.OPEN_LOAN.route) {
-            // CreateLoanScreen(onDone = { navController.popBackStack() })
+             CreateLoanScreen(
+                 navController = navController,
+             )
         }
 
         composable(LoansDepositsRoutes.OPEN_DEPOSIT.route) {
