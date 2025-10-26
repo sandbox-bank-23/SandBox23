@@ -32,10 +32,6 @@ class AuthRepositoryImpl(
             )
         }
     }
-@Suppress("MagicNumber")
-class AuthRepositoryImpl(
-    private val client: NetworkClient
-) : AuthRepository {
 
     override suspend fun login(email: String, password: String): Result<AuthData> {
         val request = createAuthRequest(email, password)
@@ -58,9 +54,11 @@ class AuthRepositoryImpl(
 
         return when (errorType) {
             ResponseType.SUCCESS -> {
-                createUser(email = email, authData = parsed)
-                Result.Success(processSuccessResponse(data.copy(description = "Created")))
-            } }
+                val authData = processSuccessResponse(data.copy(description = "Created"))
+                createUser(email = email, authData = authData)
+                Result.Success(authData)
+            }
+
             ResponseType.ALREADY_EXISTS -> Result.Error("User already exists")
             ResponseType.BAD_REQUEST -> Result.Error("Invalid data")
             ResponseType.NO_CONNECTION -> Result.Error("No internet connection")
@@ -114,3 +112,4 @@ class AuthRepositoryImpl(
                 }
             }.toMap()
 }
+

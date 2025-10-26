@@ -13,7 +13,8 @@ class CardDbConverter {
             owner = card.owner,
             type = card.type,
             percent = card.percent,
-            balance = card.balance
+            balance = card.balance,
+            userId = card.userId
         )
     }
 
@@ -25,7 +26,8 @@ class CardDbConverter {
             owner = card.owner,
             type = card.type,
             percent = card.percent,
-            balance = card.balance ?: 0
+            balance = card.balance ?: 0,
+            userId = card.userId
         )
     }
 
