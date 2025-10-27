@@ -16,6 +16,7 @@ import com.example.myapplication.debitcards.di.data.debitCardsModule
 import com.example.myapplication.debitcards.di.viewmodel.debitCardsViewModelModule
 import com.example.myapplication.deposits.di.data.depositsModule
 import com.example.myapplication.loans.di.loansModule
+import com.example.myapplication.loans.di.loansViewModelModule
 import com.example.myapplication.loansanddeposits.di.data.loansAndDepositsModule
 import com.example.myapplication.transfer.di.data.transferModule
 import org.koin.android.ext.koin.androidContext
@@ -39,6 +40,7 @@ class App : Application() {
                 debitCardsModule,
                 depositsModule,
                 loansModule,
+                loansViewModelModule,
                 loansAndDepositsModule,
                 transferModule,
                 cardDetailsViewModelModule,
