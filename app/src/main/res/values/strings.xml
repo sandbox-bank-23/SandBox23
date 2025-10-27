@@ -65,6 +65,7 @@
     <string name="card_close">Закрыть карту</string>
     <string name="offline">Нет подключения к интернету</string>
     <string name="saved_successfully">Изменения\nсохранены</string>
+    <string name="closed_successfully">Карта успешно закрыта</string>
     <string name="close">Закрыть</string>
     <string name="try_again">Повторить попытку</string>
     <string name="success_icon_dialog_content_descr">Successfully</string>
@@ -105,4 +106,5 @@
     <string name="credit_open_success">Кредит оформлен успешно</string>
     <string name="exceeded_the_limit">Превышен кредитный лимит</string>
     <string name="credit_count_max">Можно оформить\nдо 3 кредитов, при этом сумма\nих задолженности должна быть\nменее 5 000 000,00</string>
+    <string name="card_details_error">Ошибка загрузки деталей карты. Попробуйте снова.</string>
 </resources>

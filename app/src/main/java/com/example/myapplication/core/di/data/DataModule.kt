@@ -9,9 +9,12 @@ import com.example.myapplication.core.data.db.AppDatabase
 import com.example.myapplication.core.data.db.CardDao
 import com.example.myapplication.core.data.db.dao.LoanDao
 import com.example.myapplication.core.data.db.dao.UserDao
+import com.example.myapplication.core.data.mappers.CardDbConverter
 import com.example.myapplication.core.data.repo.AppRepositoryImpl
+import com.example.myapplication.core.data.repo.CardRepositoryImpl
 import com.example.myapplication.core.data.storage.AppStorage
 import com.example.myapplication.core.domain.api.AppRepository
+import com.example.myapplication.core.domain.api.CardRepository
 import com.google.gson.Gson
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
@@ -50,6 +53,12 @@ val coreDataModule = module {
             context = androidContext()
         )
     }
+
+    single<CardRepository> {
+        CardRepositoryImpl(get(), get())
+    }
+
+    factory<CardDbConverter> { CardDbConverter() }
 
     factory<Gson> { Gson() }
 }

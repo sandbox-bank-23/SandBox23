@@ -7,5 +7,6 @@ sealed interface CardDetailsState {
     data object Online : CardDetailsState
     data object Success : CardDetailsState
     data object Loading : CardDetailsState
+    data object Error : CardDetailsState
     data class Content(val card: Card) : CardDetailsState
 }
