@@ -1,19 +1,22 @@
-@file:Suppress("MagicNumber")
+@file:Suppress("MagicNumber", "LongMethod")
 
 package com.example.myapplication.debitcards.data.repo
 
 import com.example.myapplication.core.data.db.CardDao
 import com.example.myapplication.core.data.db.CardEntity
 import com.example.myapplication.core.data.network.NetworkClient
+import com.example.myapplication.core.data.network.NetworkConnector
 import com.example.myapplication.core.demo.demoFirstName
 import com.example.myapplication.core.demo.demoLastName
 import com.example.myapplication.core.domain.models.Card
 import com.example.myapplication.core.domain.models.Result
 import com.example.myapplication.core.utils.ApiCodes
 import com.example.myapplication.debitcards.data.mock.DebitCardsMock
+import com.example.myapplication.debitcards.data.mock.models.DebitCardTermsDto
 import com.example.myapplication.debitcards.data.repo.dto.RequestData
 import com.example.myapplication.debitcards.data.repo.dto.ResponseData
 import com.example.myapplication.debitcards.domain.api.DebitCardsRepository
+import com.example.myapplication.debitcards.domain.models.DebitCardTerms
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.serialization.json.Json
@@ -22,6 +25,7 @@ import kotlin.random.Random
 
 class DebitCardsRepositoryImpl(
     private val networkClient: NetworkClient,
+    private val networkConnector: NetworkConnector,
     private val dao: CardDao,
     private val debitCardsMock: DebitCardsMock,
     private val json: Json = Json
@@ -39,7 +43,20 @@ class DebitCardsRepositoryImpl(
         )
     }
 
-    override suspend fun createDebitCard(userId: Long, balance: BigDecimal): Flow<Result<Card>> {
+    private fun map(debitCardTermsDto: DebitCardTermsDto): DebitCardTerms {
+        return DebitCardTerms(
+            cashback = debitCardTermsDto.cashback,
+            maxCount = debitCardTermsDto.maxCount,
+            serviceCost = debitCardTermsDto.serviceCost,
+        )
+    }
+
+    override suspend fun createDebitCard(userId: Long): Flow<Result<Card>> {
+        if (!networkConnector.isConnected()) {
+            return flow {
+                emit(Result.Error(ApiCodes.SERVICE_UNAVAILABLE))
+            }
+        }
         return flow {
             val cards = dao.getUserCardsByType(userId, TYPE)
             val numberCards = cards?.size ?: 0
@@ -73,6 +90,22 @@ class DebitCardsRepositoryImpl(
             } else {
                 emit(Result.Error(ApiCodes.UNKNOWN_ERROR))
             }
+        }
+    }
+
+    override suspend fun isCardCountLimit(userId: Long, limit: Int): Boolean {
+        val cards = dao.getUserCardsByType(userId, TYPE)
+        val numberCards = cards?.size ?: 0
+        return numberCards >= limit
+    }
+
+    override suspend fun getDebitCardTerms(): Flow<Result<DebitCardTerms>> {
+        val responseData = debitCardsMock.getDebitCardTerms().response
+        val debitCardTerms = map(
+            Json.decodeFromString<DebitCardTermsDto>(responseData!!)
+        )
+        return flow {
+            emit(Result.Success(debitCardTerms))
         }
     }
 

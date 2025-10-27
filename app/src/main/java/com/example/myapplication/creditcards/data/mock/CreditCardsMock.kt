@@ -4,9 +4,11 @@ package com.example.myapplication.creditcards.data.mock
 
 import com.example.myapplication.core.data.network.Response
 import com.example.myapplication.core.domain.models.CardType
+import com.example.myapplication.core.utils.ApiCodes
 import com.example.myapplication.core.utils.ApiCodes.CREATED
 import com.example.myapplication.core.utils.ApiCodes.INVALID_REQUEST
 import com.example.myapplication.creditcards.data.mock.models.Card
+import com.example.myapplication.creditcards.data.mock.models.CreditCardTermsDto
 import com.example.myapplication.creditcards.data.mock.models.RequestData
 import com.example.myapplication.creditcards.data.mock.models.ResponseData
 import kotlinx.serialization.json.Json
@@ -106,7 +108,24 @@ class CreditCardsMock {
         response = null
     )
 
+    fun getCreditCardTerms(): Response {
+        val creditCardTerms = CreditCardTermsDto(
+            cashback = CASHBACK,
+            maxCount = MAX_COUNT,
+            serviceCost = SERVICE_COST,
+            maxCreditLimit = MAX_CREDIT_LIMIT
+        )
+        return Response(
+            code = ApiCodes.SUCCESS,
+            description = "Credit Card Terms",
+            response = Json.encodeToString(creditCardTerms)
+        )
+    }
+
     companion object {
         private const val MAX_COUNT = 5
+        private const val CASHBACK = 0.3
+        private const val SERVICE_COST = 990L
+        private const val MAX_CREDIT_LIMIT = 1_000_000L
     }
 }

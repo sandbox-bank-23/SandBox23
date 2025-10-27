@@ -1,4 +1,4 @@
-package com.example.myapplication.debitcards.ui
+package com.example.myapplication.debitcards.ui.screen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,8 +15,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -26,6 +30,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.navigation.NavHostController
 import com.example.myapplication.R
 import com.example.myapplication.core.ui.components.BasicDialog
@@ -36,36 +41,52 @@ import com.example.myapplication.core.ui.components.SimpleIconDialog
 import com.example.myapplication.core.ui.components.SimpleTopBar
 import com.example.myapplication.core.ui.theme.AppTypography
 import com.example.myapplication.core.ui.theme.Padding12dp
-import com.example.myapplication.debitcards.domain.models.DebitCardsState
+import com.example.myapplication.debitcards.ui.state.DebitCardsState
+import com.example.myapplication.debitcards.ui.viewmodel.DebitCardsViewModel
 import org.koin.androidx.compose.koinViewModel
 
-const val CASHBACK = 30
+const val CASHBACK = 0
+const val SERVICE_COST = 1_000L
+const val DEBIT_CARD_MAX_COUNT = 0
+const val CENTS_DIVIDE = 100
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DebitCardsScreen(
     navController: NavHostController,
+    userId: Long,
     viewModel: DebitCardsViewModel = koinViewModel<DebitCardsViewModel>()
 ) {
     val debitCardsState = viewModel.debitCardsState.collectAsState().value
-    val offlineCardDialog = remember { mutableStateOf(false) }
-    val successCardDialog = remember { mutableStateOf(false) }
+    var offlineCardDialog by remember { mutableStateOf(false) }
+    var successCardDialog by remember { mutableStateOf(false) }
 
-    // Сходить в репу за этим
-    val cashback = CASHBACK
+    var cashback by remember { mutableIntStateOf(CASHBACK) }
+    var serviceCost by remember { mutableLongStateOf(SERVICE_COST) }
+    var debitCardMaxCount by remember { mutableIntStateOf(DEBIT_CARD_MAX_COUNT) }
+
+    LifecycleStartEffect(Unit) {
+        viewModel.getDebitCardTerms(userId)
+        onStopOrDispose { }
+    }
 
     when (debitCardsState) {
-        is DebitCardsState.Offline -> {
-            offlineCardDialog.value = true
+        is DebitCardsState.Error -> {
+            offlineCardDialog = true
         }
         is DebitCardsState.Online -> {
-            offlineCardDialog.value = false
+            offlineCardDialog = false
         }
         is DebitCardsState.Success -> {
-            successCardDialog.value = true
+            successCardDialog = true
         }
         is DebitCardsState.Loading -> return
-        else -> {}
+        is DebitCardsState.Content -> {
+            cashback = (debitCardsState.debitCardTerms.cashback * CENTS_DIVIDE).toInt()
+            serviceCost = debitCardsState.debitCardTerms.serviceCost
+            debitCardMaxCount = debitCardsState.debitCardTerms.maxCount
+        }
+        DebitCardsState.Limit -> {}
     }
 
     Scaffold(
@@ -84,19 +105,22 @@ fun DebitCardsScreen(
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             BasicDialog(
-                visible = offlineCardDialog.value,
-                onDismissRequest = { offlineCardDialog.value = false },
+                visible = offlineCardDialog,
+                onDismissRequest = {
+                    offlineCardDialog = false
+                    navController.popBackStack()
+                },
                 onConfirmation = {
-                    viewModel.openCard()
+                    viewModel.createCard(userId)
                 },
                 dialogTitle = stringResource(R.string.offline),
                 confirmButtonText = stringResource(R.string.try_again),
                 dismissButtonText = stringResource(R.string.close),
             )
             SimpleIconDialog(
-                visible = successCardDialog.value,
+                visible = successCardDialog,
                 onDismissRequest = {
-                    successCardDialog.value = false
+                    successCardDialog = false
                     navController.popBackStack()
                 },
                 dialogTitle = stringResource(R.string.card_open_success),
@@ -108,14 +132,7 @@ fun DebitCardsScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
             ) {
-                CardItem(
-                    isTemplate = true,
-                    cardHolderName = TODO(),
-                    cardBalance = TODO(),
-                    cardType = TODO(),
-                    cardNumber = TODO(),
-                    onClick = TODO()
-                )
+                CardItem(isTemplate = true)
             }
             Column {
                 Text(
@@ -126,7 +143,14 @@ fun DebitCardsScreen(
                 )
                 CardInfoBox(
                     stringResource(R.string.card_debit_info_title1),
-                    stringResource(R.string.card_debit_info_text1)
+                    if (serviceCost == 0L) {
+                        stringResource(R.string.card_debit_info_text1)
+                    } else {
+                        stringResource(
+                            R.string.card_cost_template,
+                            serviceCost
+                        )
+                    }
                 )
                 CardInfoBox(
                     stringResource(
@@ -139,10 +163,13 @@ fun DebitCardsScreen(
                     text = stringResource(R.string.card_debit_info_text3)
                 )
                 Spacer(modifier = Modifier.Companion.height(Padding12dp))
-                if (debitCardsState is DebitCardsState.Error) {
+                if (debitCardsState is DebitCardsState.Limit) {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
-                        text = stringResource(R.string.card_count_max),
+                        text = stringResource(
+                            R.string.card_count_max,
+                            debitCardMaxCount
+                        ),
                         textAlign = TextAlign.Center,
                         style = AppTypography.labelLarge.copy(
                             fontSize = 14.sp,
@@ -155,7 +182,7 @@ fun DebitCardsScreen(
                     PrimaryButton(stringResource(R.string.card_open), isEnabled = false) {}
                 } else {
                     PrimaryButton(stringResource(R.string.card_open)) {
-                        viewModel.openCard()
+                        viewModel.createCard(userId)
                     }
                 }
                 Spacer(modifier = Modifier.Companion.height(Padding12dp))

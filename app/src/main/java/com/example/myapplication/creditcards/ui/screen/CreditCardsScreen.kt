@@ -1,4 +1,4 @@
-package com.example.myapplication.creditcards.ui
+package com.example.myapplication.creditcards.ui.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -25,6 +25,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -41,6 +43,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.navigation.NavHostController
 import com.example.myapplication.R
 import com.example.myapplication.core.ui.components.BasicDialog
@@ -54,43 +57,58 @@ import com.example.myapplication.core.ui.theme.CornerRadiusLarge
 import com.example.myapplication.core.ui.theme.Padding12dp
 import com.example.myapplication.core.ui.theme.Padding8dp
 import com.example.myapplication.core.ui.theme.PaddingBase
-import com.example.myapplication.creditcards.domain.models.CreditCardsState
+import com.example.myapplication.creditcards.ui.state.CreditCardsState
+import com.example.myapplication.creditcards.ui.viewmodel.CreditCardsViewModel
 import org.koin.androidx.compose.koinViewModel
 import java.text.DecimalFormat
 
-const val SERVICE_COST = 990L
-const val CREDIT_LIMIT_MAX = 1_000_000L
+const val SERVICE_COST = 1_000L
 const val CASHBACK = 30
+const val CENTS_DIVIDE = 100
+const val CREDIT_CARD_MAX_COUNT = 0
+const val CREDIT_CARD_MAX_LIMIT = 1_000_000L
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreditCardsScreen(
     navController: NavHostController,
+    userId: Long,
     viewModel: CreditCardsViewModel = koinViewModel<CreditCardsViewModel>()
 ) {
     val creditCardsState = viewModel.creditCardsState.collectAsState().value
-    val offlineCardDialog = remember { mutableStateOf(false) }
-    val successCardDialog = remember { mutableStateOf(false) }
+    var offlineCardDialog by remember { mutableStateOf(false) }
+    var successCardDialog by remember { mutableStateOf(false) }
 
-    // Сходить в репу за этим
-    val serviceCost = SERVICE_COST
-    val creditLimitMax = CREDIT_LIMIT_MAX
-    val cashback = CASHBACK
+    var cashback by remember { mutableIntStateOf(CASHBACK) }
+    var serviceCost by remember { mutableLongStateOf(SERVICE_COST) }
+    var creditCardMaxCount by remember { mutableIntStateOf(CREDIT_CARD_MAX_COUNT) }
+    var creditCardMaxLimit by remember { mutableLongStateOf(CREDIT_CARD_MAX_LIMIT) }
+
+    LifecycleStartEffect(Unit) {
+        viewModel.getCreditCardTerms(userId)
+        onStopOrDispose { }
+    }
 
     when (creditCardsState) {
-        is CreditCardsState.Offline -> {
-            offlineCardDialog.value = true
+        is CreditCardsState.Error -> {
+            offlineCardDialog = true
         }
 
         is CreditCardsState.Online -> {
-            offlineCardDialog.value = false
+            offlineCardDialog = false
         }
 
         is CreditCardsState.Success -> {
-            successCardDialog.value = true
+            successCardDialog = true
         }
 
         is CreditCardsState.Loading -> return
+        is CreditCardsState.Content -> {
+            cashback = (creditCardsState.creditCardTerms.cashback * CENTS_DIVIDE).toInt()
+            serviceCost = creditCardsState.creditCardTerms.serviceCost
+            creditCardMaxCount = creditCardsState.creditCardTerms.maxCount
+            creditCardMaxLimit = creditCardsState.creditCardTerms.maxCreditLimit
+        }
         else -> {}
     }
 
@@ -110,19 +128,22 @@ fun CreditCardsScreen(
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             BasicDialog(
-                visible = offlineCardDialog.value,
-                onDismissRequest = { offlineCardDialog.value = false },
+                visible = offlineCardDialog,
+                onDismissRequest = {
+                    offlineCardDialog = false
+                    navController.popBackStack()
+                },
                 onConfirmation = {
-                    viewModel.openCard()
+                    viewModel.createCard(userId)
                 },
                 dialogTitle = stringResource(R.string.offline),
                 confirmButtonText = stringResource(R.string.try_again),
                 dismissButtonText = stringResource(R.string.close),
             )
             SimpleIconDialog(
-                visible = successCardDialog.value,
+                visible = successCardDialog,
                 onDismissRequest = {
-                    successCardDialog.value = false
+                    successCardDialog = false
                     navController.popBackStack()
                 },
                 dialogTitle = stringResource(R.string.card_open_success),
@@ -137,14 +158,7 @@ fun CreditCardsScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
             ) {
-                CardItem(
-                    isTemplate = true,
-                    cardHolderName = TODO(),
-                    cardBalance = TODO(),
-                    cardType = TODO(),
-                    cardNumber = TODO(),
-                    onClick = TODO()
-                )
+                CardItem(isTemplate = true)
             }
             Column {
                 Text(
@@ -163,7 +177,7 @@ fun CreditCardsScreen(
                 CardInfoBox(
                     stringResource(
                         R.string.card_credit_info_title2,
-                        creditLimitMax
+                        creditCardMaxLimit
                     ),
                     stringResource(R.string.card_credit_info_text2)
                 )
@@ -178,12 +192,15 @@ fun CreditCardsScreen(
                         cashback
                     )
                 )
-                CreditLimitSlider(max = creditLimitMax, viewModel = viewModel)
+                CreditLimitSlider(max = creditCardMaxLimit, viewModel = viewModel)
                 Spacer(modifier = Modifier.Companion.height(Padding12dp))
-                if (creditCardsState is CreditCardsState.Error) {
+                if (creditCardsState is CreditCardsState.Limit) {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
-                        text = stringResource(R.string.card_count_max),
+                        text = stringResource(
+                            R.string.card_count_max,
+                            creditCardMaxCount
+                        ),
                         textAlign = TextAlign.Center,
                         style = AppTypography.labelLarge.copy(
                             fontSize = 14.sp,
@@ -196,7 +213,7 @@ fun CreditCardsScreen(
                     PrimaryButton(stringResource(R.string.card_open), isEnabled = false) {}
                 } else {
                     PrimaryButton(stringResource(R.string.card_open)) {
-                        viewModel.openCard()
+                        viewModel.createCard(userId)
                     }
                 }
                 Spacer(modifier = Modifier.Companion.height(Padding12dp))
@@ -250,7 +267,8 @@ fun CreditLimitSlider(min: Long = 0L, max: Long = 1_000_000L, viewModel: CreditC
                                 creditLimitValue = newValue.coerceIn(min.toFloat(), max.toFloat())
                             },
                             onDragEnd = {
-                                viewModel.creditLimitValue = creditLimitValue.toLong()
+                                viewModel.creditLimitValue =
+                                    (creditLimitValue * CENTS_DIVIDE).toLong()
                             }
                         )
                     },
