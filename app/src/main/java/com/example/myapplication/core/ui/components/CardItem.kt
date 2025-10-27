@@ -45,8 +45,8 @@ const val CENTS_DIVIDE = 100
 
 @Composable
 fun CardItem(
-    cardHolderName: String,
-    cardBalance: Long?,
+    cardHolderName: String = "",
+    cardBalance: Long? = null,
     cardType: String? = null,
     cardNumber: String? = null,
     isTemplate: Boolean = false,
