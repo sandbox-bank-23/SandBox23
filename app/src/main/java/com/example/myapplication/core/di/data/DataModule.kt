@@ -13,11 +13,9 @@ import com.example.myapplication.core.data.mappers.CardDbConverter
 import com.example.myapplication.core.data.mock.SkyMock
 import com.example.myapplication.core.data.repo.AppRepositoryImpl
 import com.example.myapplication.core.data.repo.CardRepositoryImpl
-import com.example.myapplication.core.data.repo.SkyRepositoryImpl
 import com.example.myapplication.core.data.storage.AppStorage
 import com.example.myapplication.core.domain.api.AppRepository
 import com.example.myapplication.core.domain.api.CardRepository
-import com.example.myapplication.core.domain.api.SkyRepository
 import com.google.gson.Gson
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
@@ -58,6 +56,12 @@ val coreDataModule = module {
         )
     }
 
+    single<CardRepository> {
+        CardRepositoryImpl(get(), get())
+    }
+
+    factory<CardDbConverter> { CardDbConverter() }
+
     single<AppDatabase> {
         Room.databaseBuilder(androidContext(), AppDatabase::class.java, DB_NAME)
             .fallbackToDestructiveMigration(true)
@@ -69,10 +73,6 @@ val coreDataModule = module {
     }
 
     factory<CardDbConverter> { CardDbConverter() }
-
-    single<SkyRepository> {
-        SkyRepositoryImpl(get(), get())
-    }
 
     single<SkyMock> { SkyMock() }
 

@@ -11,10 +11,10 @@ class CardDbConverter {
             cvv = card.cvv,
             endDate = card.endDate,
             owner = card.owner,
+            userId = card.userId,
             type = card.type,
             percent = card.percent,
-            balance = card.balance,
-            userId = card.userId
+            balance = card.balance
         )
     }
 
@@ -24,11 +24,10 @@ class CardDbConverter {
             cvv = card.cvv,
             endDate = card.endDate,
             owner = card.owner,
+            userId = card.userId,
             type = card.type,
             percent = card.percent,
-            balance = card.balance ?: 0,
-            userId = card.userId
+            balance = card.balance
         )
     }
-
 }
