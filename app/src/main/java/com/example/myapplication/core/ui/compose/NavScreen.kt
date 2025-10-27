@@ -62,6 +62,7 @@ import com.example.myapplication.core.ui.theme.PinPadBackgroundColor
 import com.example.myapplication.core.ui.theme.RoundedCornerShapeSelector
 import com.example.myapplication.core.ui.theme.secondaryContainerDark
 import com.example.myapplication.loansanddeposits.navigation.loansDepositsScreenNavigation
+import com.example.myapplication.profile.navigation.profileScreenNavigation
 import org.koin.androidx.compose.koinViewModel
 
 const val ANIMATION_DELAY = 500
@@ -271,7 +272,7 @@ fun NavHostContent(
         loansDepositsScreenNavigation(navController)
         transfersScreenNavigation()
         historyScreenNavigation()
-        profileScreenNavigation()
+        profileScreenNavigation(navController)
     }
 }
 

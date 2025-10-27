@@ -10,6 +10,8 @@
     <string name="transactions">Переводы</string>
     <string name="history">История</string>
     <string name="profile">Профиль</string>
+    <string name="myProfile">Мой профиль</string>
+    <string name="back">Назад</string>
     <string name="authorization">Авторизация</string>
     <string name="email">Email</string>
     <string name="password">Пароль</string>

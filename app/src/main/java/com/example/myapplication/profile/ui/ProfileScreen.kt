@@ -1,10 +1,10 @@
-package com.example.myapplication.profile
+package com.example.myapplication.profile.ui
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -29,6 +29,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -36,30 +37,53 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import io.ktor.websocket.Frame
+import androidx.navigation.NavHostController
+import com.example.myapplication.R
+import com.example.myapplication.core.ui.theme.AppTypography
+import com.example.myapplication.core.ui.theme.PaddingBase
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileScreen() {
+fun ProfileScreen(navController: NavHostController?) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Frame.Text("Мой профиль") },
+                windowInsets = WindowInsets(0),
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface,
+                ),
                 navigationIcon = {
-                    IconButton(onClick = { /* TODO: Back action */ }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Назад")
+                    IconButton(onClick = {
+                        navController?.popBackStack()
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = stringResource(R.string.back)
+                        )
                     }
                 },
+                title = {
+                    Text(
+                        text = stringResource(R.string.myProfile),
+                        style = AppTypography.titleLarge,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.padding(start = PaddingBase)
+                    )
+                }
             )
         },
-        containerColor = Color(0xFFF9F7FC)
-    ) { padding ->
+        containerColor = MaterialTheme.colorScheme.background
+    ) { innerPadding ->
         Column(
             modifier = Modifier
-                .padding(padding)
-                .padding(16.dp)
+                .padding(innerPadding)
+                .padding(horizontal = PaddingBase)
                 .verticalScroll(rememberScrollState())
         ) {
             ProfileCard(
@@ -157,15 +181,18 @@ fun InfoCardsGroup() {
 
 @Composable
 private fun InfoRow(title: String, value: String) {
-    Row(
+    Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(72.dp)
             .padding(horizontal = 16.dp, vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically
+        contentAlignment = Alignment.CenterStart
     ) {
-        Text(text = "$title ", style = MaterialTheme.typography.bodyLarge)
-        Text(text = value, style = MaterialTheme.typography.bodyLarge)
+        Text(
+            text = "$title $value",
+            style = MaterialTheme.typography.bodyLarge,
+            maxLines = Int.MAX_VALUE
+        )
     }
 }
 
@@ -199,7 +226,7 @@ fun SettingSwitchRow(label: String, state: MutableState<Boolean>) {
             style = MaterialTheme.typography.bodyLarge
         )
 
-        Spacer(modifier = Modifier.width(16.dp)) // небольшой отступ между текстом и переключателем
+        Spacer(modifier = Modifier.width(16.dp))
 
         Switch(
             checked = state.value,
@@ -222,8 +249,8 @@ fun DividerLine() {
 @Composable
 fun ProfileScreenPreview() {
     MaterialTheme {
-        Box(modifier = Modifier.height(2000.dp)) { // больше, чем экран
-            ProfileScreen()
+        Box(modifier = Modifier.height(2000.dp)) {
+            ProfileScreen(null)
         }
     }
 }
