@@ -6,8 +6,6 @@ import com.example.myapplication.loansanddeposits.data.repo.LoansAndDepositsRepo
 import com.example.myapplication.loansanddeposits.domain.api.LoansAndDepositsRepository
 import com.example.myapplication.loansanddeposits.ui.mapper.DefaultLoansDepositsUiMapper
 import com.example.myapplication.loansanddeposits.ui.mapper.LoansDepositsUiMapper
-import com.example.myapplication.loansanddeposits.ui.viewmodel.LoansDepositsViewModel
-import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 @Suppress("NoTrailingSpaces")
@@ -21,6 +19,4 @@ val loansAndDepositsModule = module {
         )
     }
     factory<LoansDepositsUiMapper> { DefaultLoansDepositsUiMapper() }
-
-    viewModel { LoansDepositsViewModel(get(), get()) }
 }

@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myapplication.core.domain.models.Result
 import com.example.myapplication.core.utils.ApiCodes
-import com.example.myapplication.loansanddeposits.domain.api.LoansAndDepositsRepository
+import com.example.myapplication.loansanddeposits.domain.LoansAndDepositsUseCase
 import com.example.myapplication.loansanddeposits.ui.mapper.LoansDepositsUiMapper
 import com.example.myapplication.loansanddeposits.ui.state.LoansDepositsState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class LoansDepositsViewModel(
-    private val repository: LoansAndDepositsRepository,
+    private val usecase: LoansAndDepositsUseCase,
     private val mapper: LoansDepositsUiMapper
 ) : ViewModel() {
 
@@ -24,7 +24,7 @@ class LoansDepositsViewModel(
 
     fun requestData() = viewModelScope.launch {
         _state.value = LoansDepositsState.Loading
-        when (val res = repository.getAllLoansAndDeposits()) {
+        when (val res = usecase.getAllLoansAndDeposits()) {
             is Result.Success -> {
                 val (deposits, credits) = mapper.split(res.data)
                 _state.value = LoansDepositsState.Content(deposits, credits)

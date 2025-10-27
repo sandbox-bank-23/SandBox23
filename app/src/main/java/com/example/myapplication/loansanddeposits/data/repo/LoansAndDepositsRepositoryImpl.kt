@@ -15,7 +15,7 @@ class LoansAndDepositsRepositoryImpl(
 ) : LoansAndDepositsRepository {
 
     override suspend fun getAllLoansAndDeposits(): Result<List<Product>> {
-        val raw = client(loansAndDepositsMock.getResponse())
+        val raw = client(loansAndDepositsMock.getLoansAndDeposits())
         return when (raw.code) {
             ApiCodes.SUCCESS -> {
                 val body = raw.response ?: return Result.Error(ApiCodes.EMPTY_BODY)
