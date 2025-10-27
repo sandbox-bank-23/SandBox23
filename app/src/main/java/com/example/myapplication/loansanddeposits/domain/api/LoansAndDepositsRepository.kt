@@ -4,5 +4,5 @@ import com.example.myapplication.core.domain.models.Product
 import com.example.myapplication.core.domain.models.Result
 
 interface LoansAndDepositsRepository {
-    suspend fun getAllLoansAndDeposits(): Result<List<Product>>
+    suspend fun getAllLoansAndDeposits(userId: Long): Result<List<Product>>
 }

@@ -43,13 +43,13 @@ class App : Application() {
                 depositsModule,
                 loansModule,
                 loansViewModelModule,
-                loansAndDepositsModule,
                 transferModule,
                 cardDetailsViewModelModule,
                 creditCardsViewModelModule,
                 debitCardsViewModelModule,
+                loansAndDepositsModule,
+                loansAndDepositsDomainModule,
                 loansAndDepositsViewModelModule,
-                loansAndDepositsDomainModule
             )
         }
     }

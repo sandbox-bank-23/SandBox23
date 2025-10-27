@@ -8,7 +8,7 @@ import com.example.myapplication.loansanddeposits.domain.api.LoansAndDepositsRep
 class LoansAndDepositsUseCaseImpl(
     val loansAndDepositsRepository: LoansAndDepositsRepository
 ) : LoansAndDepositsUseCase {
-    override suspend fun getAllLoansAndDeposits(): Result<List<Product>> {
-        return loansAndDepositsRepository.getAllLoansAndDeposits()
+    override suspend fun getAllLoansAndDeposits(userId: Long): Result<List<Product>> {
+        return loansAndDepositsRepository.getAllLoansAndDeposits(userId)
     }
 }
