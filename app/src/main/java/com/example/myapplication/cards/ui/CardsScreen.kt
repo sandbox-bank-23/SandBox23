@@ -96,7 +96,7 @@ fun CardsScreen(
         ) {
             CardItem(
                 cardHolderName = cardHolderName,
-                cardBalance = cardBalance?.toBigDecimal(),
+                cardBalance = cardBalance,
                 cardType = cardType,
                 cardNumber = cardNumber
             ) {
