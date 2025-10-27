@@ -1,39 +1,40 @@
 package com.example.myapplication.carddetails.ui
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.myapplication.carddetails.domain.models.CardDetailsState
-import com.example.myapplication.core.domain.models.Card
+import com.example.myapplication.core.domain.api.CardRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlin.random.Random
-import kotlin.random.nextLong
+import kotlinx.coroutines.launch
 
-class CardDetailsViewModel(private val cardID: Long) : ViewModel() {
+class CardDetailsViewModel(
+    private val cardID: Long,
+    private val cardRepository: CardRepository
+) : ViewModel() {
 
     private val _cardDetailsState = MutableStateFlow<CardDetailsState>(value = CardDetailsState.Loading)
     val cardDetailsState: StateFlow<CardDetailsState> = _cardDetailsState.asStateFlow()
 
     fun requestCardDetail() {
-        // Здесь нужно сходить в репозиторий за картой
-        val card = Card(
-            id = cardID,
-            cvv = 12,
-            endDate = "07/2007",
-            owner = "Ivanova Oksana",
-            type = "Credit",
-            percent = 2.5,
-            balance = 500_000.toBigDecimal(),
-            userId = Random.nextLong(1, Long.MAX_VALUE)
-        )
-        renderState(CardDetailsState.Content(card))
+        viewModelScope.launch {
+            val cardDetailsResult = cardRepository.getById(cardID)
+            when (cardDetailsResult != null) {
+                true -> renderState(
+                    CardDetailsState.Content(cardDetailsResult)
+                )
+                false -> renderState(CardDetailsState.Error)
+            }
+        }
     }
 
     fun closeCard() {
-        renderState(CardDetailsState.Offline)
+        viewModelScope.launch {
+            cardRepository.remove(cardID)
+        }
+        renderState(CardDetailsState.Success)
     }
-
-
 
     private fun renderState(state: CardDetailsState) {
         _cardDetailsState.value = state
