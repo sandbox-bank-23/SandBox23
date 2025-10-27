@@ -20,4 +20,6 @@ interface DepositsRepository {
     ): Result<Deposit>
 
     suspend fun getProducts(): Result<List<Deposit>>
+
+    suspend fun getDeposits(): List<Deposit>
 }

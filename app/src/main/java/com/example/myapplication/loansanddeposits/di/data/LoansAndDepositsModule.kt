@@ -15,7 +15,8 @@ val loansAndDepositsModule = module {
     single<LoansAndDepositsRepository> {
         LoansAndDepositsRepositoryImpl(
             client = get<NetworkClient>(),
-            loansAndDepositsMock = get<LoansAndDepositsMock>()
+            loansAndDepositsMock = get<LoansAndDepositsMock>(),
+            json = get()
         )
     }
     factory<LoansDepositsUiMapper> { DefaultLoansDepositsUiMapper() }

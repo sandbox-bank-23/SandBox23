@@ -99,6 +99,10 @@ class DepositRepositoryImpl(
         formatError(DATA_ERROR, e)
     }
 
+    override suspend fun getDeposits(): List<Deposit> {
+        return depositDao.getAllDeposits().map { it.toDomain() }
+    }
+
     fun observeAllDeposits(): Flow<List<DepositEntity>> = depositDao.observeAll()
 
     private fun formatError(prefix: String, e: Exception): Result.Error {
