@@ -1,10 +1,12 @@
 package com.example.myapplication.profile.ui
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -44,7 +46,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.myapplication.R
 import com.example.myapplication.core.ui.theme.AppTypography
-import com.example.myapplication.core.ui.theme.PaddingBase
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -52,15 +53,14 @@ fun ProfileScreen(navController: NavHostController?) {
     Scaffold(
         topBar = {
             TopAppBar(
+                modifier = Modifier.height(64.dp),
                 windowInsets = WindowInsets(0),
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surface,
                     titleContentColor = MaterialTheme.colorScheme.onSurface,
                 ),
                 navigationIcon = {
-                    IconButton(onClick = {
-                        navController?.popBackStack()
-                    }) {
+                    IconButton(onClick = { navController?.popBackStack() }) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
                             contentDescription = stringResource(R.string.back)
@@ -73,7 +73,7 @@ fun ProfileScreen(navController: NavHostController?) {
                         style = AppTypography.titleLarge,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.padding(start = PaddingBase)
+                        modifier = Modifier.padding(start = 16.dp)
                     )
                 }
             )
@@ -82,46 +82,59 @@ fun ProfileScreen(navController: NavHostController?) {
     ) { innerPadding ->
         Column(
             modifier = Modifier
-                .padding(innerPadding)
-                .padding(horizontal = PaddingBase)
-                .verticalScroll(rememberScrollState())
+                .fillMaxSize()
+                .padding(
+                    start = 16.dp,
+                    end = 16.dp,
+                    top = innerPadding.calculateTopPadding() + 16.dp,
+                    bottom = 25.dp
+                )
         ) {
-            ProfileCard(
-                title = "Клиент",
-                subtitle = "Ivanova Oksana",
-                id = "4785 3216"
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            InfoCardsGroup()
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            SettingSwitchGroup()
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            Button(
-                onClick = { /* TODO: Обновить приложение */ },
+            // Контент, который может скроллиться
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF7D61E8))
+                    .weight(1f)
+                    .verticalScroll(rememberScrollState())
             ) {
-                Text("Обновить приложение", color = Color.White)
-            }
+                ProfileCard(title = "Клиент", subtitle = "Ivanova Oksana", id = "4785 3216")
+                Spacer(modifier = Modifier.height(12.dp))
+                InfoCardsGroup()
+                Spacer(modifier = Modifier.height(16.dp))
+                SettingSwitchGroup()
+                Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
+                Button(
+                    onClick = { /* TODO */ },
+                    modifier = Modifier
+                        .width(380.dp)
+                        .height(64.dp),
+                    shape = RoundedCornerShape(100.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                ) {
+                    Text(
+                        text = "Обновить приложение",
+                        color = Color.White,
+                        style = MaterialTheme.typography.labelMedium
+                    )
+                }
 
-            OutlinedButton(
-                onClick = { /* TODO: Выход из аккаунта */ },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp),
-                shape = RoundedCornerShape(25.dp)
-            ) {
-                Text("Выход из аккаунта", color = Color(0xFF7D61E8))
+                Spacer(modifier = Modifier.height(16.dp))
+
+                OutlinedButton(
+                    onClick = { /* TODO */ },
+                    modifier = Modifier
+                        .width(380.dp)
+                        .height(64.dp),
+                    shape = RoundedCornerShape(100.dp),
+                    border = BorderStroke(2.dp, MaterialTheme.colorScheme.onTertiary)
+                ) {
+                    Text(
+                        text = "Выход из аккаунта",
+                        color = MaterialTheme.colorScheme.onTertiary,
+                        style = MaterialTheme.typography.labelMedium
+                    )
+                }
+
             }
         }
     }
@@ -168,13 +181,13 @@ fun InfoCardsGroup() {
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh)
     ) {
         Column {
-            InfoRow("Общий баланс", "50 000 ₽")
+            InfoRow(stringResource(R.string.commonBalance), "50 000 ₽")
             DividerLine()
-            InfoRow("Задолженности по кредитным картам", "нет")
+            InfoRow(stringResource(R.string.debtsBalance), "нет")
             DividerLine()
-            InfoRow("Общая сумма вкладов", "40 000 ₽")
+            InfoRow(stringResource(R.string.depositBalance), "40 000 ₽")
             DividerLine()
-            InfoRow("Общая сумма кредитов", "8 770 000 ₽")
+            InfoRow(stringResource(R.string.creditBalance), "8 770 000 ₽")
         }
     }
 }
@@ -204,10 +217,10 @@ fun SettingSwitchGroup() {
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryFixedDim)
     ) {
         Column {
-            SettingSwitchRow("Тема оформления: светлая / тёмная", remember { mutableStateOf(false) })
-            SettingSwitchRow("Смена языка: русский / английский", remember { mutableStateOf(false) })
-            SettingSwitchRow("Получать уведомления в приложении", remember { mutableStateOf(false) })
-            SettingSwitchRow("Вход при помощи Face ID", remember { mutableStateOf(true) })
+            SettingSwitchRow(stringResource(R.string.themeSwitchTittle), remember { mutableStateOf(false) })
+            SettingSwitchRow(stringResource(R.string.languageSwitchTittle), remember { mutableStateOf(false) })
+            SettingSwitchRow(stringResource(R.string.notificationSwitchTittle), remember { mutableStateOf(false) })
+            SettingSwitchRow(stringResource(R.string.faceIdSwitchTittle), remember { mutableStateOf(true) })
         }
     }
 }

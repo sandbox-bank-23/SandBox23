@@ -110,4 +110,15 @@
     <string name="credit_count_max">Можно оформить\nдо 3 кредитов, при этом сумма\nих задолженности должна быть\nменее 5 000 000,00</string>
     <string name="card_cost_template">%s ₽</string>
     <string name="card_details_error">Ошибка загрузки деталей карты. Попробуйте снова.</string>
+
+    <string name="commonBalance">Общий баланс</string>
+    <string name="debtsBalance">Задолженности по кредитным картам</string>
+    <string name="depositBalance">Общая сумма вкладов</string>
+    <string name="creditBalance">Общая сумма кредитов</string>
+
+
+    <string name="themeSwitchTittle">Тема оформления: светлая / тёмная</string>
+    <string name="languageSwitchTittle">Смена языка: русский / английский</string>
+    <string name="notificationSwitchTittle">Получать уведомления в приложении</string>
+    <string name="faceIdSwitchTittle">Вход при помощи Face ID</string>
 </resources>

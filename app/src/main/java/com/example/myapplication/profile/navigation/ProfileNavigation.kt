@@ -8,12 +8,7 @@ import com.example.myapplication.core.ui.state.Routes
 import com.example.myapplication.profile.ui.ProfileScreen
 
 fun NavGraphBuilder.profileScreenNavigation(navController: NavHostController) {
-    navigation(
-        startDestination = Routes.PROFILE.route,
-        route = Routes.PROFILE_NAVIGATION.route
-    ) {
-        composable(Routes.PROFILE.route) {
-            ProfileScreen(navController)
-        }
+    composable(Routes.PROFILE.route) {
+        ProfileScreen(navController)
     }
 }

@@ -286,9 +286,6 @@ fun TransfersScreen() = PlaceholderScreen("Переводы")
 fun HistoryScreen() = PlaceholderScreen("История")
 
 @Composable
-fun ProfileScreen() = PlaceholderScreen("Профиль")
-
-@Composable
 fun PlaceholderScreen(title: String) {
     Box(
         modifier = Modifier
@@ -310,8 +307,4 @@ fun NavGraphBuilder.transfersScreenNavigation() {
 
 fun NavGraphBuilder.historyScreenNavigation() {
     composable(Routes.HISTORY.route) { HistoryScreen() }
-}
-
-fun NavGraphBuilder.profileScreenNavigation() {
-    composable(Routes.PROFILE.route) { ProfileScreen() }
 }
