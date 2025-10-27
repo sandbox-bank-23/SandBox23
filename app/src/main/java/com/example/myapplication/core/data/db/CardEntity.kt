@@ -2,7 +2,6 @@ package com.example.myapplication.core.data.db
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.math.BigDecimal
 
 @Entity(tableName = "cards")
 data class CardEntity(
@@ -14,5 +13,5 @@ data class CardEntity(
     val owner: String,
     val type: String,
     val percent: Double,
-    val balance: BigDecimal
+    val balance: Long?
 )
