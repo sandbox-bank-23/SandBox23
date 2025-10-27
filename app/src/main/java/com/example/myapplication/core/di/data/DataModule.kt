@@ -10,6 +10,7 @@ import com.example.myapplication.core.data.db.CardDao
 import com.example.myapplication.core.data.db.dao.LoanDao
 import com.example.myapplication.core.data.db.dao.UserDao
 import com.example.myapplication.core.data.mappers.CardDbConverter
+import com.example.myapplication.core.data.mock.SkyMock
 import com.example.myapplication.core.data.repo.AppRepositoryImpl
 import com.example.myapplication.core.data.repo.CardRepositoryImpl
 import com.example.myapplication.core.data.storage.AppStorage
@@ -20,6 +21,7 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 private const val APP_STORAGE = "app_storage"
+private const val DB_NAME = "database.db"
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
     name = APP_STORAGE
@@ -59,6 +61,20 @@ val coreDataModule = module {
     }
 
     factory<CardDbConverter> { CardDbConverter() }
+
+    single<AppDatabase> {
+        Room.databaseBuilder(androidContext(), AppDatabase::class.java, DB_NAME)
+            .fallbackToDestructiveMigration(true)
+            .build()
+    }
+
+    single<CardRepository> {
+        CardRepositoryImpl(get(), get())
+    }
+
+    factory<CardDbConverter> { CardDbConverter() }
+
+    single<SkyMock> { SkyMock() }
 
     factory<Gson> { Gson() }
 }

@@ -6,11 +6,11 @@ import kotlinx.coroutines.flow.Flow
 import java.math.BigDecimal
 
 class CreateCreditCardUseCase(
-    private val creditCardRepository: CreditCardsRepository
+    private val creditCardsRepository: CreditCardsRepository
 ) {
     suspend fun createCreditCard(
         userId: Long,
         balance: BigDecimal
     ): Flow<Result<Card>> =
-        creditCardRepository.createCreditCard(userId, balance)
+        creditCardsRepository.createCreditCard(userId, balance)
 }

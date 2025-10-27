@@ -5,7 +5,6 @@ import com.example.myapplication.core.domain.models.CardType.Companion.CREDIT
 import com.example.myapplication.core.domain.models.CardType.Companion.DEBIT
 import com.example.myapplication.utils.BigDecimalAsStringSerializer
 import kotlinx.serialization.Serializable
-import java.math.BigDecimal
 
 @Serializable
 data class Card(
@@ -17,7 +16,7 @@ data class Card(
     @CardType val type: String,
     val percent: Double,
     @Serializable(with = BigDecimalAsStringSerializer::class)
-    val balance: BigDecimal
+    val balance: Long?
 )
 
 
