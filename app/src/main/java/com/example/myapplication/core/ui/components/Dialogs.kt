@@ -34,6 +34,7 @@ import com.example.myapplication.core.ui.theme.Padding24dp
 import com.example.myapplication.core.ui.theme.onPrimaryLight
 import com.example.myapplication.core.ui.theme.onSurfaceLight
 import com.example.myapplication.core.ui.theme.surfaceContainerLowestLight
+import com.example.myapplication.core.ui.theme.tertiaryContainerLight
 
 @Composable
 fun BasicDialog(
@@ -183,6 +184,95 @@ fun SimpleIconDialog(
                         text = dialogTitle,
                         style = AppTypography.headlineSmall.copy(
                             fontWeight = FontWeight.W400
+                        )
+                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End,
+                    ) {
+                        TextButton(
+                            modifier = Modifier
+                                .height(BasicDialogButtonHeight)
+                                .padding(horizontal = 2.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = onPrimaryLight,
+                                contentColor = MaterialTheme.colorScheme.tertiaryContainer
+                            ),
+                            onClick = {
+                                onDismissRequest()
+                            },
+                        ) {
+                            Text(
+                                textAlign = TextAlign.Center,
+                                text = dismissButtonText,
+                                style = AppTypography.labelLarge.copy(
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.W500
+                                )
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun ExceededCreditDialog(
+    visible: Boolean,
+    onDismissRequest: () -> Unit,
+    dialogTitle: String,
+    dismissButtonText: String,
+    icon: ImageVector,
+    dialogText: String
+) {
+    if (visible) {
+        Dialog(
+            onDismissRequest = {
+                onDismissRequest()
+            }
+        ) {
+            Card(
+                shape = RoundedCornerShape(CornerRadiusDialog),
+                colors = CardDefaults.cardColors(
+                    containerColor = surfaceContainerLowestLight
+                )
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(Padding24dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 24.dp),
+                        color = onSurfaceLight,
+                        textAlign = TextAlign.Start,
+                        text = dialogTitle,
+                        style = AppTypography.bodyMedium.copy(
+                            fontWeight = FontWeight.W600
+                        )
+                    )
+                    Icon(
+                        icon,
+                        contentDescription = stringResource(R.string.success_icon_dialog_content_descr),
+                        modifier = Modifier.size(48.dp),
+                        tint = tertiaryContainerLight
+                    )
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = Padding24dp),
+                        color = onSurfaceLight,
+                        textAlign = TextAlign.Start,
+                        text = dialogText,
+                        style = AppTypography.bodyMedium.copy(
+                            fontWeight = FontWeight.W600
                         )
                     )
                     Row(

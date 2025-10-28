@@ -8,6 +8,7 @@ import com.example.myapplication.core.utils.ApiCodes
 import com.example.myapplication.core.utils.ApiCodes.CREATED
 import com.example.myapplication.core.utils.ApiCodes.INVALID_REQUEST
 import com.example.myapplication.debitcards.data.mock.models.Card
+import com.example.myapplication.debitcards.data.mock.models.DebitCardTermsDto
 import com.example.myapplication.debitcards.data.mock.models.RequestData
 import com.example.myapplication.debitcards.data.mock.models.ResponseData
 import kotlinx.serialization.json.Json
@@ -125,7 +126,22 @@ class DebitCardsMock {
         }
     }
 
+    fun getDebitCardTerms(): Response {
+        val debitCardTerms = DebitCardTermsDto(
+            cashback = CASHBACK,
+            maxCount = MAX_COUNT,
+            serviceCost = SERVICE_COST
+        )
+        return Response(
+            code = ApiCodes.SUCCESS,
+            description = "Debit Card Terms",
+            response = Json.encodeToString(debitCardTerms)
+        )
+    }
+
     companion object {
         private const val MAX_COUNT = 5
+        private const val CASHBACK = 0.3
+        private const val SERVICE_COST = 0L
     }
 }

@@ -13,7 +13,6 @@ val authDataModule = module {
     single<AuthRepository> {
         AuthRepositoryImpl(
             client = get<NetworkClient>(),
-            authMock = get<AuthMock>(),
             dao = get<UserDao>()
         )
     }

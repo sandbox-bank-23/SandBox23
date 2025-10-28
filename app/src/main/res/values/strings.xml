@@ -10,6 +10,8 @@
     <string name="transactions">Переводы</string>
     <string name="history">История</string>
     <string name="profile">Профиль</string>
+    <string name="myProfile">Мой профиль</string>
+    <string name="back">Назад</string>
     <string name="authorization">Авторизация</string>
     <string name="email">Email</string>
     <string name="password">Пароль</string>
@@ -65,6 +67,7 @@
     <string name="card_close">Закрыть карту</string>
     <string name="offline">Нет подключения к интернету</string>
     <string name="saved_successfully">Изменения\nсохранены</string>
+    <string name="closed_successfully">Карта успешно закрыта</string>
     <string name="close">Закрыть</string>
     <string name="try_again">Повторить попытку</string>
     <string name="success_icon_dialog_content_descr">Successfully</string>
@@ -81,7 +84,7 @@
     <string name="card_credit_info_text4">до %s%% за покупки у партнёров</string>
     <string name="card_credit_limit">Выбор кредитного лимита</string>
     <string name="card_credit_limit_value">%s ₽</string>
-    <string name="card_count_max">Можно открыть только 5 карт.\nЧтобы открыть новую, необходимо закрыть предыдущую карту.</string>
+    <string name="card_count_max">Можно открыть только %s карт.\nЧтобы открыть новую, необходимо закрыть предыдущую карту.</string>
     <string name="no_loans_message">У вас ещё нет кредитов.</string>
     <string name="no_deposits_message">У вас ещё нет вкладов.</string>
     <string name="card_type_debit">Вид карты: дебетовая</string>
@@ -96,4 +99,28 @@
         бесплатно снимайте наличные в любых банкоматах</string>
     <string name="card_debit_info_text3">Платите через SandBox Pay или по QR-коду</string>
     <string name="card_open_success">Карта успешно оформлена</string>
+    <string name="credit_registration">Оформление кредита</string>
+    <string name="select_conditiopns">Выберите условия</string>
+    <string name="percent_rate">Процентная ставка</string>
+    <string name="percent_rate_before_25">до 25% годовых</string>
+    <string name="monthly_payment">Ежемесячный платёж</string>
+    <string name="in_rubles">В рублях ₽</string>
+    <string name="credit_open_success">Кредит оформлен успешно</string>
+    <string name="exceeded_the_limit">Превышен кредитный лимит</string>
+    <string name="credit_count_max">Можно оформить\nдо 3 кредитов, при этом сумма\nих задолженности должна быть\nменее 5 000 000,00</string>
+    <string name="card_cost_template">%s ₽</string>
+    <string name="card_details_error">Ошибка загрузки деталей карты. Попробуйте снова.</string>
+
+    <string name="commonBalance">Общий баланс</string>
+    <string name="debtsBalance">Задолженности по кредитным картам</string>
+    <string name="depositBalance">Общая сумма вкладов</string>
+    <string name="creditBalance">Общая сумма кредитов</string>
+
+    <string name="updateApp">Обновить приложение</string>
+    <string name="exitFromAccount">Выход из аккаунта</string>
+
+    <string name="themeSwitchTittle">Тема оформления: светлая / тёмная</string>
+    <string name="languageSwitchTittle">Смена языка: русский / английский</string>
+    <string name="notificationSwitchTittle">Получать уведомления в приложении</string>
+    <string name="faceIdSwitchTittle">Вход при помощи Face ID</string>
 </resources>
