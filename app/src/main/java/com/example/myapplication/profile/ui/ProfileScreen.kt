@@ -1,6 +1,7 @@
 package com.example.myapplication.profile.ui
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -38,7 +39,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -46,7 +46,21 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.myapplication.R
 import com.example.myapplication.core.ui.theme.AppTypography
+import com.example.myapplication.core.ui.theme.NavTextInactiveLight
+import com.example.myapplication.core.ui.theme.inversePrimaryLight
+import com.example.myapplication.core.ui.theme.lightPrimary
+import com.example.myapplication.core.ui.theme.onPrimaryDark
+import com.example.myapplication.core.ui.theme.onPrimaryLight
+import com.example.myapplication.core.ui.theme.onSecondaryContainerDark
+import com.example.myapplication.core.ui.theme.onSurfaceLight
+import com.example.myapplication.core.ui.theme.onTertiaryLight
+import com.example.myapplication.core.ui.theme.outlineDark
+import com.example.myapplication.core.ui.theme.outlineLight
+import com.example.myapplication.core.ui.theme.surfaceContainerHighLight
+import com.example.myapplication.core.ui.theme.surfaceLight
+import com.example.myapplication.core.ui.theme.tertiaryContainerLight
 
+@Suppress("CognitiveComplexMethod")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(navController: NavHostController?) {
@@ -103,34 +117,38 @@ fun ProfileScreen(navController: NavHostController?) {
                 SettingSwitchGroup()
                 Spacer(modifier = Modifier.height(16.dp))
 
+
+                val isDark = isSystemInDarkTheme()
+                val backgroundButtonColor = if (isDark) inversePrimaryLight else tertiaryContainerLight
+                val buttonBorderColor = if (isDark) onPrimaryLight else onTertiaryLight
+                val buttonTextColor = if (isDark) onPrimaryDark else onPrimaryLight
                 Button(
-                    onClick = { /* TODO */ },
+                    onClick = {},
                     modifier = Modifier
                         .width(380.dp)
                         .height(64.dp),
                     shape = RoundedCornerShape(100.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                    colors = ButtonDefaults.buttonColors(containerColor = backgroundButtonColor)
                 ) {
                     Text(
-                        text = "Обновить приложение",
-                        color = Color.White,
+                        text = stringResource(R.string.updateApp),
+                        color = buttonTextColor,
                         style = MaterialTheme.typography.labelMedium
                     )
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
-
                 OutlinedButton(
-                    onClick = { /* TODO */ },
+                    onClick = {},
                     modifier = Modifier
                         .width(380.dp)
                         .height(64.dp),
                     shape = RoundedCornerShape(100.dp),
-                    border = BorderStroke(2.dp, MaterialTheme.colorScheme.onTertiary)
+                    border = BorderStroke(2.dp, buttonBorderColor)
                 ) {
                     Text(
-                        text = "Выход из аккаунта",
-                        color = MaterialTheme.colorScheme.onTertiary,
+                        text = stringResource(R.string.exitFromAccount),
+                        color = buttonBorderColor,
                         style = MaterialTheme.typography.labelMedium
                     )
                 }
@@ -144,7 +162,7 @@ fun ProfileScreen(navController: NavHostController?) {
 fun ProfileCard(title: String, subtitle: String, id: String) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
+        colors = CardDefaults.cardColors(containerColor = onSecondaryContainerDark),
         shape = RoundedCornerShape(18.dp)
     ) {
         Column {
@@ -163,22 +181,24 @@ private fun InfoSection(label: String, value: String) {
         Text(
             text = label,
             style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurface
+            color = onSurfaceLight
         )
         Text(
             text = value,
             style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = NavTextInactiveLight
         )
     }
 }
 
 @Composable
 fun InfoCardsGroup() {
+    val isDark = isSystemInDarkTheme()
+    val backgroundColor = if (isDark) surfaceLight else surfaceContainerHighLight
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(18.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh)
+        colors = CardDefaults.cardColors(containerColor = backgroundColor)
     ) {
         Column {
             InfoRow(stringResource(R.string.commonBalance), "50 000 ₽")
@@ -204,6 +224,7 @@ private fun InfoRow(title: String, value: String) {
         Text(
             text = "$title $value",
             style = MaterialTheme.typography.bodyLarge,
+            color = onSurfaceLight,
             maxLines = Int.MAX_VALUE
         )
     }
@@ -211,10 +232,12 @@ private fun InfoRow(title: String, value: String) {
 
 @Composable
 fun SettingSwitchGroup() {
+    val isDark = isSystemInDarkTheme()
+    val backgroundColor = if (isDark) onSecondaryContainerDark else MaterialTheme.colorScheme.secondaryFixedDim
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(18.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryFixedDim)
+        colors = CardDefaults.cardColors(containerColor = backgroundColor)
     ) {
         Column {
             SettingSwitchRow(stringResource(R.string.themeSwitchTittle), remember { mutableStateOf(false) })
@@ -236,7 +259,8 @@ fun SettingSwitchRow(label: String, state: MutableState<Boolean>) {
         Text(
             text = label,
             modifier = Modifier.weight(1f),
-            style = MaterialTheme.typography.bodyLarge
+            style = MaterialTheme.typography.bodyLarge,
+            color = onSurfaceLight
         )
 
         Spacer(modifier = Modifier.width(16.dp))
@@ -244,7 +268,14 @@ fun SettingSwitchRow(label: String, state: MutableState<Boolean>) {
         Switch(
             checked = state.value,
             onCheckedChange = { state.value = it },
-            colors = SwitchDefaults.colors(checkedTrackColor = MaterialTheme.colorScheme.primary)
+            colors = SwitchDefaults.colors(
+                checkedTrackColor = lightPrimary,
+                checkedThumbColor = onPrimaryLight,
+                uncheckedTrackColor = outlineDark,
+                uncheckedThumbColor = outlineLight,
+                checkedBorderColor = lightPrimary,
+                uncheckedBorderColor = outlineLight
+            )
         )
     }
 }
@@ -252,7 +283,7 @@ fun SettingSwitchRow(label: String, state: MutableState<Boolean>) {
 @Composable
 fun DividerLine() {
     Divider(
-        color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f),
+        color = outlineLight.copy(alpha = 0.5f),
         thickness = 0.5.dp,
         modifier = Modifier.fillMaxWidth()
     )

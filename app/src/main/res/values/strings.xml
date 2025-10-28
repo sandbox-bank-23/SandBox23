@@ -116,6 +116,8 @@
     <string name="depositBalance">Общая сумма вкладов</string>
     <string name="creditBalance">Общая сумма кредитов</string>
 
+    <string name="updateApp">Обновить приложение</string>
+    <string name="exitFromAccount">Выход из аккаунта</string>
 
     <string name="themeSwitchTittle">Тема оформления: светлая / тёмная</string>
     <string name="languageSwitchTittle">Смена языка: русский / английский</string>
