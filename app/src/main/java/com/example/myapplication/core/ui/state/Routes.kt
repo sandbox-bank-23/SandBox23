@@ -5,5 +5,6 @@ enum class Routes(val route: String) {
     FINANCE("finance"),
     TRANSFERS("transactions"),
     HISTORY("history"),
-    PROFILE("profile")
+    PROFILE("profile"),
+    PROFILE_NAVIGATION("profile_navigation")
 }
