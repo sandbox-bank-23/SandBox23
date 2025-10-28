@@ -9,16 +9,6 @@ import kotlinx.serialization.json.Json
 import kotlin.random.Random
 
 class LoansAndDepositsMock {
-    fun getResponse(): Response =
-        when (Random.nextInt(1, 100)) {
-            in 1..80 -> getResponse()
-            in 86..90 -> invalidOrExpiredToken()
-            else -> Response(
-                code = 420,
-                description = "No",
-                response = null
-            )
-        }
 
     fun getLoansAndDeposits(): Response {
         val productCount = Random.nextInt(5, 15)

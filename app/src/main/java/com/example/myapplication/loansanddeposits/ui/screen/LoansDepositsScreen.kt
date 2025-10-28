@@ -57,6 +57,7 @@ import com.example.myapplication.core.ui.theme.Padding31dp
 import com.example.myapplication.core.ui.theme.Padding81dp
 import com.example.myapplication.core.ui.theme.PaddingBase
 import com.example.myapplication.core.ui.theme.PaddingQuarter
+import com.example.myapplication.loansanddeposits.navigation.LoansDepositsRoutes
 import com.example.myapplication.loansanddeposits.ui.state.CreditUi
 import com.example.myapplication.loansanddeposits.ui.state.DepositUi
 import com.example.myapplication.loansanddeposits.ui.state.LoansDepositsState
@@ -76,7 +77,7 @@ data class Credit(
 fun LoansDepositsScreen(
     navController: NavHostController,
     viewModel: LoansDepositsViewModel = koinViewModel(),
-    onApplyCreditClick: () -> Unit,
+//    onApplyCreditClick: () -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -149,8 +150,9 @@ fun LoansDepositsScreen(
             item {
                 PrimaryWideButton(
                     text = stringResource(R.string.open_deposit),
-                    onClick = onApplyCreditClick
-                )
+//                    onClick = onApplyCreditClick
+                ) { navController.navigate(LoansDepositsRoutes.OPEN_DEPOSIT.route) }
+
             }
 
             item {
@@ -176,8 +178,8 @@ fun LoansDepositsScreen(
             item {
                 PrimaryWideButton(
                     text = stringResource(R.string.open_loan),
-                    onClick = onApplyCreditClick
-                )
+//                    onClick = onApplyCreditClick
+                ) { navController.navigate(LoansDepositsRoutes.OPEN_LOAN.route) }
             }
 
             item { Spacer(Modifier.height(CornerRadiusRegular)) }

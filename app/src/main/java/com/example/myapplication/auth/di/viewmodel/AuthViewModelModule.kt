@@ -8,11 +8,11 @@ import org.koin.dsl.module
 
 val authViewModelModule = module {
     viewModel {
-        AuthorizationViewModel(get(), get(), get())
+        AuthorizationViewModel(get(), get())
     }
 
     viewModel {
-        RegistrationViewModel(get(), get(), get())
+        RegistrationViewModel(get(), get())
     }
 
     viewModel {

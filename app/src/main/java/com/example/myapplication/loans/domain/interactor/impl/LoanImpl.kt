@@ -3,18 +3,12 @@ package com.example.myapplication.loans.domain.interactor.impl
 import com.example.myapplication.loans.domain.interactor.Loan
 import com.example.myapplication.loans.domain.model.Credit
 import com.example.myapplication.loans.domain.model.LoanResult
-import com.example.myapplication.loans.domain.model.Pay
 import com.example.myapplication.loans.domain.repository.LoanRepository
 import kotlinx.coroutines.flow.Flow
-import java.math.BigDecimal
 
 class LoanImpl(
     val repository: LoanRepository
 ) : Loan {
-
-    override suspend fun calculatePay(loanSum: BigDecimal, period: Long): Pay? {
-        return repository.calculate(sum = loanSum, period = period, percent = INTEREST_RATE)
-    }
 
     override suspend fun create(loan: Credit): Flow<LoanResult> {
         return repository.create(loan = loan)
@@ -30,9 +24,5 @@ class LoanImpl(
 
     override suspend fun getLoanList(userId: Long): Flow<List<Credit>> {
         return repository.getLoanList(userId = userId)
-    }
-
-    companion object {
-        const val INTEREST_RATE = 25
     }
 }

@@ -57,13 +57,18 @@ const val CARD_LIMIT_DEF = 500_000L
 const val CARD_DEBT_DEF = 0L
 const val CARD_NUMBER_GROUP_DIGITS = 4
 
+@Suppress(
+    "CyclomaticComplexMethod",
+    "CognitiveComplexMethod",
+    "LabeledExpression"
+)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CardDetailsScreen(
     navController: NavHostController,
     viewModel: CardDetailsViewModel = koinViewModel<CardDetailsViewModel>()
 ) {
-    var card: Card? by remember { mutableStateOf<Card?>(null) }
+    var card by remember { mutableStateOf<Card?>(null) }
 
     LifecycleStartEffect(Unit) {
         viewModel.requestCardDetail()
@@ -74,6 +79,7 @@ fun CardDetailsScreen(
     val cardDebt = CARD_DEBT_DEF
 
     val cardDetailsState = viewModel.cardDetailsState.collectAsState().value
+    val errorCardDialog = remember { mutableStateOf(false) }
     val offlineCardDialog = remember { mutableStateOf(false) }
     val successCardDialog = remember { mutableStateOf(false) }
 
@@ -86,6 +92,9 @@ fun CardDetailsScreen(
         }
         is CardDetailsState.Success -> {
             successCardDialog.value = true
+        }
+        is CardDetailsState.Error -> {
+            errorCardDialog.value = true
         }
         is CardDetailsState.Content -> {
             card = cardDetailsState.card
@@ -148,85 +157,99 @@ fun CardDetailsScreen(
                 dismissButtonText = stringResource(R.string.close),
             )
 
+            BasicDialog(
+                visible = errorCardDialog.value,
+                onDismissRequest = { errorCardDialog.value = false },
+                onConfirmation = {
+                    navController.navigateUp()
+                },
+                dialogTitle = stringResource(R.string.card_details_error),
+                confirmButtonText = stringResource(R.string.arrow_back),
+                dismissButtonText = stringResource(R.string.close),
+            )
+
             SimpleIconDialog(
                 visible = successCardDialog.value,
-                onDismissRequest = { successCardDialog.value = false },
-                dialogTitle = stringResource(R.string.saved_successfully),
+                onDismissRequest = {
+                    successCardDialog.value = false
+                    navController.navigateUp()
+                },
+                dialogTitle = stringResource(R.string.closed_successfully),
                 dismissButtonText = stringResource(R.string.close),
                 icon = Icons.Default.Check
             )
 
-            Column(
-                modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Top
-            ) {
-                card?.let {
+            if (card != null) {
+                Column(
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Top
+                ) {
                     CardItem(
                         cardHolderName = stringResource(R.string.card_holder_default),
-                        cardBalance = it.balance
+                        cardBalance = card?.balance
                     ) { }
                 }
-            }
-            Column(
-                modifier = Modifier.padding(top = Padding12dp)
-            ) {
-                CardInfoRow(stringResource(R.string.card_holder), card?.owner)
-                CardInfoRow(
-                    stringResource(R.string.card_number),
-                    creditCardNumberFormat(card?.id)
-                )
-                CardInfoRow(stringResource(R.string.card_date), card?.endDate)
-                CardInfoRow(
-                    stringResource(R.string.card_cvv),
-                    DecimalFormat("000").format(card?.cvv)
-                )
-                Spacer(modifier = Modifier.Companion.height(12.dp))
-                CardInfoRow(stringResource(R.string.card_about))
-                card?.let {
-                    when (card?.type) {
-                        CardType.DEBIT -> {
-                            CardInfoRow(stringResource(R.string.card_type_debit))
-                            CardInfoRow(value = stringResource(R.string.card_debit_info_row1))
-                            CardInfoRow(value = stringResource(R.string.card_debit_info_row2))
-                            CardInfoRow(value = stringResource(R.string.card_debit_info_row3))
-                        }
+                Column(
+                    modifier = Modifier.padding(top = Padding12dp)
+                ) {
+                    CardInfoRow(stringResource(R.string.card_holder), card?.owner)
+                    CardInfoRow(
+                        stringResource(R.string.card_number),
+                        creditCardNumberFormat(card?.id)
+                    )
+                    CardInfoRow(stringResource(R.string.card_date), card?.endDate)
+                    CardInfoRow(
+                        stringResource(R.string.card_cvv),
+                        DecimalFormat("000").format(card?.cvv)
+                    )
+                    Spacer(modifier = Modifier.Companion.height(12.dp))
+                    CardInfoRow(stringResource(R.string.card_about))
+                    card?.let {
+                        when (card?.type) {
+                            CardType.DEBIT -> {
+                                CardInfoRow(stringResource(R.string.card_type_debit))
+                                CardInfoRow(value = stringResource(R.string.card_debit_info_row1))
+                                CardInfoRow(value = stringResource(R.string.card_debit_info_row2))
+                                CardInfoRow(value = stringResource(R.string.card_debit_info_row3))
+                            }
 
-                        CardType.CREDIT -> {
-                            CardInfoRow(stringResource(R.string.card_type_credit))
-                            CardInfoRow(
-                                stringResource(R.string.card_credit_available),
-                                stringResource(
-                                    R.string.card_limit,
-                                    DecimalFormat("###,###")
-                                        .format(card?.balance),
-                                    DecimalFormat("###,###").format(cardLimit)
+                            CardType.CREDIT -> {
+                                CardInfoRow(stringResource(R.string.card_type_credit))
+                                CardInfoRow(
+                                    stringResource(R.string.card_credit_available),
+                                    stringResource(
+                                        R.string.card_limit,
+                                        DecimalFormat("###,###")
+                                            .format(card?.balance),
+                                        DecimalFormat("###,###").format(cardLimit)
+                                    )
                                 )
-                            )
-                            CardInfoRow(
-                                stringResource(R.string.card_credit_debt),
-                                stringResource(
-                                    R.string.card_debt,
-                                    DecimalFormat("#,##0.00")
-                                        .format(cardDebt)
+                                CardInfoRow(
+                                    stringResource(R.string.card_credit_debt),
+                                    stringResource(
+                                        R.string.card_debt,
+                                        DecimalFormat("#,##0.00")
+                                            .format(cardDebt)
+                                    )
                                 )
-                            )
-                            CardInfoRow(
-                                stringResource(R.string.card_credit_grace_period),
-                                stringResource(R.string.card_credit_grace_value)
-                            )
+                                CardInfoRow(
+                                    stringResource(R.string.card_credit_grace_period),
+                                    stringResource(R.string.card_credit_grace_value)
+                                )
+                            }
                         }
                     }
+                    Spacer(modifier = Modifier.Companion.height(12.dp))
+                    PrimaryButton(stringResource(R.string.card_top_up)) {
+                        navController.navigate(Routes.TRANSFERS.route)
+                    }
+                    Spacer(modifier = Modifier.Companion.height(12.dp))
+                    CloseButton(stringResource(R.string.card_close)) {
+                        viewModel.closeCard()
+                    }
+                    Spacer(modifier = Modifier.Companion.height(12.dp))
                 }
-                Spacer(modifier = Modifier.Companion.height(12.dp))
-                PrimaryButton(stringResource(R.string.card_top_up)) {
-                    navController.navigate(Routes.TRANSFERS.route)
-                }
-                Spacer(modifier = Modifier.Companion.height(12.dp))
-                CloseButton(stringResource(R.string.card_close)) {
-                    viewModel.closeCard()
-                }
-                Spacer(modifier = Modifier.Companion.height(12.dp))
             }
         }
     }

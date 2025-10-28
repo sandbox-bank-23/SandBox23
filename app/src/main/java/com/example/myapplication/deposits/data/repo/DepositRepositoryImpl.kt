@@ -10,6 +10,7 @@ import com.example.myapplication.deposits.data.mock.DepositMock
 import com.example.myapplication.deposits.domain.api.DepositsRepository
 import com.example.myapplication.deposits.domain.entity.Deposit
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.io.IOException
 
 class DepositRepositoryImpl(
@@ -99,7 +100,17 @@ class DepositRepositoryImpl(
         formatError(DATA_ERROR, e)
     }
 
-    fun observeAllDeposits(): Flow<List<DepositEntity>> = depositDao.observeAll()
+    override suspend fun getDeposits(): List<Deposit> {
+        return depositDao.getAllDeposits().map { it.toDomain() }
+    }
+
+    override suspend fun observeAllDeposits(): Flow<List<Deposit>> {
+        val result = depositDao.observeAll().map { entityList ->
+            entityList.map { it.toDomain() }
+        }
+        return result
+    }
+
 
     private fun formatError(prefix: String, e: Exception): Result.Error {
         return Result.Error("$prefix: ${e.message}")
