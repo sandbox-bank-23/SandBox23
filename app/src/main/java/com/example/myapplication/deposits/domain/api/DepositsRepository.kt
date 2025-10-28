@@ -2,6 +2,7 @@ package com.example.myapplication.deposits.domain.api
 
 import com.example.myapplication.core.domain.models.Result
 import com.example.myapplication.deposits.domain.entity.Deposit
+import kotlinx.coroutines.flow.Flow
 
 interface DepositsRepository {
 
@@ -20,4 +21,8 @@ interface DepositsRepository {
     ): Result<Deposit>
 
     suspend fun getProducts(): Result<List<Deposit>>
+
+    suspend fun getDeposits(): List<Deposit>
+
+    suspend fun observeAllDeposits(): Flow<List<Deposit>>
 }

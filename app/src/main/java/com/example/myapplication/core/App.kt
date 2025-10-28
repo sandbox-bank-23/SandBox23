@@ -18,6 +18,8 @@ import com.example.myapplication.deposits.di.data.depositsModule
 import com.example.myapplication.loans.di.loansModule
 import com.example.myapplication.loans.di.loansViewModelModule
 import com.example.myapplication.loansanddeposits.di.data.loansAndDepositsModule
+import com.example.myapplication.loansanddeposits.di.domain.loansAndDepositsDomainModule
+import com.example.myapplication.loansanddeposits.di.viewmodel.loansAndDepositsViewModelModule
 import com.example.myapplication.transfer.di.data.transferModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -41,11 +43,13 @@ class App : Application() {
                 depositsModule,
                 loansModule,
                 loansViewModelModule,
-                loansAndDepositsModule,
                 transferModule,
                 cardDetailsViewModelModule,
                 creditCardsViewModelModule,
-                debitCardsViewModelModule
+                debitCardsViewModelModule,
+                loansAndDepositsModule,
+                loansAndDepositsDomainModule,
+                loansAndDepositsViewModelModule,
             )
         }
     }

@@ -17,12 +17,12 @@ val loansModule = module {
     // From GH-48
     single<LoanRepository> {
         LoanRepositoryImpl(
-            dataResource = get(),
             networkClient = get(),
             dao = get(),
             loansMock = get(),
             cardsRepository = get<CardsRepository>(),
-            debitCardsRepository = get<DebitCardsRepository>()
+            debitCardsRepository = get<DebitCardsRepository>(),
+            json = get()
         )
     }
     single<DataResource> { DataResource(mock = get()) }

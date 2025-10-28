@@ -8,12 +8,10 @@ import com.example.myapplication.core.domain.models.CardType
 import com.example.myapplication.core.domain.models.Result
 import com.example.myapplication.debitcards.domain.api.DebitCardsRepository
 import com.example.myapplication.loans.data.mock.LoansMock
+import com.example.myapplication.loans.data.repository.dto.MockData
 import com.example.myapplication.loans.data.repository.dto.RequestData
-import com.example.myapplication.loans.data.repository.dto.ResponseData
-import com.example.myapplication.loans.data.resource.DataResource
 import com.example.myapplication.loans.domain.model.Credit
 import com.example.myapplication.loans.domain.model.LoanResult
-import com.example.myapplication.loans.domain.model.Pay
 import com.example.myapplication.loans.domain.repository.LoanRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -26,9 +24,9 @@ class LoanRepositoryImpl(
     private val networkClient: NetworkClient,
     private val loansMock: LoansMock,
     private val dao: LoanDao,
-    private val dataResource: DataResource,
     private val cardsRepository: CardsRepository,
     private val debitCardsRepository: DebitCardsRepository,
+    private val json: Json
 ) : LoanRepository {
     private fun map(credit: LoanEntity): Credit {
         return Credit(
@@ -59,10 +57,6 @@ class LoanRepositoryImpl(
         )
     }
 
-    override suspend fun calculate(sum: BigDecimal, period: Long, percent: Int): Pay? {
-        return dataResource.calculateLoan(sum = sum, percent = percent, period = period)
-    }
-
     private fun errorResult(error: String, status: String): LoanResult.Error {
         return LoanResult.Error(error, status)
     }
@@ -85,11 +79,11 @@ class LoanRepositoryImpl(
             )
             val creditJson = Json.encodeToString(value = requestData)
             val response = networkClient(loansMock.createLoan(creditJson))
-            val json = response.response
-            if (json != null) {
-                val responseData = Json.decodeFromString<ResponseData>(string = json)
-                val newCredit = responseData.body
-                when (response.code) {
+            response.response?.let { jsonResponse ->
+
+                val responseData = json.decodeFromString<MockData>(string = jsonResponse)
+                val newCredit = responseData.data.response.body
+                when (responseData.data.code) {
                     HTTP_CREATE_SUCCESS -> {
                         newCredit?.let { credit ->
                             topUpRandomDebitCard(credit)
@@ -101,9 +95,7 @@ class LoanRepositoryImpl(
                     HTTP_CREATE_ERROR -> emit(errorResult(LOAN_CREATE_ERROR, ERROR))
                     else -> emit(errorResult(SERVER_ERROR, ERROR))
                 }
-            } else {
-                emit(errorResult(SERVER_ERROR, ERROR))
-            }
+            } ?: emit(errorResult(SERVER_ERROR, ERROR))
         }
     }
 

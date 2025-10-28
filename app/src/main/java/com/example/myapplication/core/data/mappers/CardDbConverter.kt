@@ -27,7 +27,7 @@ class CardDbConverter {
             userId = card.userId,
             type = card.type,
             percent = card.percent,
-            balance = card.balance
+            balance = card.balance ?: 0L
         )
     }
 }
