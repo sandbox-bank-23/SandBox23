@@ -29,19 +29,23 @@ class LoansDepositsViewModel(
         _state.value = LoansDepositsState.Loading
         appInteractor.getAuthDataValue(StorageKey.AUTHDATA).collect { authData ->
             authData?.userId?.let { userId ->
-                when (val res = usecase.getAllLoansAndDeposits(userId.toLong())) {
-                    is Result.Success -> {
-                        val (deposits, credits) = mapper.split(res.data)
-                        _state.value = LoansDepositsState.Content(deposits, credits)
-                    }
+                val res = usecase.getAllLoansAndDeposits(userId.toLong())
+                res.collect { res ->
+                    when (res) {
+                        is Result.Success -> {
+                            val (deposits, credits) = mapper.split(res.data)
+                            _state.value = LoansDepositsState.Content(deposits, credits)
+                        }
 
-                    is Result.Error -> {
-                        if (res.message.contains(ApiCodes.NO_RESPONSE.toString(), true)) {
-                            _state.value = LoansDepositsState.Offline
-                        } else {
-                            _state.value = LoansDepositsState.Error(res.message)
+                        is Result.Error -> {
+                            if (res.message.contains(ApiCodes.NO_RESPONSE.toString(), true)) {
+                                _state.value = LoansDepositsState.Offline
+                            } else {
+                                _state.value = LoansDepositsState.Error(res.message)
+                            }
                         }
                     }
+
                 }
             }
         }

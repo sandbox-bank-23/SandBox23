@@ -6,9 +6,11 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val loansAndDepositsViewModelModule = module {
-    viewModel { LoansDepositsViewModel(
-        usecase = get(),
-        mapper = get(),
-        appInteractor = get<AppInteractor>()
-    ) }
+    viewModel {
+        LoansDepositsViewModel(
+            usecase = get(),
+            mapper = get(),
+            appInteractor = get<AppInteractor>()
+        )
+    }
 }
