@@ -13,5 +13,5 @@ data class CardEntity(
     val owner: String,
     val type: String,
     val percent: Double,
-    val balance: Long?
+    val balance: Long
 )

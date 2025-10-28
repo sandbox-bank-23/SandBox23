@@ -44,7 +44,6 @@ import org.koin.androidx.compose.koinViewModel
 
 const val CARD_BALANCE_DEF = 100_000_000L
 const val FRACTION_05 = 0.5f
-const val USER_ID_DEF = 137L
 
 @Composable
 fun CardsScreen(
@@ -81,7 +80,7 @@ fun CardsScreen(
                 ) {
                     CardItem(
                         cardHolderName = stringResource(R.string.card_holder_default),
-                        cardBalance = CARD_BALANCE_DEF.toBigDecimal(),
+                        cardBalance = CARD_BALANCE_DEF,
                         cardType = stringResource(R.string.card_type_default),
                         cardNumber = stringResource(R.string.card_number_default)
                     ) {
