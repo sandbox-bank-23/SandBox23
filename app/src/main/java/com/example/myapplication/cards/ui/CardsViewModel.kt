@@ -5,12 +5,12 @@ import androidx.lifecycle.viewModelScope
 import com.example.myapplication.cards.domain.usecases.GetCardsUseCase
 import com.example.myapplication.core.domain.api.AppInteractor
 import com.example.myapplication.core.domain.api.StorageKey
+import com.example.myapplication.core.domain.models.Result
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
-import com.example.myapplication.core.domain.models.Result
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.launch
 
 class CardsViewModel(
     val getCardsUseCase: GetCardsUseCase,

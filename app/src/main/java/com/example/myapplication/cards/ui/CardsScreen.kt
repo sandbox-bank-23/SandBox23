@@ -159,10 +159,11 @@ private fun CreateCardButton(text: String, isCredit: Boolean, onClick: () -> Uni
         onClick = onClick,
         icon = {
             val iconRes = if (isCredit) R.drawable.ic_card_credit else R.drawable.ic_card_debit
-            val contentDesc = if (isCredit)
+            val contentDesc = if (isCredit) {
                 stringResource(R.string.card_create_credit)
-            else
+            } else {
                 stringResource(R.string.card_create_debit)
+            }
 
             Image(
                 painterResource(iconRes),
