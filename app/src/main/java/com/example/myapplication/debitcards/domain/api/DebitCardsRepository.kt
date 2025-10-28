@@ -2,12 +2,13 @@ package com.example.myapplication.debitcards.domain.api
 
 import com.example.myapplication.core.domain.models.Card
 import com.example.myapplication.core.domain.models.Result
+import com.example.myapplication.debitcards.domain.models.DebitCardResult
 import com.example.myapplication.debitcards.domain.models.DebitCardTerms
 import kotlinx.coroutines.flow.Flow
 import java.math.BigDecimal
 
 interface DebitCardsRepository {
-    suspend fun createDebitCard(userId: Long): Flow<Result<Card>>
+    suspend fun createDebitCard(userId: Long): Flow<DebitCardResult<Card>>
 
     suspend fun depositToDebitCard(cardId: Long, amount: BigDecimal): Result<Unit>
 

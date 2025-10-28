@@ -9,7 +9,8 @@ val debitCardsViewModelModule = module {
         DebitCardsViewModel(
             createDebitCardUseCase = get(),
             checkDebitCardCountUseCase = get(),
-            getDebitCardTermsUseCase = get()
+            getDebitCardTermsUseCase = get(),
+            appInteractor = get()
         )
     }
 }
