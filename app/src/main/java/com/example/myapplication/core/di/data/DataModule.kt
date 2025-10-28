@@ -34,7 +34,7 @@ val coreDataModule = module {
     }
 
     single<AppRepository> {
-        AppRepositoryImpl(get())
+        AppRepositoryImpl(get(), get())
     }
 
     single<UserDao> { get<AppDatabase>().userDao() }

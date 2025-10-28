@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
@@ -29,7 +31,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.myapplication.R
-import com.example.myapplication.cards.domain.models.CardsState
 import com.example.myapplication.cards.navigation.CardsRoutes
 import com.example.myapplication.core.ui.components.BasicDialog
 import com.example.myapplication.core.ui.components.CardItem
@@ -42,35 +43,15 @@ import com.example.myapplication.core.ui.theme.surfaceContainerLight
 import org.koin.androidx.compose.koinViewModel
 
 const val CARD_BALANCE_DEF = 100_000_000L
-const val CARD_ID_TEMP = 4_000_123_432_157_893L
 const val FRACTION_05 = 0.5f
 
 @Composable
 fun CardsScreen(
     navController: NavHostController,
-    viewModel: CardsViewModel = koinViewModel<CardsViewModel>()
+    viewModel: CardsViewModel = koinViewModel(),
 ) {
     val cardsState = viewModel.cardsState.collectAsState().value
-
-    val cardId = CARD_ID_TEMP
-    val cardHolderName = stringResource(R.string.card_holder_default)
-    var cardBalance: Long?
-    var cardType: String? = null
-    var cardNumber: String? = null
-
     val openCardDialog = remember { mutableStateOf(false) }
-
-    when (cardsState) {
-        is CardsState.Empty -> {
-            cardType = stringResource(R.string.card_type_default)
-            cardNumber = stringResource(R.string.card_number_default)
-            cardBalance = null
-        }
-
-        is CardsState.Cards -> {
-            cardBalance = CARD_BALANCE_DEF
-        }
-    }
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -80,43 +61,81 @@ fun CardsScreen(
         BasicDialog(
             visible = openCardDialog.value,
             onDismissRequest = { openCardDialog.value = false },
-            onConfirmation = {
-                openCardDialog.value = false
-                viewModel.createCard()
-            },
+            onConfirmation = { openCardDialog.value = false },
             dialogTitle = stringResource(R.string.card_dialog_title),
             confirmButtonText = stringResource(R.string.card_dialog_confirm),
             dismissButtonText = stringResource(R.string.card_dialog_dismiss),
         )
-        Column(
-            modifier = Modifier.fillMaxHeight(FRACTION_05),
-            verticalArrangement = Arrangement.Bottom
-        ) {
-            CardItem(
-                cardHolderName = cardHolderName,
-                cardBalance = cardBalance?.toBigDecimal(),
-                cardType = cardType,
-                cardNumber = cardNumber
-            ) {
-                if (cardsState is CardsState.Empty) {
-                    openCardDialog.value = true
-                } else {
-                    navController.navigate("${CardsRoutes.CARD_DETAILS}/$cardId")
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        when (cardsState) {
+            is CardsState.Empty -> {
+                Column(
+                    modifier = Modifier
+                        .fillMaxHeight(FRACTION_05)
+                        .fillMaxWidth(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    CardItem(
+                        cardHolderName = stringResource(R.string.card_holder_default),
+                        cardBalance = CARD_BALANCE_DEF.toBigDecimal(),
+                        cardType = stringResource(R.string.card_type_default),
+                        cardNumber = stringResource(R.string.card_number_default)
+                    ) {
+                        openCardDialog.value = true
+                    }
+                }
+            }
+
+            is CardsState.Cards -> {
+                val cards = cardsState.cards
+                val pagerState = rememberPagerState(pageCount = { cards.size })
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxHeight(FRACTION_05)
+                        .fillMaxWidth(),
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    HorizontalPager(
+                        state = pagerState,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(220.dp),
+                        contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 48.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        pageSpacing = 16.dp
+                    ) { page ->
+                        val card = cards[page]
+                        CardItem(
+                            cardHolderName = card.owner,
+                            cardBalance = card.balance,
+                            cardType = card.type,
+                            cardNumber = card.id.toString()
+                        ) {
+                            navController.navigate("${CardsRoutes.CARD_DETAILS}/${card.id}")
+                        }
+                    }
                 }
             }
         }
-        Spacer(modifier = Modifier.Companion.height(48.dp))
+
+        Spacer(modifier = Modifier.height(48.dp))
+
         Column(
             modifier = Modifier.height(188.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             CreateCardButton(
-                stringResource(R.string.card_create_debit),
-                false
+                text = stringResource(R.string.card_create_debit),
+                isCredit = false
             ) { navController.navigate(CardsRoutes.CARD_DEBIT.route) }
+
             CreateCardButton(
-                stringResource(R.string.card_create_credit),
-                true
+                text = stringResource(R.string.card_create_credit),
+                isCredit = true
             ) { navController.navigate(CardsRoutes.CARD_CREDIT.route) }
         }
     }
@@ -137,25 +156,22 @@ private fun CreateCardButton(text: String, isCredit: Boolean, onClick: () -> Uni
             hoveredElevation = 2.dp,
             focusedElevation = 1.dp,
         ),
-        onClick = { onClick.invoke() },
+        onClick = onClick,
         icon = {
-            if (isCredit) {
-                Image(
-                    painterResource(R.drawable.ic_card_credit),
-                    stringResource(R.string.card_create_credit),
-                    modifier = Modifier.size(CardIconHeight)
-                )
-            } else {
-                Image(
-                    painterResource(R.drawable.ic_card_debit),
-                    stringResource(R.string.card_create_debit),
-                    modifier = Modifier.size(CardIconHeight)
-                )
-            }
+            val iconRes = if (isCredit) R.drawable.ic_card_credit else R.drawable.ic_card_debit
+            val contentDesc = if (isCredit)
+                stringResource(R.string.card_create_credit)
+            else
+                stringResource(R.string.card_create_debit)
+
+            Image(
+                painterResource(iconRes),
+                contentDesc,
+                modifier = Modifier.size(CardIconHeight)
+            )
         },
         text = {
             Text(
-                modifier = Modifier,
                 color = primaryLight,
                 textAlign = TextAlign.Start,
                 text = text,

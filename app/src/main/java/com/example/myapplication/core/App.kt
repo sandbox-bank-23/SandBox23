@@ -33,7 +33,6 @@ class App : Application() {
                 authDataModule,
                 domainModule,
                 authViewModelModule,
-                cardsViewModelModule,
                 networkModule,
                 creditCardsModule,
                 debitCardsModule,
@@ -43,7 +42,8 @@ class App : Application() {
                 transferModule,
                 cardDetailsViewModelModule,
                 creditCardsViewModelModule,
-                debitCardsViewModelModule
+                debitCardsViewModelModule,
+                cardsViewModelModule
             )
         }
     }

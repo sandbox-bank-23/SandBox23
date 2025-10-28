@@ -1,13 +1,15 @@
 package com.example.myapplication.core.data.repo
 
 import com.example.myapplication.auth.domain.model.AuthData
+import com.example.myapplication.core.data.db.dao.UserDao
 import com.example.myapplication.core.data.storage.AppStorage
 import com.example.myapplication.core.domain.api.AppRepository
 import com.example.myapplication.core.domain.api.StorageKey
 import kotlinx.coroutines.flow.Flow
 
 class AppRepositoryImpl(
-    val appStorage: AppStorage
+    val appStorage: AppStorage,
+    val userDao: UserDao,
 ) : AppRepository {
 
     override suspend fun getBooleanValue(storageKey: StorageKey<Boolean>): Flow<Boolean> {
@@ -60,5 +62,9 @@ class AppRepositoryImpl(
 
     override suspend fun clearAll() {
         appStorage.clearAll()
+    }
+
+    override suspend fun getUserId(): String {
+        return userDao.getAllUsers().firstOrNull()?.id.toString()
     }
 }

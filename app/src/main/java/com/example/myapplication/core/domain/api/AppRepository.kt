@@ -14,4 +14,5 @@ interface AppRepository {
     suspend fun saveAuthDataValue(storageKey: StorageKey<String>, value: AuthData)
     suspend fun <T> removeKey(storageKey: StorageKey<T>)
     suspend fun clearAll()
+    suspend fun getUserId(): String
 }
