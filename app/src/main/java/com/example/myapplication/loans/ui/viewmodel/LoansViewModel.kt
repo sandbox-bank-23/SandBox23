@@ -59,8 +59,6 @@ class LoansViewModel(
 
         private const val TWENTY_FOUR_MONTHS = 24
 
-        private const val KOPECK = 100
-
     }
 
     init {
@@ -102,7 +100,7 @@ class LoansViewModel(
     }
 
     fun openLoan(limit: Int, month: Int) {
-        val limitKopeck = BigDecimal(limit).multiply(BigDecimal(KOPECK))
+        val limitKopeck = BigDecimal(limit)
         val userId = _authData.value.userId?.toLong() ?: 0
         val credit = Credit(
             id = null,
