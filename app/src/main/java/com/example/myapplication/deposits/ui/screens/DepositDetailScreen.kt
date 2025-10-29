@@ -148,7 +148,7 @@ fun DepositDetailScreen(
                 .padding(innerPadding)
                 .padding(horizontal = Padding16dp)
         ) {
-            // --- Верхняя часть экрана ---
+
             Row(
                 modifier = modifier
                     .fillMaxWidth()
@@ -162,6 +162,7 @@ fun DepositDetailScreen(
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.primary
                 )
+
                 Icon(
                     modifier = modifier.padding(14.dp),
                     painter = painterResource(R.drawable.ic_pencil),

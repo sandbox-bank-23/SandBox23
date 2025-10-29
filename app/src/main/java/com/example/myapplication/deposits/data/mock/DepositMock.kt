@@ -10,7 +10,7 @@ import kotlin.random.Random
 
 class DepositMock {
     fun getResponse(): Response =
-        when (Random.nextInt(1, 100)) {
+        when (Random.nextInt(1, 80)) {
             in 1..80 -> openDeposit()
             in 81..85 -> invalidNumber()
             in 86..90 -> invalidOrExpiredToken()
