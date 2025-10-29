@@ -42,6 +42,12 @@ class LoanDetailViewModel(
         }
     }
 
+    fun onCloseClick() {
+        viewModelScope.launch {
+            loanInteractor.close(loanId).collect { loan -> getLoan(loan) }
+        }
+    }
+
     fun getLoan(sate: LoanResult) {
         when (sate) {
             is LoanResult.Error -> ""
@@ -50,11 +56,8 @@ class LoanDetailViewModel(
         }
     }
 
-    fun onCloseClick() {
-        viewModelScope.launch {
-            loanInteractor.close(loanId).collect { loan -> getLoan(loan) }
-        }
+    fun onBalanceUpClick() {
+
     }
-    fun onBalanceUpClick() {}
 
 }

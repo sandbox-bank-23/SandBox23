@@ -1,5 +1,7 @@
 package com.example.myapplication.loans.ui.screen
 
+import android.icu.text.DecimalFormat
+import android.icu.text.DecimalFormatSymbols
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -44,8 +46,6 @@ import com.example.myapplication.core.ui.theme.PaddingQuarter
 import com.example.myapplication.core.ui.theme.Width12
 import com.example.myapplication.loans.domain.model.Credit
 import java.math.BigDecimal
-import android.icu.text.DecimalFormat
-import android.icu.text.DecimalFormatSymbols
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
