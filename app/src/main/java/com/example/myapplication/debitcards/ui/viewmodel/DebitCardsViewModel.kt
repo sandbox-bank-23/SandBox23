@@ -64,8 +64,8 @@ class DebitCardsViewModel(
         when (result) {
             is DebitCardResult.Error -> renderState(DebitCardsState.Error)
             is DebitCardResult.Success -> renderState(DebitCardsState.Success)
-            DebitCardResult.LimitError -> renderState(DebitCardsState.Limit)
-            DebitCardResult.NetworkError -> renderState(DebitCardsState.Error)
+            is DebitCardResult.LimitError -> renderState(DebitCardsState.Limit)
+            is DebitCardResult.NetworkError -> renderState(DebitCardsState.Online)
         }
     }
 

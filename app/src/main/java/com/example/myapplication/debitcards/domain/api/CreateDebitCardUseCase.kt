@@ -1,7 +1,6 @@
 package com.example.myapplication.debitcards.domain.api
 
 import com.example.myapplication.core.domain.models.Card
-import com.example.myapplication.core.domain.models.Result
 import com.example.myapplication.debitcards.domain.models.DebitCardResult
 import kotlinx.coroutines.flow.Flow
 

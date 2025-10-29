@@ -2,11 +2,14 @@ package com.example.myapplication.creditcards.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.myapplication.core.domain.api.AppInteractor
+import com.example.myapplication.core.domain.api.StorageKey
 import com.example.myapplication.core.domain.models.Card
 import com.example.myapplication.core.domain.models.Result
 import com.example.myapplication.creditcards.domain.api.CheckCreditCardCountUseCase
 import com.example.myapplication.creditcards.domain.api.CreateCreditCardUseCase
 import com.example.myapplication.creditcards.domain.api.GetCreditCardTermsUseCase
+import com.example.myapplication.creditcards.domain.models.CreditCardResult
 import com.example.myapplication.creditcards.ui.state.CreditCardsState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,7 +19,8 @@ import kotlinx.coroutines.launch
 class CreditCardsViewModel(
     private val createCreditCardUseCase: CreateCreditCardUseCase,
     private val checkCreditCardCountUseCase: CheckCreditCardCountUseCase,
-    private val getCreditCardTermsUseCase: GetCreditCardTermsUseCase
+    private val getCreditCardTermsUseCase: GetCreditCardTermsUseCase,
+    private val appInteractor: AppInteractor,
 ) : ViewModel() {
 
     private val _creditCardsState = MutableStateFlow<CreditCardsState>(
@@ -29,11 +33,17 @@ class CreditCardsViewModel(
 
     fun createCard(userId: Long) {
         viewModelScope.launch {
-            createCreditCardUseCase.createCreditCard(
-                userId,
-                creditLimitValue.toBigDecimal()
-            ).collect { result ->
-                processResult(result)
+            appInteractor.getAuthDataValue(StorageKey.AUTHDATA).collect { data ->
+                data?.let { authData ->
+                    authData.userId?.let { userId ->
+                        createCreditCardUseCase.createCreditCard(
+                            userId.toLong(),
+                            creditLimitValue.toBigDecimal()
+                        ).collect { result ->
+                            processResult(result)
+                        }
+                    }
+                }
             }
         }
     }
@@ -54,10 +64,12 @@ class CreditCardsViewModel(
         }
     }
 
-    private fun processResult(result: Result<Card>) {
+    private fun processResult(result: CreditCardResult<Card>) {
         when (result) {
-            is Result.Error -> renderState(CreditCardsState.Error)
-            is Result.Success -> renderState(CreditCardsState.Success)
+            is CreditCardResult.Error -> renderState(CreditCardsState.Error)
+            is CreditCardResult.LimitError -> renderState(CreditCardsState.Limit)
+            is CreditCardResult.NetworkError -> renderState(CreditCardsState.Online)
+            is CreditCardResult.Success -> renderState(CreditCardsState.Success)
         }
     }
 
