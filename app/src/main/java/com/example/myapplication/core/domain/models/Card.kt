@@ -3,7 +3,6 @@ package com.example.myapplication.core.domain.models
 import androidx.annotation.StringDef
 import com.example.myapplication.core.domain.models.CardType.Companion.CREDIT
 import com.example.myapplication.core.domain.models.CardType.Companion.DEBIT
-import com.example.myapplication.utils.BigDecimalAsStringSerializer
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -15,8 +14,8 @@ data class Card(
     val userId: Long,
     @CardType val type: String,
     val percent: Double,
-    @Serializable(with = BigDecimalAsStringSerializer::class)
-    val balance: Long?
+    // @Serializable(with = BigDecimalAsStringSerializer::class)
+    val balance: Long
 )
 
 

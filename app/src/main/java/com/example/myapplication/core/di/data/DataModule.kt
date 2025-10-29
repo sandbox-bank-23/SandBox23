@@ -16,6 +16,7 @@ import com.example.myapplication.core.data.repo.CardRepositoryImpl
 import com.example.myapplication.core.data.storage.AppStorage
 import com.example.myapplication.core.domain.api.AppRepository
 import com.example.myapplication.core.domain.api.CardRepository
+import com.example.myapplication.deposits.data.db.DepositDao
 import com.google.gson.Gson
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
@@ -47,6 +48,8 @@ val coreDataModule = module {
     single<LoanDao> { get<AppDatabase>().loanDao() }
 
     single<CardDao> { get<AppDatabase>().cardDao() }
+
+    single<DepositDao> { get<AppDatabase>().depositDao() }
 
     single<AppStorage> {
         AppStorage(
