@@ -39,7 +39,6 @@ enum class FlagSlider(val header: String) {
 
 @Composable
 fun SliderBox(trackSlider: List<Int>, flagSlider: FlagSlider, dataSlider: (Int) -> Unit) {
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -73,7 +72,6 @@ fun SliderBox(trackSlider: List<Int>, flagSlider: FlagSlider, dataSlider: (Int) 
                 .height(24.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-
             Text(
                 text = when (flagSlider) {
                     FlagSlider.PERIOD_CREDIT, FlagSlider.PERIOD_DEPOSIT -> trackSlider.first()
@@ -122,7 +120,7 @@ fun CustomSlider(
                 sliderWidth = size.width.toFloat()
             }
     ) {
-        Column() {
+        Column {
             ValueLabel(
                 value = value,
                 sliderWidth = sliderWidth,
@@ -166,6 +164,7 @@ fun ViewSlider(
     )
 }
 
+@Suppress("LabeledExpression")
 @Composable
 fun ValueLabel(
     value: Float,
