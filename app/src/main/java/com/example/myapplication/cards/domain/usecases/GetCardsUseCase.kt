@@ -5,5 +5,5 @@ import com.example.myapplication.core.domain.models.Card
 import com.example.myapplication.core.domain.models.Result
 
 class GetCardsUseCase(private val getCardsRepository: CardsRepository) {
-    suspend fun getCards(userId: Long): Result<List<Card>> = getCardsRepository.getCards(userId)
+    suspend operator fun invoke(userId: Long): Result<List<Card>> = getCardsRepository.getCards(userId)
 }
