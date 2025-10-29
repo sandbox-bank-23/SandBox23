@@ -28,6 +28,7 @@ class DepositRepositoryImpl(
         private const val CREATED_CODE = 201
     }
 
+    @Suppress("LongMethod", "CyclomaticComplexMethod")
     override suspend fun openDeposit(
         currentDepositNumber: Long,
         requestNumber: Long,
@@ -39,7 +40,6 @@ class DepositRepositoryImpl(
         val response = client(mockResponse)
 
         if (response.code == SUCCESS_CODE || response.code == CREATED_CODE) {
-
             val productJson = try {
                 val root = Json.parseToJsonElement(response.response ?: "")
                 val dataObj = root.jsonObject["data"]?.jsonObject

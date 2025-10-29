@@ -1,4 +1,4 @@
-package com.example.myapplication.deposits.di.viewmodelModule
+package com.example.myapplication.deposits.di.viewmodel
 
 import com.example.myapplication.deposits.ui.viewmodel.DepositDetailViewModel
 import com.example.myapplication.deposits.ui.viewmodel.NewDepositViewModel

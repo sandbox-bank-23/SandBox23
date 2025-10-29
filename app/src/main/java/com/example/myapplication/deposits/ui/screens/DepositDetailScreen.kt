@@ -148,7 +148,6 @@ fun DepositDetailScreen(
                 .padding(innerPadding)
                 .padding(horizontal = Padding16dp)
         ) {
-
             Row(
                 modifier = modifier
                     .fillMaxWidth()
@@ -226,7 +225,10 @@ fun DepositDetailScreen(
                     modifier = Modifier.weight(1f),
                     shape = RoundedCornerShape(CornerRadiusMedium),
                     colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primaryContainer),
-                    onClick = { viewModel.closeDeposit(id); onCloseClick() }
+                    onClick = {
+                        viewModel.closeDeposit(id)
+                        onCloseClick()
+                    }
                 ) {
                     Text(
                         modifier = modifier.padding(vertical = PaddingBase),

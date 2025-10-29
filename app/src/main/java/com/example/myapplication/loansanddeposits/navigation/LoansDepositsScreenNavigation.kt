@@ -44,7 +44,7 @@ fun NavGraphBuilder.loansDepositsScreenNavigation(navController: NavHostControll
             route = LoansDepositsRoutes.DEPOSIT_DETAILS.route,
             arguments = listOf(navArgument(DEPOSIT_ID) { type = NavType.LongType })
         ) { backStackEntry ->
-             val itemId = backStackEntry.arguments?.getLong(DEPOSIT_ID) ?: 0L
+            val itemId = backStackEntry.arguments?.getLong(DEPOSIT_ID) ?: 0L
             DepositDetailScreen(
                 navController = navController,
                 id = itemId

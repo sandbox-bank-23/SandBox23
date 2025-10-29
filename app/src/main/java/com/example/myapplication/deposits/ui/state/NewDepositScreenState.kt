@@ -2,7 +2,6 @@ package com.example.myapplication.deposits.ui.state
 
 import com.example.myapplication.deposits.domain.entity.Deposit
 
-
 sealed class NewDepositScreenState {
 
     data object Loading : NewDepositScreenState()

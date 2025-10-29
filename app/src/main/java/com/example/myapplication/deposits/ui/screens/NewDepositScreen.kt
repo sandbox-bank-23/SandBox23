@@ -76,7 +76,6 @@ fun NewDepositScreen(
     navController: NavHostController,
     viewModel: NewDepositViewModel = koinViewModel()
 ) {
-
     var value by remember { mutableIntStateOf(0) }
     val initialCharacteristics = viewModel.initialCharacteristics.collectAsState().value
     val dialogNetwork = remember { mutableStateOf(false) }
@@ -145,7 +144,6 @@ fun NewDepositScreen(
                 .padding(Padding16dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
             BasicDialog(
                 visible = dialogNetwork.value,
                 onDismissRequest = {

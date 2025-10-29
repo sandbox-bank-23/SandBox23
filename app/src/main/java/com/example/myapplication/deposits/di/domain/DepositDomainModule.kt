@@ -20,7 +20,7 @@ val depositDomainModule = module {
         CloseDepositUseCaseImpl(get())
     }
 
-    single<TakeDepositUseCase>{
+    single<TakeDepositUseCase> {
         TakeDepositUseCaseImpl(get())
     }
 

@@ -20,6 +20,7 @@ class NewDepositViewModel(
         MutableStateFlow<NewDepositScreenState>(NewDepositScreenState.Loading)
     val newDepositScreenState = _newDepositScreenState.asStateFlow()
 
+    @Suppress("MagicNumber")
     private val _initialCharacteristics = MutableStateFlow(listOf(3, 6, 9, 12, 24))
     val initialCharacteristics = _initialCharacteristics.asStateFlow()
 

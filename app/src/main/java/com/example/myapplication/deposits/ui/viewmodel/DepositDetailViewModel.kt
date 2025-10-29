@@ -1,6 +1,5 @@
 package com.example.myapplication.deposits.ui.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myapplication.core.domain.api.AppInteractor
@@ -28,33 +27,26 @@ class DepositDetailViewModel(
     val depositExistState = _depositExistState.asStateFlow()
 
     fun loadDeposit(id: Long) {
-        Log.d("DepositDetailViewModel", "loadDeposit вызван с id = $id")
         viewModelScope.launch {
             val result = takeDepositUseCase(id)
-            Log.d("DepositDetailViewModel", "takeDepositUseCase вернул: $result")
             when (result) {
                 is DepositResult.DataBaseError -> {
-                    Log.e("DepositDetailViewModel", "Ошибка базы: ${result.message}")
                     _depositDetailScreenState.value = DepositDetailScreenState.Error(result.message)
                 }
 
                 is DepositResult.Empty -> {
-                    Log.w("DepositDetailViewModel", "Пустой результат: ${result.message}")
                     _depositDetailScreenState.value = DepositDetailScreenState.Error(result.message)
                 }
 
                 is DepositResult.InputError -> {
-                    Log.e("DepositDetailViewModel", "InputError: ${result.message}")
                     _depositDetailScreenState.value = DepositDetailScreenState.Error(result.message)
                 }
 
                 is DepositResult.NetworkError -> {
-                    Log.e("DepositDetailViewModel", "NetworkError: ${result.message}")
                     _depositDetailScreenState.value = DepositDetailScreenState.Error(result.message)
                 }
 
                 is DepositResult.Success -> {
-                    Log.d("DepositDetailViewModel", "Данные успешно получены: ${result.data}")
                     _depositDetailScreenState.value = DepositDetailScreenState.Content(result.data)
                 }
             }
@@ -73,6 +65,7 @@ class DepositDetailViewModel(
                         is DepositResult.Empty -> {
                             _depositExistState.value = DepositDeletedState.EXIST
                         }
+
                         is DepositResult.Success -> {
                             _depositExistState.value = DepositDeletedState.DELETED
                         }
