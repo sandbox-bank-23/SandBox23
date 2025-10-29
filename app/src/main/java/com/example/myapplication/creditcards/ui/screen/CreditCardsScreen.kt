@@ -92,15 +92,10 @@ fun CreditCardsScreen(
         is CreditCardsState.Error -> {
             offlineCardDialog = true
         }
-
-        is CreditCardsState.Online -> {
-            offlineCardDialog = false
-        }
-
         is CreditCardsState.Success -> {
+            offlineCardDialog = false
             successCardDialog = true
         }
-
         is CreditCardsState.Loading -> return
         is CreditCardsState.Content -> {
             cashback = (creditCardsState.creditCardTerms.cashback * CENTS_DIVIDE).toInt()

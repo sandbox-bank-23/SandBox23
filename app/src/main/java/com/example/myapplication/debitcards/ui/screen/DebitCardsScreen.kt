@@ -73,10 +73,8 @@ fun DebitCardsScreen(
         is DebitCardsState.Error -> {
             offlineCardDialog = true
         }
-        is DebitCardsState.Online -> {
-            offlineCardDialog = false
-        }
         is DebitCardsState.Success -> {
+            offlineCardDialog = false
             successCardDialog = true
         }
         is DebitCardsState.Loading -> return

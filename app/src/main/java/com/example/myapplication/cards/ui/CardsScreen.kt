@@ -67,7 +67,10 @@ fun CardsScreen(
         BasicDialog(
             visible = openCardDialog.value,
             onDismissRequest = { openCardDialog.value = false },
-            onConfirmation = { openCardDialog.value = false },
+            onConfirmation = {
+                openCardDialog.value = false
+                navController.navigate(CardsRoutes.CARD_DEBIT.route)
+            },
             dialogTitle = stringResource(R.string.card_dialog_title),
             confirmButtonText = stringResource(R.string.card_dialog_confirm),
             dismissButtonText = stringResource(R.string.card_dialog_dismiss),

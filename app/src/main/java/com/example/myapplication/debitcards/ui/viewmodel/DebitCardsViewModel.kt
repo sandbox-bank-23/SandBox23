@@ -1,6 +1,5 @@
 package com.example.myapplication.debitcards.ui.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myapplication.core.domain.api.AppInteractor
@@ -69,12 +68,11 @@ class DebitCardsViewModel(
     }
 
     private fun processResult(result: DebitCardResult<Card>) {
-        Log.d("VM STATE", result.toString())
         when (result) {
             is DebitCardResult.Error -> renderState(DebitCardsState.Error)
             is DebitCardResult.Success -> renderState(DebitCardsState.Success)
             is DebitCardResult.LimitError -> renderState(DebitCardsState.Limit)
-            is DebitCardResult.NetworkError -> renderState(DebitCardsState.Online)
+            is DebitCardResult.NetworkError -> renderState(DebitCardsState.Error)
         }
     }
 

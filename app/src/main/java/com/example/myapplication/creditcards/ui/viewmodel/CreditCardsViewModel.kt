@@ -1,6 +1,5 @@
 package com.example.myapplication.creditcards.ui.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myapplication.core.domain.api.AppInteractor
@@ -74,11 +73,10 @@ class CreditCardsViewModel(
     }
 
     private fun processResult(result: CreditCardResult<Card>) {
-        Log.d("VM STATE", result.toString())
         when (result) {
             is CreditCardResult.Error -> renderState(CreditCardsState.Error)
             is CreditCardResult.LimitError -> renderState(CreditCardsState.Limit)
-            is CreditCardResult.NetworkError -> renderState(CreditCardsState.Online)
+            is CreditCardResult.NetworkError -> renderState(CreditCardsState.Error)
             is CreditCardResult.Success -> renderState(CreditCardsState.Success)
         }
     }
