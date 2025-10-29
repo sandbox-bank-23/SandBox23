@@ -30,7 +30,7 @@ fun NavGraphBuilder.cardsScreenNavigation(navController: NavHostController) {
                 }
             )
         ) { backStackEntry ->
-            val userId = backStackEntry.arguments?.getLong(CARD_ID) ?: 0L
+            val userId = backStackEntry.arguments?.getLong(USER_ID) ?: 0L
             DebitCardsScreen(
                 navController = navController,
                 userId = userId

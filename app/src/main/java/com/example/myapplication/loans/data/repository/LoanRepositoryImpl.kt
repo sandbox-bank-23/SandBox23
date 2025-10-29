@@ -4,6 +4,8 @@ import com.example.myapplication.cards.domain.api.CardsRepository
 import com.example.myapplication.core.data.db.dao.LoanDao
 import com.example.myapplication.core.data.db.entity.LoanEntity
 import com.example.myapplication.core.data.network.NetworkClient
+import com.example.myapplication.core.data.network.NetworkParams
+import com.example.myapplication.core.data.network.Response
 import com.example.myapplication.core.domain.models.CardType
 import com.example.myapplication.core.domain.models.Result
 import com.example.myapplication.debitcards.domain.api.DebitCardsRepository
@@ -61,39 +63,63 @@ class LoanRepositoryImpl(
         return LoanResult.Error(error, status)
     }
 
+
+    private suspend fun getRequestData(loan: Credit): RequestData {
+        val userWithLoans = dao.getUserWithLoans(userId = loan.userId)
+        val loans = userWithLoans?.loans?.filter { it.isClose != true } ?: emptyList()
+        val totalDept = loans.sumOf { it.balance }
+        val currentNumber = loans.size
+        return RequestData(
+            userId = loan.userId,
+            loanName = loan.name,
+            balance = loan.balance,
+            period = loan.period,
+            orderDate = loan.orderDate,
+            currentCreditNumber = currentNumber,
+            requestNumber = Random.nextLong(),
+            totalDept = totalDept
+        )
+    }
+
+    private suspend fun saveData(credit: Credit) {
+        topUpRandomDebitCard(credit)
+        dao.create(loan = map(credit = credit))
+    }
+
+    private suspend fun getResponse(loan: Credit): Response {
+        val requestData = getRequestData(loan)
+        val creditJson = Json.encodeToString(value = requestData)
+        return networkClient(loansMock.createLoan(creditJson))
+    }
+
     override suspend fun create(loan: Credit): Flow<LoanResult> {
         return flow {
-            val userWithLoans = dao.getUserWithLoans(userId = loan.userId)
-            val loans = userWithLoans?.loans?.filter { it.isClose != true } ?: emptyList()
-            val totalDept = loans.sumOf { it.balance }
-            val currentNumber = loans.size
-            val requestData = RequestData(
-                userId = loan.userId,
-                loanName = loan.name,
-                balance = loan.balance,
-                period = loan.period,
-                orderDate = loan.orderDate,
-                currentCreditNumber = currentNumber,
-                requestNumber = Random.nextLong(),
-                totalDept = totalDept
-            )
-            val creditJson = Json.encodeToString(value = requestData)
-            val response = networkClient(loansMock.createLoan(creditJson))
+            val response = getResponse(loan)
             response.response?.let { jsonResponse ->
-
-                val responseData = json.decodeFromString<MockData>(string = jsonResponse)
-                val newCredit = responseData.data.response.body
-                when (responseData.data.code) {
-                    HTTP_CREATE_SUCCESS -> {
-                        newCredit?.let { credit ->
-                            topUpRandomDebitCard(credit)
-                            dao.create(loan = map(credit = credit))
-                            emit(LoanResult.Success(credit, SUCCESS))
-                        } ?: emit(errorResult(LOAN_CREATE_ERROR, ERROR))
+                when (response.code) {
+                    NetworkParams.SUCCESS_CODE,
+                    NetworkParams.CREATED_CODE -> {
+                        val responseData = json.decodeFromString<MockData>(string = jsonResponse)
+                        val newCredit = responseData.data.response.body
+                        when (responseData.data.code) {
+                            HTTP_CREATE_SUCCESS -> {
+                                newCredit?.let { credit ->
+                                    saveData(credit)
+                                    emit(LoanResult.Success(credit, SUCCESS))
+                                } ?: emit(errorResult(LOAN_CREATE_ERROR, ERROR))
+                            }
+                            HTTP_CREATE_ERROR -> emit(errorResult(LOAN_CREATE_ERROR, ERROR))
+                            else -> emit(errorResult(SERVER_ERROR, ERROR))
+                        }
                     }
-
-                    HTTP_CREATE_ERROR -> emit(errorResult(LOAN_CREATE_ERROR, ERROR))
-                    else -> emit(errorResult(SERVER_ERROR, ERROR))
+                    NetworkParams.BAD_REQUEST_CODE,
+                    NetworkParams.FORBIDDEN,
+                    NetworkParams.EXISTING_CODE -> {
+                        emit(errorResult(LOAN_CREATE_ERROR, ERROR))
+                    }
+                    NetworkParams.NO_CONNECTION_CODE -> {
+                        emit(errorResult(NETWORK_ERROR, NetworkParams.NO_CONNECTION_CODE.toString()))
+                    }
                 }
             } ?: emit(errorResult(SERVER_ERROR, ERROR))
         }
@@ -190,6 +216,8 @@ class LoanRepositoryImpl(
         private const val LOAN_CLOSE_ERROR = "Loan closing error"
         private const val LOAN_CREATE_ERROR = "The maximum limit is allowed"
         private const val SERVER_ERROR = "Server error"
+
+        private const val NETWORK_ERROR = "Network error"
         private const val SUCCESS = "success"
         private const val ERROR = "error"
     }
