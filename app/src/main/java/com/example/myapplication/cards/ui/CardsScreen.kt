@@ -29,6 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.navigation.NavHostController
 import com.example.myapplication.R
 import com.example.myapplication.cards.navigation.CardsRoutes
@@ -51,8 +52,12 @@ fun CardsScreen(
     viewModel: CardsViewModel = koinViewModel(),
 ) {
     val cardsState = viewModel.cardsState.collectAsState().value
-    val userId = viewModel.userId.collectAsState().value
     val openCardDialog = remember { mutableStateOf(false) }
+
+    LifecycleStartEffect(Unit) {
+        viewModel.loadCards()
+        onStopOrDispose { }
+    }
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -123,20 +128,18 @@ fun CardsScreen(
             }
         }
         Spacer(modifier = Modifier.height(48.dp))
-        if (userId > -1L) {
-            Column(
-                modifier = Modifier.height(188.dp),
-                verticalArrangement = Arrangement.SpaceBetween
-            ) {
-                CreateCardButton(
-                    text = stringResource(R.string.card_create_debit),
-                    isCredit = false
-                ) { navController.navigate("${CardsRoutes.CARD_DEBIT}/${userId}") }
-                CreateCardButton(
-                    text = stringResource(R.string.card_create_credit),
-                    isCredit = true
-                ) { navController.navigate("${CardsRoutes.CARD_CREDIT}/${userId}") }
-            }
+        Column(
+            modifier = Modifier.height(188.dp),
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            CreateCardButton(
+                text = stringResource(R.string.card_create_debit),
+                isCredit = false
+            ) { navController.navigate(CardsRoutes.CARD_DEBIT.route) }
+            CreateCardButton(
+                text = stringResource(R.string.card_create_credit),
+                isCredit = true
+            ) { navController.navigate(CardsRoutes.CARD_CREDIT.route) }
         }
     }
 }

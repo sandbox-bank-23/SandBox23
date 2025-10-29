@@ -72,7 +72,6 @@ const val CREDIT_CARD_MAX_LIMIT = 1_000_000L
 @Composable
 fun CreditCardsScreen(
     navController: NavHostController,
-    userId: Long,
     viewModel: CreditCardsViewModel = koinViewModel<CreditCardsViewModel>()
 ) {
     val creditCardsState = viewModel.creditCardsState.collectAsState().value
@@ -85,7 +84,7 @@ fun CreditCardsScreen(
     var creditCardMaxLimit by remember { mutableLongStateOf(CREDIT_CARD_MAX_LIMIT) }
 
     LifecycleStartEffect(Unit) {
-        viewModel.getCreditCardTerms(userId)
+        viewModel.getCreditCardTerms()
         onStopOrDispose { }
     }
 
@@ -134,7 +133,7 @@ fun CreditCardsScreen(
                     navController.popBackStack()
                 },
                 onConfirmation = {
-                    viewModel.createCard(userId)
+                    viewModel.createCard()
                 },
                 dialogTitle = stringResource(R.string.offline),
                 confirmButtonText = stringResource(R.string.try_again),
@@ -175,10 +174,8 @@ fun CreditCardsScreen(
                     )
                 )
                 CardInfoBox(
-                    stringResource(
-                        R.string.card_credit_info_title2,
-                        creditCardMaxLimit
-                    ),
+                    DecimalFormat(stringResource(R.string.balance_pattern))
+                        .format(creditCardMaxLimit),
                     stringResource(R.string.card_credit_info_text2)
                 )
                 CardInfoBox(
@@ -213,7 +210,7 @@ fun CreditCardsScreen(
                     PrimaryButton(stringResource(R.string.card_open), isEnabled = false) {}
                 } else {
                     PrimaryButton(stringResource(R.string.card_open)) {
-                        viewModel.createCard(userId)
+                        viewModel.createCard()
                     }
                 }
                 Spacer(modifier = Modifier.Companion.height(Padding12dp))
@@ -268,7 +265,7 @@ fun CreditLimitSlider(min: Long = 0L, max: Long = 1_000_000L, viewModel: CreditC
                             },
                             onDragEnd = {
                                 viewModel.creditLimitValue =
-                                    (creditLimitValue * CENTS_DIVIDE).toLong()
+                                    creditLimitValue.toLong() * CENTS_DIVIDE
                             }
                         )
                     },
