@@ -48,7 +48,7 @@ class App : Application() {
                 cardDetailsViewModelModule,
                 creditCardsViewModelModule,
                 debitCardsViewModelModule,
-                profileViewModelModule
+                profileViewModelModule,
                 loansAndDepositsModule,
                 loansAndDepositsDomainModule,
                 loansAndDepositsViewModelModule,
