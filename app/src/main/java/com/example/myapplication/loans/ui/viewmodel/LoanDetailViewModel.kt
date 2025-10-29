@@ -52,6 +52,7 @@ class LoanDetailViewModel(
         when (sate) {
             is LoanResult.Error -> ""
             is LoanResult.Success -> _loanData.value = sate.data
+
         }
     }
 }
