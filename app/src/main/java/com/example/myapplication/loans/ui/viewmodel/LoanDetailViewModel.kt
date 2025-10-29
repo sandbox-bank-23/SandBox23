@@ -42,19 +42,16 @@ class LoanDetailViewModel(
         }
     }
 
-    fun getLoan(sate: LoanResult) {
-        when (sate) {
-            is LoanResult.Error -> ""
-            is LoanResult.Success -> _loanData.value = sate.data
-
-        }
-    }
-
     fun onCloseClick() {
         viewModelScope.launch {
             loanInteractor.close(loanId).collect { loan -> getLoan(loan) }
         }
     }
-    fun onBalanceUpClick() {}
 
+    fun getLoan(sate: LoanResult) {
+        when (sate) {
+            is LoanResult.Error -> ""
+            is LoanResult.Success -> _loanData.value = sate.data
+        }
+    }
 }

@@ -47,9 +47,7 @@ fun NavGraphBuilder.loansDepositsScreenNavigation(navController: NavHostControll
             )
 
             LoanDetailScreen(
-                loanId = loanId,
                 navController = navController,
-                onBalanceUpClick = viewModel::onBalanceUpClick,
                 onCloseClick = viewModel::onCloseClick,
                 loanData = viewModel.loanData.collectAsState().value
             )

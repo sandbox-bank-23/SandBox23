@@ -1,5 +1,7 @@
 package com.example.myapplication.loans.ui.screen
 
+import android.icu.text.DecimalFormat
+import android.icu.text.DecimalFormatSymbols
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -44,18 +46,14 @@ import com.example.myapplication.core.ui.theme.PaddingQuarter
 import com.example.myapplication.core.ui.theme.Width12
 import com.example.myapplication.loans.domain.model.Credit
 import java.math.BigDecimal
-import android.icu.text.DecimalFormat
-import android.icu.text.DecimalFormatSymbols
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoanDetailScreen(
-    loanId: Long,
     modifier: Modifier = Modifier,
     navController: NavHostController,
     onCloseClick: () -> Unit,
-    onBalanceUpClick: () -> Unit,
     loanData: Credit
 ) {
     Scaffold(
@@ -71,7 +69,6 @@ fun LoanDetailScreen(
                 .padding(innerPadding)
                 .padding(horizontal = Padding16dp)
         ) {
-
             Row(
                 modifier = modifier
                     .fillMaxWidth()
@@ -126,7 +123,7 @@ fun LoanDetailScreen(
                     modifier = Modifier.weight(1f),
                     shape = RoundedCornerShape(CornerRadiusMedium),
                     colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primaryContainer),
-                    onClick = onBalanceUpClick
+                    onClick = {}
                 ) {
                     Text(
                         modifier = modifier.padding(vertical = PaddingBase),
@@ -204,22 +201,8 @@ fun LoanTransactions(
 fun BigDecimal.toMoneyString(): String {
     val formatter = DecimalFormat("#,##0.00")
     formatter.decimalFormatSymbols = DecimalFormatSymbols(Locale("ru")).apply {
-        groupingSeparator = ' '   // Разделитель тысяч — пробел
-        decimalSeparator = ','    // Запятая как десятичный разделитель
+        groupingSeparator = ' '
+        decimalSeparator = ','
     }
     return formatter.format(this)
 }
-
-//@Preview(showBackground = true)
-//@Composable
-//fun DepositDetailsScreenPreview() {
-//    val navController = rememberNavController()
-//    MaterialTheme {
-//        LoanDetailScreen(
-//            loanId = 42,
-//            modifier = Modifier,
-//            navController = navController
-//        )
-//    }
-//}
-
