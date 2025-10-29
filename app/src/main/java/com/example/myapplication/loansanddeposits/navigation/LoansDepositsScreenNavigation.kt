@@ -6,6 +6,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
+import com.example.myapplication.deposits.ui.screens.NewDepositScreen
 import com.example.myapplication.loans.ui.screen.CreateLoanScreen
 import com.example.myapplication.loansanddeposits.ui.screen.LoansDepositsScreen
 
@@ -28,7 +29,7 @@ fun NavGraphBuilder.loansDepositsScreenNavigation(navController: NavHostControll
         }
 
         composable(LoansDepositsRoutes.OPEN_DEPOSIT.route) {
-            // CreateDepositScreen(onDone = { navController.popBackStack() })
+            NewDepositScreen(navController = navController)
         }
 
         composable(

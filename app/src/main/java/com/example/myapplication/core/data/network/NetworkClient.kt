@@ -19,11 +19,11 @@ class NetworkClient(private val client: HttpClient) {
                 NetworkParams.SUCCESS_CODE,
                 NetworkParams.CREATED_CODE,
                 NetworkParams.CREATED_CODE,
-                NetworkParams.BAD_REQUEST_CODE,
-                NetworkParams.FORBIDDEN,
-                NetworkParams.NOT_FOUND_CODE,
-                NetworkParams.EXISTING_CODE,
-                NetworkParams.SERVER_ERROR_CODE
+//                NetworkParams.BAD_REQUEST_CODE,
+//                NetworkParams.FORBIDDEN,
+//                NetworkParams.NOT_FOUND_CODE,
+//                NetworkParams.EXISTING_CODE,
+//                NetworkParams.SERVER_ERROR_CODE
             ).random()
 
             if (code in 200..299) {

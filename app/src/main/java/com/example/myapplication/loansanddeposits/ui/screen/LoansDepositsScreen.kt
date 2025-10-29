@@ -142,7 +142,7 @@ fun LoansDepositsScreen(
                     DepositItem(
                         item = Deposit(item.id, item.title, item.balanceText, item.percentType),
                         iconRes = R.drawable.ic_deposit,
-                        onClick = { /* открыть вклад по id */ }
+                        onClick = { navController.navigate(LoansDepositsRoutes.DEPOSIT_DETAILS.route) }
                     )
                 }
             }
