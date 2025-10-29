@@ -28,15 +28,22 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.example.myapplication.R
+import com.example.myapplication.core.ui.state.Routes
 import com.example.myapplication.core.ui.theme.AppTypography
 import com.example.myapplication.core.ui.theme.CornerRadiusMedium
 import com.example.myapplication.core.ui.theme.Padding16dp
@@ -52,19 +59,52 @@ import com.example.myapplication.core.ui.theme.Padding9dp
 import com.example.myapplication.core.ui.theme.PaddingBase
 import com.example.myapplication.core.ui.theme.PaddingQuarter
 import com.example.myapplication.core.ui.theme.Width12
+import com.example.myapplication.deposits.ui.state.DepositDeletedState
+import com.example.myapplication.deposits.ui.state.DepositDetailScreenState
 import com.example.myapplication.deposits.ui.utils.toMoneyString
+import com.example.myapplication.deposits.ui.viewmodel.DepositDetailViewModel
+import org.koin.androidx.compose.koinViewModel
 import java.math.BigDecimal
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DepositDetailScreen(
     modifier: Modifier = Modifier,
-    name: String = "",
-    onBalanceUpClick: () -> Unit = {},
+    navController: NavHostController,
+    id: Long,
+    viewModel: DepositDetailViewModel = koinViewModel(),
     onCloseClick: () -> Unit = {},
     onOperationsClick: () -> Unit = {},
     onPercentClick: () -> Unit = {}
 ) {
+    val screenState by viewModel.depositDetailScreenState.collectAsState()
+    val depositExistState by viewModel.depositExistState.collectAsState()
+    var depositBalance by remember { mutableLongStateOf(0) }
+    var percent by remember { mutableLongStateOf(0) }
+
+    // Подгружаем данные при смене id
+    LaunchedEffect(id) {
+        viewModel.loadDeposit(id)
+    }
+
+    // Обновляем локальные переменные при изменении состояния
+    LaunchedEffect(screenState) {
+        if (screenState is DepositDetailScreenState.Content) {
+            val deposit = (screenState as DepositDetailScreenState.Content).deposit.product
+            depositBalance = deposit.balance
+            percent = deposit.percent
+        }
+    }
+
+    LaunchedEffect(depositExistState) {
+        when (depositExistState) {
+            DepositDeletedState.EXIST -> {}
+            DepositDeletedState.DELETED -> {
+                navController.popBackStack()
+            }
+        }
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -85,7 +125,7 @@ fun DepositDetailScreen(
                 },
                 navigationIcon = {
                     IconButton(
-                        onClick = { /* navController.popBackStack() */ },
+                        onClick = { navController.popBackStack() },
                         modifier = modifier
                             .size(Padding48dp)
                             .padding(start = PaddingBase)
@@ -108,7 +148,7 @@ fun DepositDetailScreen(
                 .padding(innerPadding)
                 .padding(horizontal = Padding16dp)
         ) {
-
+            // --- Верхняя часть экрана ---
             Row(
                 modifier = modifier
                     .fillMaxWidth()
@@ -122,7 +162,6 @@ fun DepositDetailScreen(
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.primary
                 )
-
                 Icon(
                     modifier = modifier.padding(14.dp),
                     painter = painterResource(R.drawable.ic_pencil),
@@ -133,13 +172,13 @@ fun DepositDetailScreen(
 
             Spacer(modifier = Modifier.height(PaddingQuarter))
 
-            // сумма
+            // --- Сумма и проценты ---
             Text(
                 modifier = modifier.padding(start = 41.dp),
                 text = stringResource(
                     R.string.deposit_amount,
-                    BigDecimal(34556.45).toMoneyString()
-                ), // TODO Здесь заменить хардкод-заглушку на переменную
+                    BigDecimal(depositBalance).toMoneyString()
+                ),
                 style = MaterialTheme.typography.displayMedium,
                 color = MaterialTheme.colorScheme.onSurface,
                 fontWeight = FontWeight.Bold
@@ -147,10 +186,7 @@ fun DepositDetailScreen(
 
             Text(
                 modifier = modifier.padding(start = 41.dp),
-                text = stringResource(
-                    R.string.year_percent,
-                    "12"
-                ), // TODO Здесь заменить хардкод-заглушку на переменную
+                text = stringResource(R.string.year_percent, percent),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.primary
             )
@@ -168,7 +204,14 @@ fun DepositDetailScreen(
                     modifier = Modifier.weight(1f),
                     shape = RoundedCornerShape(CornerRadiusMedium),
                     colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primaryContainer),
-                    onClick = onBalanceUpClick
+                    onClick = {
+                        navController.navigate(Routes.TRANSFERS.route) {
+                            popUpTo(0) {
+                                inclusive = false
+                            }
+                            launchSingleTop = true
+                        }
+                    }
                 ) {
                     Text(
                         modifier = modifier.padding(vertical = PaddingBase),
@@ -182,7 +225,7 @@ fun DepositDetailScreen(
                     modifier = Modifier.weight(1f),
                     shape = RoundedCornerShape(CornerRadiusMedium),
                     colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primaryContainer),
-                    onClick = onCloseClick
+                    onClick = { viewModel.closeDeposit(id); onCloseClick() }
                 ) {
                     Text(
                         modifier = modifier.padding(vertical = PaddingBase),
@@ -195,7 +238,7 @@ fun DepositDetailScreen(
 
             Spacer(modifier = Modifier.height(Padding34dp))
 
-            // --- Операции по вкладу ---
+            // --- Операции и проценты ---
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -220,7 +263,6 @@ fun DepositDetailScreen(
 
             Spacer(modifier = Modifier.height(Padding18dp))
 
-            // --- Начисленные проценты ---
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -245,12 +287,3 @@ fun DepositDetailScreen(
         }
     }
 }
-
-@Preview(showBackground = true)
-@Composable
-fun DepositDetailsScreenPreview() {
-    MaterialTheme {
-        DepositDetailScreen()
-    }
-}
-

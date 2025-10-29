@@ -6,6 +6,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
+import com.example.myapplication.deposits.ui.screens.DepositDetailScreen
 import com.example.myapplication.deposits.ui.screens.NewDepositScreen
 import com.example.myapplication.loans.ui.screen.CreateLoanScreen
 import com.example.myapplication.loansanddeposits.ui.screen.LoansDepositsScreen
@@ -43,7 +44,11 @@ fun NavGraphBuilder.loansDepositsScreenNavigation(navController: NavHostControll
             route = LoansDepositsRoutes.DEPOSIT_DETAILS.route,
             arguments = listOf(navArgument(DEPOSIT_ID) { type = NavType.LongType })
         ) { backStackEntry ->
-            // DepositDetailsScreen(depositId = requireNotNull(it.arguments?.getLong(DEPOSIT_ID)))
+             val itemId = backStackEntry.arguments?.getLong(DEPOSIT_ID) ?: 0L
+            DepositDetailScreen(
+                navController = navController,
+                id = itemId
+            )
         }
     }
 }

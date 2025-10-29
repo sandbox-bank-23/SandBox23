@@ -5,6 +5,7 @@ import com.example.myapplication.deposits.data.db.DepositEntity
 import com.example.myapplication.deposits.domain.entity.Deposit
 
 fun DepositEntity.toDomain(): Deposit = Deposit(
+    dbId = id,
     userId = userId,
     currentDepositNumber = currentDepositNumber,
     requestNumber = requestNumber,

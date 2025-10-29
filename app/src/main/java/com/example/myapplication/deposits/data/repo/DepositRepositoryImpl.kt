@@ -2,6 +2,7 @@ package com.example.myapplication.deposits.data.repo
 
 import android.database.sqlite.SQLiteException
 import com.example.myapplication.core.data.network.NetworkClient
+import com.example.myapplication.core.domain.models.Product
 import com.example.myapplication.deposits.data.db.DepositDao
 import com.example.myapplication.deposits.data.db.DepositEntity
 import com.example.myapplication.deposits.data.mappers.toDomain
@@ -12,6 +13,10 @@ import com.example.myapplication.deposits.domain.entity.Deposit
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.io.IOException
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 
 class DepositRepositoryImpl(
     private val client: NetworkClient,
@@ -34,22 +39,44 @@ class DepositRepositoryImpl(
         val response = client(mockResponse)
 
         if (response.code == SUCCESS_CODE || response.code == CREATED_CODE) {
+
+            val productJson = try {
+                val root = Json.parseToJsonElement(response.response ?: "")
+                val dataObj = root.jsonObject["data"]?.jsonObject
+                    ?: return DepositResult.NetworkError("Missing data in server response")
+                val innerResponse = dataObj["response"]?.jsonPrimitive?.content
+                    ?: return DepositResult.NetworkError("Missing product JSON in server response")
+                innerResponse
+            } catch (e: SerializationException) {
+                return DepositResult.DataBaseError(e.message)
+            }
+
+            val product = try {
+                Json.decodeFromString<Product>(productJson)
+            } catch (e: SerializationException) {
+                return DepositResult.DataBaseError(e.message)
+            }
+
             val entity = DepositEntity(
                 userId = userId,
                 currentDepositNumber = currentDepositNumber,
                 requestNumber = requestNumber,
-                productId = 1L,
-                type = "Standard",
-                percentType = percentType,
-                period = period,
-                percent = 7,
-                balance = 100_000L
+                productId = product.id,
+                type = product.type,
+                percentType = product.percentType,
+                period = product.period,
+                percent = product.percent.toInt(),
+                balance = product.balance
             )
+
             depositDao.insertDeposit(entity)
+
             DepositResult.Success(entity.toDomain())
+
         } else {
-            DepositResult.NetworkError("")
+            DepositResult.NetworkError(response.description)
         }
+
     } catch (e: IOException) {
         DepositResult.NetworkError(e.message)
     } catch (e: SQLiteException) {
@@ -90,10 +117,10 @@ class DepositRepositoryImpl(
     override suspend fun takeDeposit(id: Long): DepositResult<Deposit> {
         return try {
             val deposit = depositDao.getDepositById(id)
-            return if (deposit != null) {
+            if (deposit != null) {
                 DepositResult.Success(deposit.toDomain())
             } else {
-                DepositResult.NetworkError("")
+                DepositResult.NetworkError("Депозит не найден")
             }
         } catch (e: IOException) {
             DepositResult.NetworkError(e.message)
@@ -103,6 +130,7 @@ class DepositRepositoryImpl(
             DepositResult.InputError(e.message)
         }
     }
+
 
     override suspend fun getProducts(): DepositResult<List<Deposit>> = try {
         val deposits = depositDao.getAllDeposits().map { it.toDomain() }

@@ -22,7 +22,7 @@ class LoansAndDepositsRepositoryImpl(
         return combine(depFlow, loanFlow) { depItems, loanItems ->
             val newDeposit = depItems.map { item ->
                 Product(
-                    id = Random.nextLong(1, Long.MAX_VALUE),
+                    id = item.dbId,
                     type = item.product.type,
                     period = item.product.period,
                     percent = item.product.percent,

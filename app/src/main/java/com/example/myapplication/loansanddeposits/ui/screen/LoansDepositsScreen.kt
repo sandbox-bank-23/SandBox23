@@ -57,6 +57,7 @@ import com.example.myapplication.core.ui.theme.Padding31dp
 import com.example.myapplication.core.ui.theme.Padding81dp
 import com.example.myapplication.core.ui.theme.PaddingBase
 import com.example.myapplication.core.ui.theme.PaddingQuarter
+import com.example.myapplication.loansanddeposits.navigation.DEPOSIT_ID
 import com.example.myapplication.loansanddeposits.navigation.LoansDepositsRoutes
 import com.example.myapplication.loansanddeposits.ui.state.CreditUi
 import com.example.myapplication.loansanddeposits.ui.state.DepositUi
@@ -142,7 +143,14 @@ fun LoansDepositsScreen(
                     DepositItem(
                         item = Deposit(item.id, item.title, item.balanceText, item.percentType),
                         iconRes = R.drawable.ic_deposit,
-                        onClick = { navController.navigate(LoansDepositsRoutes.DEPOSIT_DETAILS.route) }
+                        onClick = {
+                            navController.navigate(
+                                LoansDepositsRoutes.DEPOSIT_DETAILS.route.replace(
+                                    "{$DEPOSIT_ID}",
+                                    item.id.toString()
+                                )
+                            )
+                        }
                     )
                 }
             }

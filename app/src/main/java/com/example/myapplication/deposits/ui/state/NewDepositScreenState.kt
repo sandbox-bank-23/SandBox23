@@ -8,7 +8,7 @@ sealed class NewDepositScreenState {
     data object Loading : NewDepositScreenState()
 
     data class Content(
-        val deposits: Deposit
+        val deposit: Deposit
     ) : NewDepositScreenState()
 
     data object Empty : NewDepositScreenState()

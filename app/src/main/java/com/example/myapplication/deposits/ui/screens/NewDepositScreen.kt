@@ -28,6 +28,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -78,25 +79,25 @@ fun NewDepositScreen(
 
     var value by remember { mutableIntStateOf(0) }
     val initialCharacteristics = viewModel.initialCharacteristics.collectAsState().value
-    val dialogNetwork = remember { mutableStateOf(value = false) }
-    val dialogApproved = remember { mutableStateOf(value = false) }
+    val dialogNetwork = remember { mutableStateOf(false) }
+    val dialogApproved = remember { mutableStateOf(false) }
     val newDepositScreenState by viewModel.newDepositScreenState.collectAsState()
 
-    when (newDepositScreenState) {
-        is NewDepositScreenState.Content -> {
-            dialogNetwork.value = false
-        }
-
-        is NewDepositScreenState.Empty -> {
-            dialogNetwork.value = true
-        }
-
-        is NewDepositScreenState.Error -> {
-            dialogNetwork.value = true
-        }
-
-        is NewDepositScreenState.Loading -> {
-            dialogNetwork.value = false
+    // Реакция на состояние экрана
+    LaunchedEffect(newDepositScreenState) {
+        when (newDepositScreenState) {
+            is NewDepositScreenState.Content -> {
+                dialogNetwork.value = false
+                dialogApproved.value = true
+            }
+            is NewDepositScreenState.Empty, is NewDepositScreenState.Error -> {
+                dialogNetwork.value = true
+                dialogApproved.value = false
+            }
+            is NewDepositScreenState.Loading -> {
+                dialogNetwork.value = false
+                dialogApproved.value = false
+            }
         }
     }
 
@@ -282,8 +283,8 @@ fun NewDepositScreen(
                     .height(Padding56dp),
                 shape = RoundedCornerShape(CornerRadius24dp),
                 onClick = {
+                    // Вызываем только openDep, диалог откроется через LaunchedEffect
                     viewModel.openDep(value.toLong())
-                    dialogApproved.value = true
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
             ) {
