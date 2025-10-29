@@ -51,6 +51,7 @@ fun CardsScreen(
     viewModel: CardsViewModel = koinViewModel(),
 ) {
     val cardsState = viewModel.cardsState.collectAsState().value
+    val userId = viewModel.userId.collectAsState().value
     val openCardDialog = remember { mutableStateOf(false) }
 
     Column(
@@ -121,22 +122,21 @@ fun CardsScreen(
                 }
             }
         }
-
         Spacer(modifier = Modifier.height(48.dp))
-
-        Column(
-            modifier = Modifier.height(188.dp),
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
-            CreateCardButton(
-                text = stringResource(R.string.card_create_debit),
-                isCredit = false
-            ) { navController.navigate(CardsRoutes.CARD_DEBIT.route) }
-
-            CreateCardButton(
-                text = stringResource(R.string.card_create_credit),
-                isCredit = true
-            ) { navController.navigate(CardsRoutes.CARD_CREDIT.route) }
+        if (userId > -1L) {
+            Column(
+                modifier = Modifier.height(188.dp),
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                CreateCardButton(
+                    text = stringResource(R.string.card_create_debit),
+                    isCredit = false
+                ) { navController.navigate("${CardsRoutes.CARD_DEBIT}/${userId}") }
+                CreateCardButton(
+                    text = stringResource(R.string.card_create_credit),
+                    isCredit = true
+                ) { navController.navigate("${CardsRoutes.CARD_CREDIT}/${userId}") }
+            }
         }
     }
 }

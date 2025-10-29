@@ -19,15 +19,18 @@ class CardsViewModel(
     private val _cardsState = MutableStateFlow<CardsState>(value = CardsState.Empty)
     val cardsState: StateFlow<CardsState> = _cardsState.asStateFlow()
 
+    private val _userId = MutableStateFlow<Long>(-1L)
+    val userId: StateFlow<Long> = _userId.asStateFlow()
+
     init {
         loadCards()
     }
 
     fun loadCards() {
         viewModelScope.launch {
-            val userId = appInteractor.getAuthDataValue(StorageKey.AUTHDATA).firstOrNull()?.userId
-            val userIdFormat = userId?.toLongOrNull() ?: -1L
-            when (val result = getCardsUseCase(userIdFormat)) {
+            val userIdString = appInteractor.getAuthDataValue(StorageKey.AUTHDATA).firstOrNull()?.userId
+            _userId.value = userIdString?.toLongOrNull() ?: -1L
+            when (val result = getCardsUseCase(userId.value)) {
                 is Result.Success -> {
                     val cards = result.data
                     if (cards.isEmpty()) {
