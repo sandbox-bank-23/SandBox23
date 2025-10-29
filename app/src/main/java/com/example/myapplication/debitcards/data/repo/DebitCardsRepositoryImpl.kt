@@ -5,7 +5,6 @@ package com.example.myapplication.debitcards.data.repo
 import com.example.myapplication.core.data.db.CardDao
 import com.example.myapplication.core.data.db.CardEntity
 import com.example.myapplication.core.data.network.NetworkClient
-import com.example.myapplication.core.data.network.NetworkConnector
 import com.example.myapplication.core.data.network.NetworkParams
 import com.example.myapplication.core.demo.demoFirstName
 import com.example.myapplication.core.demo.demoLastName
@@ -27,7 +26,6 @@ import kotlin.random.Random
 
 class DebitCardsRepositoryImpl(
     private val networkClient: NetworkClient,
-    private val networkConnector: NetworkConnector,
     private val dao: CardDao,
     private val debitCardsMock: DebitCardsMock,
     private val jsonObj: Json
@@ -70,10 +68,10 @@ class DebitCardsRepositoryImpl(
         return jsonObj.encodeToString(value = requestedData)
     }
 
-    private fun create(userId: Long): Flow<DebitCardResult<Card>> {
+    override suspend fun createDebitCard(userId: Long): Flow<DebitCardResult<Card>> {
         return flow {
             val mockData = debitCardsMock.createDebitCard(makeJsonToRequest(userId))
-            val response = networkClient(mockData)
+            val response = networkClient(mockData, NetworkParams.CREATED_CODE)
             if (mockData.code == NetworkParams.CREATED_CODE) {
                 val mockJson = response.response
                 mockJson?.let { jsonData ->
@@ -99,16 +97,6 @@ class DebitCardsRepositoryImpl(
                 } ?: emit(DebitCardResult.Error(ApiCodes.UNKNOWN_ERROR))
             } else {
                 emit(DebitCardResult.LimitError)
-            }
-        }
-    }
-
-    override suspend fun createDebitCard(userId: Long): Flow<DebitCardResult<Card>> {
-        return if (networkConnector.isConnected()) {
-            create(userId)
-        } else {
-            flow {
-                emit(DebitCardResult.Error(ApiCodes.SERVICE_UNAVAILABLE))
             }
         }
     }

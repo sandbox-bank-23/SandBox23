@@ -2,7 +2,6 @@ package com.example.myapplication.debitcards.di.data
 
 import com.example.myapplication.core.data.db.CardDao
 import com.example.myapplication.core.data.network.NetworkClient
-import com.example.myapplication.core.data.network.NetworkConnector
 import com.example.myapplication.debitcards.data.mock.DebitCardsMock
 import com.example.myapplication.debitcards.data.repo.DebitCardsRepositoryImpl
 import com.example.myapplication.debitcards.domain.api.CheckDebitCardCountUseCase
@@ -18,7 +17,6 @@ val debitCardsModule = module {
     single<DebitCardsRepository> {
         DebitCardsRepositoryImpl(
             networkClient = get<NetworkClient>(),
-            networkConnector = get<NetworkConnector>(),
             dao = get<CardDao>(),
             debitCardsMock = get<DebitCardsMock>(),
             jsonObj = get()

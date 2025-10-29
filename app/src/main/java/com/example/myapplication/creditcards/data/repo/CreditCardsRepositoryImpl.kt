@@ -5,7 +5,6 @@ package com.example.myapplication.creditcards.data.repo
 import com.example.myapplication.core.data.db.CardDao
 import com.example.myapplication.core.data.db.CardEntity
 import com.example.myapplication.core.data.network.NetworkClient
-import com.example.myapplication.core.data.network.NetworkConnector
 import com.example.myapplication.core.data.network.NetworkParams
 import com.example.myapplication.core.demo.demoFirstName
 import com.example.myapplication.core.demo.demoLastName
@@ -27,7 +26,6 @@ import kotlin.random.Random
 
 class CreditCardsRepositoryImpl(
     private val networkClient: NetworkClient,
-    private val networkConnector: NetworkConnector,
     private val dao: CardDao,
     private val creditCardsMock: CreditCardsMock,
     private val jsonObj: Json
@@ -72,10 +70,10 @@ class CreditCardsRepositoryImpl(
         return jsonObj.encodeToString(value = requestedData)
     }
 
-    private fun create(userId: Long, balance: BigDecimal): Flow<CreditCardResult<Card>> {
+    override suspend fun createCreditCard(userId: Long, balance: BigDecimal): Flow<CreditCardResult<Card>> {
         return flow {
             val mockData = creditCardsMock.createCreditCard(makeJsonToRequest(userId, balance))
-            val response = networkClient(mockData)
+            val response = networkClient(mockData, NetworkParams.CREATED_CODE)
             if (mockData.code == NetworkParams.CREATED_CODE) {
                 val mockJson = response.response
                 mockJson?.let { jsonData ->
@@ -99,19 +97,6 @@ class CreditCardsRepositoryImpl(
                 } ?: emit(CreditCardResult.Error(ApiCodes.UNKNOWN_ERROR))
             } else {
                 emit(CreditCardResult.LimitError)
-            }
-        }
-    }
-
-    override suspend fun createCreditCard(
-        userId: Long,
-        balance: BigDecimal
-    ): Flow<CreditCardResult<Card>> {
-        return if (networkConnector.isConnected()) {
-            create(userId, balance)
-        } else {
-            flow {
-                emit(CreditCardResult.NetworkError)
             }
         }
     }
