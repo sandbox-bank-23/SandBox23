@@ -29,6 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.navigation.NavHostController
 import com.example.myapplication.R
 import com.example.myapplication.cards.navigation.CardsRoutes
@@ -53,6 +54,11 @@ fun CardsScreen(
     val cardsState = viewModel.cardsState.collectAsState().value
     val openCardDialog = remember { mutableStateOf(false) }
 
+    LifecycleStartEffect(Unit) {
+        viewModel.loadCards()
+        onStopOrDispose { }
+    }
+
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -61,7 +67,10 @@ fun CardsScreen(
         BasicDialog(
             visible = openCardDialog.value,
             onDismissRequest = { openCardDialog.value = false },
-            onConfirmation = { openCardDialog.value = false },
+            onConfirmation = {
+                openCardDialog.value = false
+                navController.navigate(CardsRoutes.CARD_DEBIT.route)
+            },
             dialogTitle = stringResource(R.string.card_dialog_title),
             confirmButtonText = stringResource(R.string.card_dialog_confirm),
             dismissButtonText = stringResource(R.string.card_dialog_dismiss),
@@ -121,9 +130,7 @@ fun CardsScreen(
                 }
             }
         }
-
         Spacer(modifier = Modifier.height(48.dp))
-
         Column(
             modifier = Modifier.height(188.dp),
             verticalArrangement = Arrangement.SpaceBetween
@@ -132,7 +139,6 @@ fun CardsScreen(
                 text = stringResource(R.string.card_create_debit),
                 isCredit = false
             ) { navController.navigate(CardsRoutes.CARD_DEBIT.route) }
-
             CreateCardButton(
                 text = stringResource(R.string.card_create_credit),
                 isCredit = true

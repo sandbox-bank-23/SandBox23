@@ -54,7 +54,6 @@ const val CENTS_DIVIDE = 100
 @Composable
 fun DebitCardsScreen(
     navController: NavHostController,
-    userId: Long,
     viewModel: DebitCardsViewModel = koinViewModel<DebitCardsViewModel>()
 ) {
     val debitCardsState = viewModel.debitCardsState.collectAsState().value
@@ -66,7 +65,7 @@ fun DebitCardsScreen(
     var debitCardMaxCount by remember { mutableIntStateOf(DEBIT_CARD_MAX_COUNT) }
 
     LifecycleStartEffect(Unit) {
-        viewModel.getDebitCardTerms(userId)
+        viewModel.getDebitCardTerms()
         onStopOrDispose { }
     }
 
@@ -74,10 +73,8 @@ fun DebitCardsScreen(
         is DebitCardsState.Error -> {
             offlineCardDialog = true
         }
-        is DebitCardsState.Online -> {
-            offlineCardDialog = false
-        }
         is DebitCardsState.Success -> {
+            offlineCardDialog = false
             successCardDialog = true
         }
         is DebitCardsState.Loading -> return
@@ -111,7 +108,7 @@ fun DebitCardsScreen(
                     navController.popBackStack()
                 },
                 onConfirmation = {
-                    viewModel.createCard(userId)
+                    viewModel.createCard()
                 },
                 dialogTitle = stringResource(R.string.offline),
                 confirmButtonText = stringResource(R.string.try_again),
@@ -182,7 +179,7 @@ fun DebitCardsScreen(
                     PrimaryButton(stringResource(R.string.card_open), isEnabled = false) {}
                 } else {
                     PrimaryButton(stringResource(R.string.card_open)) {
-                        viewModel.createCard(userId)
+                        viewModel.createCard()
                     }
                 }
                 Spacer(modifier = Modifier.Companion.height(Padding12dp))

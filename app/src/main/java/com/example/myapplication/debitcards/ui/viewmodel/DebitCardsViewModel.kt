@@ -29,7 +29,7 @@ class DebitCardsViewModel(
     val debitCardsState: StateFlow<DebitCardsState> = _debitCardsState.asStateFlow()
     var debitCardMaxCount: Int = 0
 
-    fun createCard(userId: Long) {
+    fun createCard() {
         viewModelScope.launch {
             appInteractor.getAuthDataValue(StorageKey.AUTHDATA).collect { data ->
                 data?.let { authData ->
@@ -40,22 +40,29 @@ class DebitCardsViewModel(
                     }
                 }
             }
-            /*createDebitCardUseCase.createDebitCard(userId).collect { result ->
-                processResult(result)
-            }*/
         }
     }
 
-    fun getDebitCardTerms(userId: Long) {
+    fun getDebitCardTerms() {
         viewModelScope.launch {
-            getDebitCardTermsUseCase.getDebitCardTerms().collect { result ->
-                debitCardMaxCount = (result as Result.Success).data.maxCount
-                renderState(
-                    DebitCardsState.Content(result.data)
-                )
-            }
-            if (checkDebitCardCountUseCase.isCardCountLimit(userId, debitCardMaxCount)) {
-                renderState(DebitCardsState.Limit)
+            appInteractor.getAuthDataValue(StorageKey.AUTHDATA).collect { data ->
+                data?.let { authData ->
+                    authData.userId?.let { userId ->
+                        getDebitCardTermsUseCase.getDebitCardTerms().collect { result ->
+                            debitCardMaxCount = (result as Result.Success).data.maxCount
+                            renderState(
+                                DebitCardsState.Content(result.data)
+                            )
+                        }
+                        if (checkDebitCardCountUseCase.isCardCountLimit(
+                                userId.toLongOrNull() ?: -1L,
+                                debitCardMaxCount
+                            )
+                        ) {
+                            renderState(DebitCardsState.Limit)
+                        }
+                    }
+                }
             }
         }
     }
@@ -65,7 +72,7 @@ class DebitCardsViewModel(
             is DebitCardResult.Error -> renderState(DebitCardsState.Error)
             is DebitCardResult.Success -> renderState(DebitCardsState.Success)
             is DebitCardResult.LimitError -> renderState(DebitCardsState.Limit)
-            is DebitCardResult.NetworkError -> renderState(DebitCardsState.Online)
+            is DebitCardResult.NetworkError -> renderState(DebitCardsState.Error)
         }
     }
 

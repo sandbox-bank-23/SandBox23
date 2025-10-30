@@ -2,7 +2,6 @@ package com.example.myapplication.creditcards.di.data
 
 import com.example.myapplication.core.data.db.CardDao
 import com.example.myapplication.core.data.network.NetworkClient
-import com.example.myapplication.core.data.network.NetworkConnector
 import com.example.myapplication.creditcards.data.mock.CreditCardsMock
 import com.example.myapplication.creditcards.data.repo.CreditCardsRepositoryImpl
 import com.example.myapplication.creditcards.domain.api.CheckCreditCardCountUseCase
@@ -18,7 +17,6 @@ val creditCardsModule = module {
     single<CreditCardsRepository> {
         CreditCardsRepositoryImpl(
             networkClient = get<NetworkClient>(),
-            networkConnector = get<NetworkConnector>(),
             dao = get<CardDao>(),
             creditCardsMock = get<CreditCardsMock>(),
             jsonObj = get()
