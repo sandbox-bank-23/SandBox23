@@ -18,7 +18,7 @@ class LoanDetailViewModel(
     private val _loanData =
         MutableStateFlow<Credit>(
             value = Credit(
-                id = null,
+                id = -1L,
                 userId = 0L,
                 name = "",
                 balance = BigDecimal(0),

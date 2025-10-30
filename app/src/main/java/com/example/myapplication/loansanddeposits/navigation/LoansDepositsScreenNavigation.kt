@@ -16,28 +16,23 @@ import com.example.myapplication.loansanddeposits.ui.screen.LoansDepositsScreen
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
+@Suppress("LongMethod")
 fun NavGraphBuilder.loansDepositsScreenNavigation(navController: NavHostController) {
     navigation(
         startDestination = LoansDepositsRoutes.LOANS_DEPOSITS.route,
         route = LoansDepositsRoutes.FINANCE_NAVIGATION.route,
     ) {
         composable(LoansDepositsRoutes.LOANS_DEPOSITS.route) {
-            LoansDepositsScreen(
-                navController = navController,
-//                onApplyCreditClick = { navController.navigate(LoansDepositsRoutes.OPEN_LOAN.route) },
-            )
+            LoansDepositsScreen(navController = navController)
         }
-
         composable(LoansDepositsRoutes.OPEN_LOAN.route) {
             CreateLoanScreen(
                 navController = navController,
             )
         }
-
         composable(LoansDepositsRoutes.OPEN_DEPOSIT.route) {
             NewDepositScreen(navController = navController)
         }
-
         composable(
             route = LoansDepositsRoutes.LOAN_DETAILS.route,
             arguments = listOf(navArgument(LOAN_ID) { type = NavType.LongType })
@@ -47,14 +42,12 @@ fun NavGraphBuilder.loansDepositsScreenNavigation(navController: NavHostControll
             val viewModel: LoanDetailViewModel = koinViewModel(
                 parameters = { parametersOf(loanId) }
             )
-
             LoanDetailScreen(
                 navController = navController,
                 onCloseClick = viewModel::onCloseClick,
                 loanData = viewModel.loanData.collectAsState().value
             )
         }
-
         composable(
             route = LoansDepositsRoutes.DEPOSIT_DETAILS.route,
             arguments = listOf(navArgument(DEPOSIT_ID) { type = NavType.LongType })
