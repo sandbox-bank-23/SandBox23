@@ -57,6 +57,7 @@ import com.example.myapplication.core.ui.theme.Padding31dp
 import com.example.myapplication.core.ui.theme.Padding81dp
 import com.example.myapplication.core.ui.theme.PaddingBase
 import com.example.myapplication.core.ui.theme.PaddingQuarter
+import com.example.myapplication.loansanddeposits.navigation.DEPOSIT_ID
 import com.example.myapplication.loansanddeposits.navigation.LoansDepositsRoutes
 import com.example.myapplication.loansanddeposits.ui.state.CreditUi
 import com.example.myapplication.loansanddeposits.ui.state.DepositUi
@@ -138,11 +139,18 @@ fun LoansDepositsScreen(
                     )
                 }
             } else {
-                items(depositsUi, key = { it.id }) { item ->
+                items(depositsUi, key = { "${it.id}_${it.percentType}" }) { item ->
                     DepositItem(
                         item = Deposit(item.id, item.title, item.balanceText, item.percentType),
                         iconRes = R.drawable.ic_deposit,
-                        onClick = { /* открыть вклад по id */ }
+                        onClick = {
+                            navController.navigate(
+                                LoansDepositsRoutes.DEPOSIT_DETAILS.route.replace(
+                                    "{$DEPOSIT_ID}",
+                                    item.id.toString()
+                                )
+                            )
+                        }
                     )
                 }
             }
@@ -168,7 +176,7 @@ fun LoansDepositsScreen(
                     )
                 }
             } else {
-                items(creditsUi, key = { it.id }) { item ->
+                items(creditsUi, key = { "${it.id}_${it.type}" }) { item ->
                     CreditItem(
                         item = Credit(
                             item.id,

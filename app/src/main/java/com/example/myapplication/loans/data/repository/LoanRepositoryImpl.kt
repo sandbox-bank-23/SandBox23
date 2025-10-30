@@ -47,6 +47,7 @@ class LoanRepositoryImpl(
 
     private fun map(credit: Credit): LoanEntity {
         return LoanEntity(
+            id = credit.id,
             userId = credit.userId,
             type = credit.name,
             balance = credit.balance,

@@ -15,7 +15,7 @@ const val CREDIT_NAME = "Потребительский кредит"
 
 @Serializable
 data class Credit(
-    val id: Long? = null,
+    val id: Long = -1L,
     val userId: Long,
     val name: String,
 

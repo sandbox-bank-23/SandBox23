@@ -103,7 +103,7 @@ class LoansViewModel(
         val limitKopeck = BigDecimal(limit)
         val userId = _authData.value.userId?.toLong() ?: 0
         val credit = Credit(
-            id = null,
+            id = -1L,
             userId = userId,
             name = CREDIT_NAME,
             balance = limitKopeck,
