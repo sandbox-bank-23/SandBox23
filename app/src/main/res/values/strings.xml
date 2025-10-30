@@ -121,12 +121,17 @@
     <string name="in_rubles">В рублях ₽</string>
     <string name="credit_open_success">Кредит оформлен успешно</string>
     <string name="exceeded_the_limit">Превышен кредитный лимит</string>
+    <string name="make_a_payment">Внести платёж</string>
+    <string name="payment_schedule">График платежей</string>
+    <string name="necessary_to_make">Необходимо внести</string>
+    <string name="loan_balance">%s ₽</string>
     <string name="credit_count_max">Можно оформить\nдо 3 кредитов, при этом сумма\nих задолженности должна быть\nменее 5 000 000,00</string>
     <string name="card_cost_template">%s ₽</string>
     <string name="card_details_error">Ошибка загрузки деталей карты. Попробуйте снова.</string>
 
     <string name="commonBalance">Общий баланс</string>
-    <string name="debtsBalance">Задолженности по кредитным картам</string>
+    <string name="noCreditCardsBalance">Задолженности по кредитным картам нет</string>
+    <string name="creditCardsBalance">Задолженность по кредиткам</string>
     <string name="depositBalance">Общая сумма вкладов</string>
     <string name="creditBalance">Общая сумма кредитов</string>
 

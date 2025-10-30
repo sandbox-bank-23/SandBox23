@@ -1,5 +1,6 @@
 package com.example.myapplication.loansanddeposits.navigation
 
+import androidx.compose.runtime.collectAsState
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -9,7 +10,11 @@ import androidx.navigation.navigation
 import com.example.myapplication.deposits.ui.screens.DepositDetailScreen
 import com.example.myapplication.deposits.ui.screens.NewDepositScreen
 import com.example.myapplication.loans.ui.screen.CreateLoanScreen
+import com.example.myapplication.loans.ui.screen.LoanDetailScreen
+import com.example.myapplication.loans.ui.viewmodel.LoanDetailViewModel
 import com.example.myapplication.loansanddeposits.ui.screen.LoansDepositsScreen
+import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 fun NavGraphBuilder.loansDepositsScreenNavigation(navController: NavHostController) {
     navigation(
@@ -37,7 +42,17 @@ fun NavGraphBuilder.loansDepositsScreenNavigation(navController: NavHostControll
             route = LoansDepositsRoutes.LOAN_DETAILS.route,
             arguments = listOf(navArgument(LOAN_ID) { type = NavType.LongType })
         ) { backStackEntry ->
-            // LoanDetailsScreen(loanId = requireNotNull(it.arguments?.getLong(LOAN_ID)))
+            val loanId = backStackEntry.arguments?.getLong("loanId") ?: 0L
+
+            val viewModel: LoanDetailViewModel = koinViewModel(
+                parameters = { parametersOf(loanId) }
+            )
+
+            LoanDetailScreen(
+                navController = navController,
+                onCloseClick = viewModel::onCloseClick,
+                loanData = viewModel.loanData.collectAsState().value
+            )
         }
 
         composable(

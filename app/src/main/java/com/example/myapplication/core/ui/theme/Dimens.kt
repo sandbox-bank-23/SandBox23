@@ -22,6 +22,8 @@ val Padding48dp = 48.dp
 val Padding56dp = 56.dp
 val ZeroPadding = 0.dp
 val Padding31dp = 31.dp
+val Padding34dp = 34.dp
+val Padding38dp = 38.dp
 val Padding81dp = 81.dp
 
 // Радиусы закруглений
