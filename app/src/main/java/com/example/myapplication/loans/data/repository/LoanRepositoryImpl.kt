@@ -108,17 +108,25 @@ class LoanRepositoryImpl(
                                     emit(LoanResult.Success(credit, SUCCESS))
                                 } ?: emit(errorResult(LOAN_CREATE_ERROR, ERROR))
                             }
+
                             HTTP_CREATE_ERROR -> emit(errorResult(LOAN_CREATE_ERROR, ERROR))
                             else -> emit(errorResult(SERVER_ERROR, ERROR))
                         }
                     }
+
                     NetworkParams.BAD_REQUEST_CODE,
                     NetworkParams.FORBIDDEN,
                     NetworkParams.EXISTING_CODE -> {
                         emit(errorResult(LOAN_CREATE_ERROR, ERROR))
                     }
+
                     NetworkParams.NO_CONNECTION_CODE -> {
-                        emit(errorResult(NETWORK_ERROR, NetworkParams.NO_CONNECTION_CODE.toString()))
+                        emit(
+                            errorResult(
+                                NETWORK_ERROR,
+                                NetworkParams.NO_CONNECTION_CODE.toString()
+                            )
+                        )
                     }
                 }
             } ?: emit(errorResult(SERVER_ERROR, ERROR))
@@ -131,7 +139,7 @@ class LoanRepositoryImpl(
                 if (entity.isClose == false) {
                     val loan = map(entity)
                     val json = Json.encodeToString<Credit>(loan)
-                    val response = networkClient(loansMock.closeLoan(loanJson = json))
+                    val response = loansMock.closeLoan(loanJson = json)
                     response.response?.let { json ->
                         val isClose = Json.decodeFromString<Boolean>(string = json)
                         if (isClose) {

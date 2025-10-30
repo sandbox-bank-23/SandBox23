@@ -170,7 +170,13 @@ fun LoansDepositsScreen(
             } else {
                 items(creditsUi, key = { it.id }) { item ->
                     CreditItem(
-                        item = Credit(item.id, item.name, item.amountText, item.type)
+                        item = Credit(
+                            item.id,
+                            item.name,
+                            item.amountText,
+                            item.type
+                        ),
+                        navDetailCredit = { navController.navigate("loan_details/${item.id}") }
                     )
                 }
             }
@@ -289,13 +295,17 @@ fun DepositItem(
 fun CreditItem(
     item: Credit,
     iconAutoRes: Int = R.drawable.ic_car,
-    iconMortgageRes: Int = R.drawable.ic_mortage
+    iconMortgageRes: Int = R.drawable.ic_mortage,
+    navDetailCredit: () -> Unit,
 ) {
     val shape = RoundedCornerShape(Padding12dp)
 
     Surface(
         modifier = Modifier
             .fillMaxWidth()
+            .clickable(
+                onClick = navDetailCredit
+            )
             .clip(shape),
         shape = shape,
         color = MaterialTheme.colorScheme.surfaceContainerLowest
