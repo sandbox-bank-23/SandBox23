@@ -31,7 +31,7 @@ class CreditCardsViewModel(
     var creditCardMaxCount: Int = 0
 
 
-    fun createCard(userId: Long) {
+    fun createCard() {
         viewModelScope.launch {
             appInteractor.getAuthDataValue(StorageKey.AUTHDATA).collect { data ->
                 data?.let { authData ->
@@ -48,18 +48,26 @@ class CreditCardsViewModel(
         }
     }
 
-
-    fun getCreditCardTerms(userId: Long) {
+    fun getCreditCardTerms() {
         viewModelScope.launch {
-            getCreditCardTermsUseCase.getCreditCardTerms().collect {
-                    result ->
-                creditCardMaxCount = (result as Result.Success).data.maxCount
-                renderState(
-                    CreditCardsState.Content(result.data)
-                )
-            }
-            if (checkCreditCardCountUseCase.isCardCountLimit(userId, creditCardMaxCount)) {
-                renderState(CreditCardsState.Limit)
+            appInteractor.getAuthDataValue(StorageKey.AUTHDATA).collect { data ->
+                data?.let { authData ->
+                    authData.userId?.let { userId ->
+                        getCreditCardTermsUseCase.getCreditCardTerms().collect { result ->
+                            creditCardMaxCount = (result as Result.Success).data.maxCount
+                            renderState(
+                                CreditCardsState.Content(result.data)
+                            )
+                        }
+                        if (checkCreditCardCountUseCase.isCardCountLimit(
+                                userId.toLongOrNull() ?: -1L,
+                                creditCardMaxCount
+                            )
+                        ) {
+                            renderState(CreditCardsState.Limit)
+                        }
+                    }
+                }
             }
         }
     }
@@ -68,7 +76,7 @@ class CreditCardsViewModel(
         when (result) {
             is CreditCardResult.Error -> renderState(CreditCardsState.Error)
             is CreditCardResult.LimitError -> renderState(CreditCardsState.Limit)
-            is CreditCardResult.NetworkError -> renderState(CreditCardsState.Online)
+            is CreditCardResult.NetworkError -> renderState(CreditCardsState.Error)
             is CreditCardResult.Success -> renderState(CreditCardsState.Success)
         }
     }
