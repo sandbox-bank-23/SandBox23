@@ -112,7 +112,8 @@
     <string name="card_details_error">Ошибка загрузки деталей карты. Попробуйте снова.</string>
 
     <string name="commonBalance">Общий баланс</string>
-    <string name="debtsBalance">Задолженности по кредитным картам</string>
+    <string name="noCreditCardsBalance">Задолженности по кредитным картам нет</string>
+    <string name="creditCardsBalance">Задолженность по кредиткам</string>
     <string name="depositBalance">Общая сумма вкладов</string>
     <string name="creditBalance">Общая сумма кредитов</string>
 

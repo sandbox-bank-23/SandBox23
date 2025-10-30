@@ -39,6 +39,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -215,9 +216,12 @@ fun NavigationBarContent(navController: NavHostController, bottomBarRoutes: List
                         return@NavigationBarItem
                     }
                     navController.navigate(item.route) {
-                        popUpTo(0) { inclusive = true }
+                        popUpTo(
+                            navController.graph.findNode(currentRoute)?.id
+                                ?: navController.graph.findStartDestination().id
+                        ) { saveState = true }
                         launchSingleTop = true
-                        restoreState = false
+                        restoreState = true
                     }
                 },
                 icon = {
@@ -276,6 +280,7 @@ fun NavHostContent(
     }
 }
 
+@Suppress("unused")
 @Composable
 fun FinanceScreen() = PlaceholderScreen("Финансы")
 
