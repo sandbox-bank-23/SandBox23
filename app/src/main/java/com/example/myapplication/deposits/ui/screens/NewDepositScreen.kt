@@ -46,9 +46,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.navigation.NavHostController
 import com.example.myapplication.R
 import com.example.myapplication.core.ui.components.BasicDialog
-import com.example.myapplication.core.ui.components.CustomSlider
-import com.example.myapplication.core.ui.components.FlagSlider
 import com.example.myapplication.core.ui.components.SimpleIconDialog
+import com.example.myapplication.core.ui.components.slider.CustomSlider
+import com.example.myapplication.core.ui.components.slider.FlagSlider
 import com.example.myapplication.core.ui.theme.AppTypography
 import com.example.myapplication.core.ui.theme.CornerRadius24dp
 import com.example.myapplication.core.ui.theme.CornerRadiusMedium
@@ -89,10 +89,12 @@ fun NewDepositScreen(
                 dialogNetwork.value = false
                 dialogApproved.value = true
             }
+
             is NewDepositScreenState.Empty, is NewDepositScreenState.Error -> {
                 dialogNetwork.value = true
                 dialogApproved.value = false
             }
+
             is NewDepositScreenState.Loading -> {
                 dialogNetwork.value = false
                 dialogApproved.value = false
