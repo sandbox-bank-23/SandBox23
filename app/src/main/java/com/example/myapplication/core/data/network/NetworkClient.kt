@@ -11,10 +11,10 @@ import io.ktor.http.contentType
 @Suppress("MagicNumber", "LongMethod")
 class NetworkClient(private val client: HttpClient) {
 
-    suspend operator fun invoke(data: Response): Response =
+    suspend operator fun invoke(data: Response, needCode: Int? = null): Response =
         runCatching {
             // успешные запросы чаще
-            val code = listOf(
+            val code = needCode ?: listOf(
                 NetworkParams.SUCCESS_CODE,
                 NetworkParams.SUCCESS_CODE,
                 NetworkParams.CREATED_CODE,

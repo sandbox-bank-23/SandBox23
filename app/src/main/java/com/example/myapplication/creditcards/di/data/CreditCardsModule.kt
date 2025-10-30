@@ -20,7 +20,8 @@ val creditCardsModule = module {
             networkClient = get<NetworkClient>(),
             networkConnector = get<NetworkConnector>(),
             dao = get<CardDao>(),
-            creditCardsMock = get<CreditCardsMock>()
+            creditCardsMock = get<CreditCardsMock>(),
+            jsonObj = get()
         )
     }
 

@@ -21,6 +21,7 @@ val debitCardsModule = module {
             networkConnector = get<NetworkConnector>(),
             dao = get<CardDao>(),
             debitCardsMock = get<DebitCardsMock>(),
+            jsonObj = get()
         )
     }
 
