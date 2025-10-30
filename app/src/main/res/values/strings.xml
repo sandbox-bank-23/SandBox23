@@ -137,9 +137,13 @@
 
     <string name="updateApp">Обновить приложение</string>
     <string name="exitFromAccount">Выход из аккаунта</string>
+    <string name="latest_version">Вы используете актуальную версию приложения</string>
+    <string name="not_latest_version">Вы используете не акткуальную версию приложения</string>
 
     <string name="themeSwitchTittle">Тема оформления: светлая / тёмная</string>
     <string name="languageSwitchTittle">Смена языка: русский / английский</string>
     <string name="notificationSwitchTittle">Получать уведомления в приложении</string>
     <string name="faceIdSwitchTittle">Вход при помощи Face ID</string>
+
+    <string name="ok">ОК</string>
 </resources>

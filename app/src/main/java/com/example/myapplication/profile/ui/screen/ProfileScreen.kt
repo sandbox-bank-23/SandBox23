@@ -41,12 +41,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.navigation.NavHostController
 import com.example.myapplication.R
+import com.example.myapplication.core.ui.components.SimpleIconDialog
 import com.example.myapplication.core.ui.theme.AppTypography
 import com.example.myapplication.core.ui.theme.NavTextInactiveLight
 import com.example.myapplication.core.ui.theme.inversePrimaryLight
@@ -75,6 +78,7 @@ fun ProfileScreen(
     viewModel: ProfileViewModel = koinViewModel<ProfileViewModel>()
 ) {
     val profileData = viewModel.profileState.collectAsState().value
+    val isLatestVersion = viewModel.isLatestVersion.collectAsState().value
 
     LifecycleStartEffect(Unit) {
         viewModel.requestProfileData()
@@ -111,6 +115,18 @@ fun ProfileScreen(
         },
         containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
+        SimpleIconDialog(
+            visible = isLatestVersion != 0,
+            onDismissRequest = { viewModel.dismissDialog() },
+            dialogTitle = when(isLatestVersion) {
+                1 -> stringResource(R.string.latest_version)
+                -1 -> stringResource(R.string.not_latest_version)
+                else -> ""
+            },
+            dismissButtonText = stringResource(R.string.ok),
+            icon = ImageVector.vectorResource(R.drawable.ic_credit_open_ok)
+        )
+
         when (profileData) {
             is ProfileState.Loading -> Unit
             is ProfileState.ProfileData -> {
