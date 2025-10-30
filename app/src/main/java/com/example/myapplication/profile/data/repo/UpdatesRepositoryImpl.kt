@@ -13,7 +13,7 @@ import kotlin.random.nextInt
 class UpdatesRepositoryImpl : UpdatesRepository {
 
     @Suppress("MaxLineLength")
-    override fun isLatestVersion(): Flow<Response> = flowOf(
+    override suspend fun isLatestVersion(): Flow<Response> = flowOf(
         when (Random.nextInt(1..1000)) {
             in 1..900 -> Response(
                 code = 200,
