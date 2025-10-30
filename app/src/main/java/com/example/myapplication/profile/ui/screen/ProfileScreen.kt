@@ -118,7 +118,7 @@ fun ProfileScreen(
         SimpleIconDialog(
             visible = isLatestVersion != 0,
             onDismissRequest = { viewModel.dismissDialog() },
-            dialogTitle = when(isLatestVersion) {
+            dialogTitle = when (isLatestVersion) {
                 1 -> stringResource(R.string.latest_version)
                 -1 -> stringResource(R.string.not_latest_version)
                 else -> ""
