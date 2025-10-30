@@ -28,4 +28,5 @@ val networkModule = module {
     }
 
     single<NetworkClient> { NetworkClient(get<HttpClient>()) }
+
 }

@@ -7,10 +7,11 @@ import androidx.room.PrimaryKey
 data class CardEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
+    val userId: Long,
     val cvv: Long,
     val endDate: String,
     val owner: String,
     val type: String,
     val percent: Double,
-    val balance: Long?
+    val balance: Long
 )

@@ -2,7 +2,7 @@ package com.example.myapplication.auth.domain
 
 import com.example.myapplication.auth.domain.model.AuthData
 import com.example.myapplication.auth.domain.model.AuthRequest
-import com.example.myapplication.auth.domain.state.Result
+import com.example.myapplication.core.domain.models.Result
 
 interface AuthInteractor {
 

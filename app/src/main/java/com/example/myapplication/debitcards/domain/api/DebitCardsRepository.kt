@@ -1,8 +1,18 @@
 package com.example.myapplication.debitcards.domain.api
 
-import com.example.myapplication.core.data.network.Response
+import com.example.myapplication.core.domain.models.Card
+import com.example.myapplication.core.domain.models.Result
+import com.example.myapplication.debitcards.domain.models.DebitCardResult
+import com.example.myapplication.debitcards.domain.models.DebitCardTerms
+import kotlinx.coroutines.flow.Flow
+import java.math.BigDecimal
 
 interface DebitCardsRepository {
-    suspend fun openCard(currentCardNumber: Long, requestNumber: Long, userId: Long): Response
+    suspend fun createDebitCard(userId: Long): Flow<DebitCardResult<Card>>
 
+    suspend fun depositToDebitCard(cardId: Long, amount: BigDecimal): Result<Unit>
+
+    suspend fun isCardCountLimit(userId: Long, limit: Int): Boolean
+
+    suspend fun getDebitCardTerms(): Flow<Result<DebitCardTerms>>
 }

@@ -39,6 +39,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -49,7 +50,7 @@ import com.example.myapplication.R
 import com.example.myapplication.auth.navigation.Auth
 import com.example.myapplication.auth.ui.state.AuthState
 import com.example.myapplication.auth.ui.viewmodel.PinPadViewModel
-import com.example.myapplication.cards.ui.CardsScreen
+import com.example.myapplication.cards.navigation.cardsScreenNavigation
 import com.example.myapplication.core.ui.model.BottomBarItem
 import com.example.myapplication.core.ui.state.Routes
 import com.example.myapplication.core.ui.theme.AppTypography
@@ -61,6 +62,8 @@ import com.example.myapplication.core.ui.theme.NavTextInactiveLight
 import com.example.myapplication.core.ui.theme.PinPadBackgroundColor
 import com.example.myapplication.core.ui.theme.RoundedCornerShapeSelector
 import com.example.myapplication.core.ui.theme.secondaryContainerDark
+import com.example.myapplication.loansanddeposits.navigation.loansDepositsScreenNavigation
+import com.example.myapplication.profile.navigation.profileScreenNavigation
 import org.koin.androidx.compose.koinViewModel
 
 const val ANIMATION_DELAY = 500
@@ -142,8 +145,15 @@ fun MainNavScreen() {
 fun BottomNavigationBar(navController: NavHostController, bottomBarRoutes: List<BottomBarItem>) {
     val bottomRoutes = bottomBarRoutes.map { it.route }
     val showBottomBar = remember { mutableStateOf(true) }
-    showBottomBar.value =
-        navController.currentBackStackEntryAsState().value?.destination?.route in bottomRoutes
+
+    val currentBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = currentBackStackEntry?.destination
+
+    showBottomBar.value = when {
+        currentDestination?.route in bottomRoutes -> true
+        currentDestination?.parent?.route in bottomRoutes -> true
+        else -> false
+    }
 
     AnimatedVisibility(
         visible = showBottomBar.value,
@@ -177,7 +187,8 @@ fun NavigationBarContent(navController: NavHostController, bottomBarRoutes: List
         val isDarkTheme = isSystemInDarkTheme()
 
         bottomBarRoutes.forEach { item ->
-            val selected = currentDestination?.route == item.route
+            val selected = currentDestination?.route == item.route ||
+                currentDestination?.parent?.route == item.route
 
             val itemTextColor = when {
                 selected && isDarkTheme -> NavTextActiveDark
@@ -199,13 +210,18 @@ fun NavigationBarContent(navController: NavHostController, bottomBarRoutes: List
             NavigationBarItem(
                 selected = selected,
                 onClick = {
-                    val currentRoute = navController.currentDestination?.route
-                    if (currentRoute == item.route) return@NavigationBarItem
-
+                    val currentRoute = currentDestination?.route
+                    val currentParentRoute = currentDestination?.parent?.route
+                    if (currentRoute == item.route || currentParentRoute == item.route) {
+                        return@NavigationBarItem
+                    }
                     navController.navigate(item.route) {
-                        popUpTo(0) { inclusive = true }
+                        popUpTo(
+                            navController.graph.findNode(currentRoute)?.id
+                                ?: navController.graph.findStartDestination().id
+                        ) { saveState = true }
                         launchSingleTop = true
-                        restoreState = false
+                        restoreState = true
                     }
                 },
                 icon = {
@@ -256,18 +272,15 @@ fun NavHostContent(
         startDestination = Routes.CARDS.route,
         modifier = Modifier.padding(padding)
     ) {
-        mapsScreenNavigation()
-        financeScreenNavigation()
+        cardsScreenNavigation(navController)
+        loansDepositsScreenNavigation(navController)
         transfersScreenNavigation()
         historyScreenNavigation()
-        profileScreenNavigation()
+        profileScreenNavigation(navController)
     }
 }
 
-// Поменять на страницы после готовности
-// @Composable
-// fun CardsScreen() = PlaceholderScreen("Карты")
-
+@Suppress("unused")
 @Composable
 fun FinanceScreen() = PlaceholderScreen("Финансы")
 
@@ -276,9 +289,6 @@ fun TransfersScreen() = PlaceholderScreen("Переводы")
 
 @Composable
 fun HistoryScreen() = PlaceholderScreen("История")
-
-@Composable
-fun ProfileScreen() = PlaceholderScreen("Профиль")
 
 @Composable
 fun PlaceholderScreen(title: String) {
@@ -296,22 +306,10 @@ fun PlaceholderScreen(title: String) {
     }
 }
 
-fun NavGraphBuilder.mapsScreenNavigation() {
-    composable(Routes.CARDS.route) { CardsScreen() }
-}
-
-fun NavGraphBuilder.financeScreenNavigation() {
-    composable(Routes.FINANCE.route) { FinanceScreen() }
-}
-
 fun NavGraphBuilder.transfersScreenNavigation() {
     composable(Routes.TRANSFERS.route) { TransfersScreen() }
 }
 
 fun NavGraphBuilder.historyScreenNavigation() {
     composable(Routes.HISTORY.route) { HistoryScreen() }
-}
-
-fun NavGraphBuilder.profileScreenNavigation() {
-    composable(Routes.PROFILE.route) { ProfileScreen() }
 }
