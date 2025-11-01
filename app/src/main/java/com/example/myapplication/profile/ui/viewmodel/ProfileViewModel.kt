@@ -3,6 +3,7 @@ package com.example.myapplication.profile.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myapplication.profile.domain.interactor.ClearAppDataUseCase
+import com.example.myapplication.profile.domain.interactor.GetUserDataUseCase
 import com.example.myapplication.profile.domain.interactor.ThemeInteractor
 import com.example.myapplication.profile.domain.interactor.UpdatesUseCase
 import com.example.myapplication.profile.ui.state.Features
@@ -13,13 +14,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
-import kotlin.random.Random
 
 @Suppress("MagicNumber", "UnderscoresInNumericLiterals", "unused")
 class ProfileViewModel(
     private val updatesUseCase: UpdatesUseCase,
     val themeInteractor: ThemeInteractor,
     private val clearAppDataUseCase: ClearAppDataUseCase,
+    private val getUserDataUseCase: GetUserDataUseCase,
 ) : ViewModel() {
 
     private val _profileState = MutableStateFlow<ProfileState>(
@@ -35,20 +36,23 @@ class ProfileViewModel(
     }
 
     fun requestProfileData() {
-        val userId = Random.nextLong(4566_0000_5564_0005, 4566_0000_5564_9999)
-        _profileState.value = ProfileState.ProfileData(
-            userName = "Ivanova Oksana",
-            userId = formatUserId(userId),
-            totalBalance = 50_000,
-            creditCardsBalance = 0,
-            depositsBalance = 40_000,
-            loansBalance = 8_770_000,
-            features = Features.THEME.flag + Features.FACE_ID.flag,
-            isDarkTheme = getCurrentTheme(),
-            isLangEnglish = false,
-            isNotificationsEnabled = true,
-            isFaceIdEnabled = false
-        )
+        viewModelScope.launch {
+            val data = getUserDataUseCase()
+            _profileState.value = ProfileState.ProfileData(
+                userName = data.name,
+                userId = data.id,
+                totalBalance = data.totalBalance,
+                creditCardsBalance = data.creditCardsBalance,
+                depositsBalance = data.depositsBalance,
+                loansBalance = data.loansBalance,
+                features = Features.THEME.flag + Features.FACE_ID.flag,
+                isDarkTheme = getCurrentTheme(),
+                isLangEnglish = false,
+                isNotificationsEnabled = true,
+                isFaceIdEnabled = false
+            )
+        }
+
     }
 
     fun changeTheme() {
