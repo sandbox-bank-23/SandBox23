@@ -29,6 +29,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -187,8 +188,7 @@ fun NavigationBarContent(navController: NavHostController, bottomBarRoutes: List
         val isDarkTheme = isSystemInDarkTheme()
 
         bottomBarRoutes.forEach { item ->
-            val selected = currentDestination?.route == item.route ||
-                currentDestination?.parent?.route == item.route
+            val selected = currentDestination?.route == item.route || currentDestination?.parent?.route == item.route
 
             val itemTextColor = when {
                 selected && isDarkTheme -> NavTextActiveDark
@@ -207,21 +207,26 @@ fun NavigationBarContent(navController: NavHostController, bottomBarRoutes: List
                 label = "highlight"
             )
 
+            var lastClickTime by remember { mutableStateOf(0L) }
             NavigationBarItem(
                 selected = selected,
                 onClick = {
+                    val now = System.currentTimeMillis()
+                    if (now - lastClickTime < ANIMATION_DELAY) {
+                        return@NavigationBarItem
+                    }
                     val currentRoute = currentDestination?.route
                     val currentParentRoute = currentDestination?.parent?.route
                     if (currentRoute == item.route || currentParentRoute == item.route) {
                         return@NavigationBarItem
                     }
                     navController.navigate(item.route) {
-                        popUpTo(
-                            navController.graph.findNode(currentRoute)?.id
-                                ?: navController.graph.findStartDestination().id
-                        ) { saveState = true }
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            inclusive = true
+                            saveState = false
+                        }
                         launchSingleTop = true
-                        restoreState = true
+                        restoreState = false
                     }
                 },
                 icon = {
