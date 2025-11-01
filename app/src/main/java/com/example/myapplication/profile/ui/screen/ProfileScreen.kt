@@ -34,6 +34,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -78,6 +79,9 @@ fun ProfileScreen(
 ) {
     val profileData = viewModel.profileState.collectAsState().value
     val isLatestVersion = viewModel.isLatestVersion.collectAsState().value
+    LaunchedEffect(Unit) {
+        viewModel.requestProfileData()
+    }
 
     Scaffold(
         topBar = {

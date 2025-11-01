@@ -31,10 +31,6 @@ class ProfileViewModel(
     private val _isLatestVersion = MutableStateFlow(0)
     val isLatestVersion: StateFlow<Int> = _isLatestVersion.asStateFlow()
 
-    init {
-        requestProfileData()
-    }
-
     fun requestProfileData() {
         viewModelScope.launch {
             val data = getUserDataUseCase()
