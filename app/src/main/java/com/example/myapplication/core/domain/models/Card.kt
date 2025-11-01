@@ -11,8 +11,10 @@ data class Card(
     val cvv: Long,
     val endDate: String,
     val owner: String,
+    val userId: Long,
     @CardType val type: String,
     val percent: Double,
+    // @Serializable(with = BigDecimalAsStringSerializer::class)
     val balance: Long
 )
 
