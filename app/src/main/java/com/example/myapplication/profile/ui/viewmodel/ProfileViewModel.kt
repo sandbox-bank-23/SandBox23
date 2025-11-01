@@ -2,19 +2,25 @@ package com.example.myapplication.profile.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.myapplication.profile.domain.interactor.ClearAppDataUseCase
+import com.example.myapplication.profile.domain.interactor.GetUserDataUseCase
+import com.example.myapplication.profile.domain.interactor.ThemeInteractor
 import com.example.myapplication.profile.domain.interactor.UpdatesUseCase
 import com.example.myapplication.profile.ui.state.Features
 import com.example.myapplication.profile.ui.state.ProfileState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
-import kotlin.random.Random
 
 @Suppress("MagicNumber", "UnderscoresInNumericLiterals", "unused")
 class ProfileViewModel(
-    private val updatesUseCase: UpdatesUseCase
+    private val updatesUseCase: UpdatesUseCase,
+    val themeInteractor: ThemeInteractor,
+    private val clearAppDataUseCase: ClearAppDataUseCase,
+    private val getUserDataUseCase: GetUserDataUseCase,
 ) : ViewModel() {
 
     private val _profileState = MutableStateFlow<ProfileState>(
@@ -26,42 +32,43 @@ class ProfileViewModel(
     val isLatestVersion: StateFlow<Int> = _isLatestVersion.asStateFlow()
 
     fun requestProfileData() {
-        // Реализовать обращение к репозиторию для получения данных профиля и статистики
-        // Пока передаются дефолтные значения
-        val userId = Random.nextLong(4566_0000_5564_0005, 4566_0000_5564_9999)
-        _profileState.value = ProfileState.ProfileData(
-            userName = "Ivanova Oksana",
-            userId = formatUserId(userId),
-            totalBalance = 50_000,
-            creditCardsBalance = 0,
-            depositsBalance = 40_000,
-            loansBalance = 8_770_000,
-            features = Features.THEME.flag + Features.FACE_ID.flag,
-            isDarkTheme = false,
-            isLangEnglish = false,
-            isNotificationsEnabled = true,
-            isFaceIdEnabled = false
-        )
+        viewModelScope.launch {
+            val data = getUserDataUseCase()
+            _profileState.value = ProfileState.ProfileData(
+                userName = data.name,
+                userId = data.id,
+                totalBalance = data.totalBalance,
+                creditCardsBalance = data.creditCardsBalance,
+                depositsBalance = data.depositsBalance,
+                loansBalance = data.loansBalance,
+                features = Features.THEME.flag + Features.FACE_ID.flag,
+                isDarkTheme = getCurrentTheme(),
+                isLangEnglish = false,
+                isNotificationsEnabled = true,
+                isFaceIdEnabled = false
+            )
+        }
+
     }
 
-    fun switchTheme(isDarkTheme: Boolean) {
-        // Реализовать изменение темы приложения
+    fun changeTheme() {
+        viewModelScope.launch {
+            val currentTheme = themeInteractor.getTheme().first()
+
+            themeInteractor.changeTheme()
+
+            _profileState.value = when (val state = _profileState.value) {
+                is ProfileState.ProfileData -> {
+                    state.copy(isDarkTheme = !currentTheme)
+                }
+
+                else -> state
+            }
+        }
     }
 
-    fun switchLang(isEnglishLang: Boolean) {
-        // Можно реализовать изменение языка, но эту функцию не требуется реализовывать
-    }
-
-    fun switchNotifications(isNotificationsEnabled: Boolean) {
-        // Можно реализовать разрешение уведомлений, но эту функцию не требуется реализовывать
-    }
-
-    fun switchFaceId(isFaceIdEnabled: Boolean) {
-        // Можно реализовать активацию входа по FaceId, но эту функцию не требуется реализовывать
-    }
 
     fun requestAppUpdate() {
-        // Реализовать вызов процесса обновления приложения
         viewModelScope.launch {
             updatesUseCase.isLatestVersion().collect { response ->
                 _isLatestVersion.value = if (Json.decodeFromString<Boolean>(response.response!!)) 1 else -1
@@ -74,7 +81,9 @@ class ProfileViewModel(
     }
 
     fun requestLogOut() {
-        // Реализовать вызов процесса выхода из аккаунта
+        viewModelScope.launch {
+            clearAppDataUseCase()
+        }
     }
 
     private fun formatUserId(userId: Long): String {
@@ -84,5 +93,11 @@ class ProfileViewModel(
             false -> userIdString
         }
     }
-
+    private fun getCurrentTheme(): Boolean {
+        var isDarkTheme = false
+        viewModelScope.launch {
+            isDarkTheme = themeInteractor.getTheme().first()
+        }
+        return isDarkTheme
+    }
 }

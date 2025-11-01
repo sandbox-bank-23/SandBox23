@@ -4,12 +4,12 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.myapplication.core.data.db.converter.Converters
+import com.example.myapplication.core.data.db.dao.DepositDao
 import com.example.myapplication.core.data.db.dao.LoanDao
 import com.example.myapplication.core.data.db.dao.UserDao
+import com.example.myapplication.core.data.db.entity.DepositEntity
 import com.example.myapplication.core.data.db.entity.LoanEntity
 import com.example.myapplication.core.data.db.entity.UserEntity
-import com.example.myapplication.deposits.data.db.DepositDao
-import com.example.myapplication.deposits.data.db.DepositEntity
 
 private const val NEW = 7
 

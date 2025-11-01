@@ -1,7 +1,7 @@
 package com.example.myapplication.deposits.data.mappers
 
+import com.example.myapplication.core.data.db.entity.DepositEntity
 import com.example.myapplication.core.domain.models.Product
-import com.example.myapplication.deposits.data.db.DepositEntity
 import com.example.myapplication.deposits.domain.entity.Deposit
 
 fun DepositEntity.toDomain(): Deposit = Deposit(
