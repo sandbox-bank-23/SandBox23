@@ -1,4 +1,4 @@
-package com.example.myapplication.deposits.data.db
+package com.example.myapplication.core.data.db.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

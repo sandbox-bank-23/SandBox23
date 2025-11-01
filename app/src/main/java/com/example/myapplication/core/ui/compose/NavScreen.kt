@@ -48,6 +48,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.R
 import com.example.myapplication.auth.navigation.Auth
+import com.example.myapplication.auth.ui.screens.RegistrationScreen
 import com.example.myapplication.auth.ui.state.AuthState
 import com.example.myapplication.auth.ui.viewmodel.PinPadViewModel
 import com.example.myapplication.cards.navigation.cardsScreenNavigation
@@ -277,6 +278,13 @@ fun NavHostContent(
         transfersScreenNavigation()
         historyScreenNavigation()
         profileScreenNavigation(navController)
+
+        composable("auth/{screen}") { backStackEntry ->
+            val screen = backStackEntry.arguments?.getString("screen")
+            when (screen) {
+                "registration" -> RegistrationScreen(navController = navController)
+            }
+        }
     }
 }
 

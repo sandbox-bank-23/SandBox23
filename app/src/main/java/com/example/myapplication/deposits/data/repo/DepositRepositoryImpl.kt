@@ -1,10 +1,10 @@
 package com.example.myapplication.deposits.data.repo
 
 import android.database.sqlite.SQLiteException
+import com.example.myapplication.core.data.db.dao.DepositDao
+import com.example.myapplication.core.data.db.entity.DepositEntity
 import com.example.myapplication.core.data.network.NetworkClient
 import com.example.myapplication.core.domain.models.Product
-import com.example.myapplication.deposits.data.db.DepositDao
-import com.example.myapplication.deposits.data.db.DepositEntity
 import com.example.myapplication.deposits.data.mappers.toDomain
 import com.example.myapplication.deposits.data.mock.DepositMock
 import com.example.myapplication.deposits.domain.DepositResult

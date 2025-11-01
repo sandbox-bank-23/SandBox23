@@ -46,7 +46,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.navigation.NavHostController
 import com.example.myapplication.R
 import com.example.myapplication.core.ui.components.SimpleIconDialog
@@ -79,11 +78,6 @@ fun ProfileScreen(
 ) {
     val profileData = viewModel.profileState.collectAsState().value
     val isLatestVersion = viewModel.isLatestVersion.collectAsState().value
-
-    LifecycleStartEffect(Unit) {
-        viewModel.requestProfileData()
-        onStopOrDispose { }
-    }
 
     Scaffold(
         topBar = {
@@ -140,7 +134,6 @@ fun ProfileScreen(
                             bottom = 25.dp
                         )
                 ) {
-                    // Контент, который может скроллиться
                     Column(
                         modifier = Modifier
                             .weight(1f)
@@ -164,22 +157,22 @@ fun ProfileScreen(
                                     label = stringResource(R.string.themeSwitchTittle),
                                     enabled = profileData.features and Features.THEME.flag != 0,
                                     checked = profileData.isDarkTheme
-                                ) { checked -> viewModel.switchTheme(checked) }
+                                ) { viewModel.changeTheme() }
                                 SettingSwitchRow(
                                     label = stringResource(R.string.languageSwitchTittle),
                                     enabled = profileData.features and Features.LANG.flag != 0,
                                     checked = profileData.isLangEnglish
-                                ) { checked -> viewModel.switchLang(checked) }
+                                ) {}
                                 SettingSwitchRow(
                                     label = stringResource(R.string.notificationSwitchTittle),
                                     enabled = profileData.features and Features.NOTIFICATIONS.flag != 0,
                                     checked = profileData.isNotificationsEnabled
-                                ) { checked -> viewModel.switchNotifications(checked) }
+                                ) {}
                                 SettingSwitchRow(
                                     label = stringResource(R.string.faceIdSwitchTittle),
-                                    enabled = profileData.features and Features.FACE_ID.flag != 0,
+                                    enabled = false,
                                     checked = profileData.isFaceIdEnabled
-                                ) { checked -> viewModel.switchFaceId(checked) }
+                                ) {}
                             }
                         }
                         Spacer(modifier = Modifier.height(16.dp))
@@ -203,7 +196,15 @@ fun ProfileScreen(
 
                         Spacer(modifier = Modifier.height(16.dp))
                         OutlinedButton(
-                            onClick = { viewModel.requestLogOut() },
+                            onClick = {
+                                viewModel.requestLogOut()
+                                navController.navigate("auth/registration") {
+                                    popUpTo(0) {
+                                        inclusive = true
+                                    }
+                                    launchSingleTop = true
+                                }
+                            },
                             modifier = Modifier
                                 .width(380.dp)
                                 .height(64.dp),
