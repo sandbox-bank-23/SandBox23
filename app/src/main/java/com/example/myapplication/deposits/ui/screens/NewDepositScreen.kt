@@ -14,8 +14,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -37,7 +35,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -46,13 +43,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.navigation.NavHostController
 import com.example.myapplication.R
 import com.example.myapplication.core.ui.components.BasicDialog
+import com.example.myapplication.core.ui.components.CardInfoBox
+import com.example.myapplication.core.ui.components.PrimaryButton
 import com.example.myapplication.core.ui.components.SimpleIconDialog
 import com.example.myapplication.core.ui.components.slider.CustomSlider
 import com.example.myapplication.core.ui.components.slider.FlagSlider
 import com.example.myapplication.core.ui.theme.AppTypography
-import com.example.myapplication.core.ui.theme.CornerRadius24dp
 import com.example.myapplication.core.ui.theme.CornerRadiusMedium
-import com.example.myapplication.core.ui.theme.InputFieldThinBorder
 import com.example.myapplication.core.ui.theme.Padding12dp
 import com.example.myapplication.core.ui.theme.Padding16dp
 import com.example.myapplication.core.ui.theme.Padding18dp
@@ -61,10 +58,9 @@ import com.example.myapplication.core.ui.theme.Padding24dp
 import com.example.myapplication.core.ui.theme.Padding2dp
 import com.example.myapplication.core.ui.theme.Padding32dp
 import com.example.myapplication.core.ui.theme.Padding48dp
-import com.example.myapplication.core.ui.theme.Padding56dp
 import com.example.myapplication.core.ui.theme.Padding8dp
 import com.example.myapplication.core.ui.theme.PaddingBase
-import com.example.myapplication.core.ui.theme.PaddingQuarter
+import com.example.myapplication.core.ui.theme.surfaceContainerLight
 import com.example.myapplication.deposits.ui.state.NewDepositScreenState
 import com.example.myapplication.deposits.ui.viewmodel.NewDepositViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -197,31 +193,10 @@ fun NewDepositScreen(
 
             Spacer(Modifier.height(Padding18dp))
 
-            Card(
-                shape = RoundedCornerShape(Padding12dp),
-                border = BorderStroke(
-                    InputFieldThinBorder,
-                    MaterialTheme.colorScheme.outlineVariant
-                ),
-                modifier = modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = Color.White)
-            ) {
-                Column(
-                    modifier = modifier.padding(Padding16dp)
-                ) {
-                    Text(
-                        text = stringResource(R.string.card_debit_info_title1),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                    Spacer(modifier = Modifier.height(PaddingQuarter))
-                    Text(
-                        text = stringResource(R.string.free_price),
-                        color = MaterialTheme.colorScheme.onSurface,
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                }
-            }
+            CardInfoBox(
+                stringResource(R.string.card_debit_info_title1),
+                stringResource(R.string.free_price)
+            )
 
             Spacer(Modifier.height(Padding18dp))
 
@@ -234,14 +209,16 @@ fun NewDepositScreen(
             // Начисление процентов
             Card(
                 shape = RoundedCornerShape(Padding18dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
+                colors = CardDefaults.cardColors(containerColor = surfaceContainerLight),
             ) {
                 Text(
                     modifier = modifier
                         .fillMaxWidth()
                         .padding(Padding12dp, Padding8dp),
                     text = stringResource(R.string.percent_up),
-                    style = MaterialTheme.typography.titleMedium
+                    color = MaterialTheme.colorScheme.scrim,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.SemiBold
                 )
 
                 Row(
@@ -255,7 +232,8 @@ fun NewDepositScreen(
                     )
                     Text(
                         stringResource(R.string.everyday),
-                        style = MaterialTheme.typography.bodyLarge
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.scrim
                     )
                 }
             }
@@ -277,22 +255,11 @@ fun NewDepositScreen(
 
             Spacer(Modifier.height(Padding32dp))
 
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(Padding56dp),
-                shape = RoundedCornerShape(CornerRadius24dp),
-                onClick = {
-                    // Вызываем только openDep, диалог откроется через LaunchedEffect
-                    viewModel.openDep(value.toLong())
-                },
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+            PrimaryButton(
+                stringResource(R.string.open_deposit),
+                true
             ) {
-                Text(
-                    text = stringResource(R.string.open_deposit),
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onPrimary
-                )
+                viewModel.openDep(value.toLong())
             }
         }
     }
