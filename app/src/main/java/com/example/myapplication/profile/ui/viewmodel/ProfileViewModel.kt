@@ -1,20 +1,29 @@
 package com.example.myapplication.profile.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.myapplication.profile.domain.interactor.UpdatesUseCase
 import com.example.myapplication.profile.ui.state.Features
 import com.example.myapplication.profile.ui.state.ProfileState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
 import kotlin.random.Random
 
 @Suppress("MagicNumber", "UnderscoresInNumericLiterals", "unused")
-class ProfileViewModel : ViewModel() {
+class ProfileViewModel(
+    private val updatesUseCase: UpdatesUseCase
+) : ViewModel() {
 
     private val _profileState = MutableStateFlow<ProfileState>(
         ProfileState.Loading
     )
     val profileState: StateFlow<ProfileState> = _profileState.asStateFlow()
+
+    private val _isLatestVersion = MutableStateFlow(0)
+    val isLatestVersion: StateFlow<Int> = _isLatestVersion.asStateFlow()
 
     fun requestProfileData() {
         // Реализовать обращение к репозиторию для получения данных профиля и статистики
@@ -53,6 +62,15 @@ class ProfileViewModel : ViewModel() {
 
     fun requestAppUpdate() {
         // Реализовать вызов процесса обновления приложения
+        viewModelScope.launch {
+            updatesUseCase.isLatestVersion().collect { response ->
+                _isLatestVersion.value = if (Json.decodeFromString<Boolean>(response.response!!)) 1 else -1
+            }
+        }
+    }
+
+    fun dismissDialog() {
+        _isLatestVersion.value = 0
     }
 
     fun requestLogOut() {

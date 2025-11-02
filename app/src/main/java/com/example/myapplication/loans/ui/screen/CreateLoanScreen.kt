@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -37,6 +38,7 @@ import com.example.myapplication.core.ui.components.SimpleIconDialog
 import com.example.myapplication.core.ui.components.SimpleTopBar
 import com.example.myapplication.core.ui.components.slider.FlagSlider
 import com.example.myapplication.core.ui.components.slider.SliderBox
+import com.example.myapplication.core.ui.theme.AppTypography
 import com.example.myapplication.core.ui.theme.Height56
 import com.example.myapplication.core.ui.theme.Padding16dp
 import com.example.myapplication.loans.ui.state.LoansState
@@ -137,7 +139,11 @@ fun CreateLoanScreen(
                     ) {
                         Text(
                             modifier = modifier.padding(start = Padding16dp),
-                            text = stringResource(R.string.select_conditiopns)
+                            text = stringResource(R.string.select_conditiopns),
+                            style = AppTypography.bodyMedium.copy(
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
                         )
                     }
 
