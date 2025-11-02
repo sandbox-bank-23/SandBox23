@@ -2,18 +2,36 @@ package com.example.myapplication.auth.data.repo
 
 import com.example.myapplication.auth.domain.model.AuthData
 import com.example.myapplication.auth.domain.repo.AuthRepository
-import com.example.myapplication.auth.domain.state.Result
+import com.example.myapplication.core.data.db.dao.UserDao
+import com.example.myapplication.core.data.db.entity.UserEntity
 import com.example.myapplication.core.data.network.NetworkClient
 import com.example.myapplication.core.data.network.Response
 import com.example.myapplication.core.data.network.ResponseType
 import com.example.myapplication.core.data.network.ResponseTypeMapper
+import com.example.myapplication.core.demo.demoFirstName
+import com.example.myapplication.core.demo.demoLastName
+import com.example.myapplication.core.domain.models.Result
 import java.util.Base64
 import kotlin.random.Random
 
 @Suppress("MagicNumber")
 class AuthRepositoryImpl(
-    private val client: NetworkClient
+    val client: NetworkClient,
+    val dao: UserDao
 ) : AuthRepository {
+
+    private suspend fun createUser(email: String, authData: AuthData) {
+        authData.userId?.let { userId ->
+            dao.createUser(
+                UserEntity(
+                    id = userId.toLong(),
+                    firstName = demoFirstName,
+                    lastName = demoLastName,
+                    email = email
+                )
+            )
+        }
+    }
 
     override suspend fun login(email: String, password: String): Result<AuthData> {
         val request = createAuthRequest(email, password)
@@ -35,7 +53,12 @@ class AuthRepositoryImpl(
         val errorType = ResponseTypeMapper(data.code).mapToResponseType()
 
         return when (errorType) {
-            ResponseType.SUCCESS -> Result.Success(processSuccessResponse(data.copy(description = "Created")))
+            ResponseType.SUCCESS -> {
+                val authData = processSuccessResponse(data.copy(description = "Created"))
+                createUser(email = email, authData = authData)
+                Result.Success(authData)
+            }
+
             ResponseType.ALREADY_EXISTS -> Result.Error("User already exists")
             ResponseType.BAD_REQUEST -> Result.Error("Invalid data")
             ResponseType.NO_CONNECTION -> Result.Error("No internet connection")
@@ -89,3 +112,4 @@ class AuthRepositoryImpl(
                 }
             }.toMap()
 }
+

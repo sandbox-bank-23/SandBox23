@@ -1,11 +1,10 @@
 
-
 package com.example.myapplication.core.data.repo
 
-import com.example.myapplication.auth.domain.state.Result
 import com.example.myapplication.core.data.mock.SkyMock
 import com.example.myapplication.core.data.network.NetworkClient
 import com.example.myapplication.core.domain.api.SkyRepository
+import com.example.myapplication.core.domain.models.Result
 
 class SkyRepositoryImpl(val client: NetworkClient, val skyMock: SkyMock) : SkyRepository {
     override suspend fun replenishment(

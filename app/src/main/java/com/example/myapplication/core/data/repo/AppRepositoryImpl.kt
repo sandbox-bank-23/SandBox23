@@ -7,7 +7,7 @@ import com.example.myapplication.core.domain.api.StorageKey
 import kotlinx.coroutines.flow.Flow
 
 class AppRepositoryImpl(
-    val appStorage: AppStorage
+    val appStorage: AppStorage,
 ) : AppRepository {
 
     override suspend fun getBooleanValue(storageKey: StorageKey<Boolean>): Flow<Boolean> {

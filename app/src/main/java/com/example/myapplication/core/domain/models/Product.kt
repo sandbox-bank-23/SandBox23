@@ -5,8 +5,8 @@ package com.example.myapplication.core.domain.models
 import androidx.annotation.StringDef
 import com.example.myapplication.core.domain.models.ProductType.Companion.DEPOSIT
 import com.example.myapplication.core.domain.models.ProductType.Companion.LOAN
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @Serializable
 data class Product(
@@ -18,12 +18,11 @@ data class Product(
     val balance: Long
 )
 
-// Обновляем StringDef, чтобы включить новое значение
 @StringDef(LOAN, DEPOSIT)
 @Retention(AnnotationRetention.SOURCE)
 annotation class ProductType {
     companion object {
         const val LOAN = "Loan"
-        const val DEPOSIT = "Deposit"
+        const val DEPOSIT = "Standard"
     }
 }

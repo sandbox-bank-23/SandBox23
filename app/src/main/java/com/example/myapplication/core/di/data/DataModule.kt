@@ -6,15 +6,17 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.room.Room
 import com.example.myapplication.core.data.db.AppDatabase
+import com.example.myapplication.core.data.db.CardDao
+import com.example.myapplication.core.data.db.dao.LoanDao
+import com.example.myapplication.core.data.db.dao.UserDao
 import com.example.myapplication.core.data.mappers.CardDbConverter
 import com.example.myapplication.core.data.mock.SkyMock
 import com.example.myapplication.core.data.repo.AppRepositoryImpl
 import com.example.myapplication.core.data.repo.CardRepositoryImpl
-import com.example.myapplication.core.data.repo.SkyRepositoryImpl
 import com.example.myapplication.core.data.storage.AppStorage
 import com.example.myapplication.core.domain.api.AppRepository
 import com.example.myapplication.core.domain.api.CardRepository
-import com.example.myapplication.core.domain.api.SkyRepository
+import com.example.myapplication.deposits.data.db.DepositDao
 import com.google.gson.Gson
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
@@ -27,9 +29,27 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
 )
 
 val coreDataModule = module {
+    single {
+        Room.databaseBuilder(
+            androidContext(),
+            AppDatabase::class.java,
+            "sandbox_bank23.db"
+        )
+//            .fallbackToDestructiveMigration(true)
+            .build()
+    }
+
     single<AppRepository> {
         AppRepositoryImpl(get())
     }
+
+    single<UserDao> { get<AppDatabase>().userDao() }
+
+    single<LoanDao> { get<AppDatabase>().loanDao() }
+
+    single<CardDao> { get<AppDatabase>().cardDao() }
+
+    single<DepositDao> { get<AppDatabase>().depositDao() }
 
     single<AppStorage> {
         AppStorage(
@@ -38,6 +58,12 @@ val coreDataModule = module {
             context = androidContext()
         )
     }
+
+    single<CardRepository> {
+        CardRepositoryImpl(get(), get())
+    }
+
+    factory<CardDbConverter> { CardDbConverter() }
 
     single<AppDatabase> {
         Room.databaseBuilder(androidContext(), AppDatabase::class.java, DB_NAME)
@@ -50,10 +76,6 @@ val coreDataModule = module {
     }
 
     factory<CardDbConverter> { CardDbConverter() }
-
-    single<SkyRepository> {
-        SkyRepositoryImpl(get(), get())
-    }
 
     single<SkyMock> { SkyMock() }
 

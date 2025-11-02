@@ -1,7 +1,6 @@
 package com.example.myapplication.core.data.db
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -12,11 +11,20 @@ interface CardDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCard(card: CardEntity)
 
-    @Delete
-    suspend fun deleteCard(card: CardEntity)
+    @Query("DELETE FROM cards WHERE id = :cardId")
+    suspend fun deleteCard(cardId: Long)
 
     @Query("SELECT * FROM cards")
     suspend fun getAllCards(): List<CardEntity>
+
+    @Query("SELECT * FROM cards WHERE userId = :userId")
+    fun getUserCards(userId: Long): Flow<List<CardEntity>>
+
+    @Query("SELECT * FROM cards WHERE userId = :userId AND type = :type")
+    fun getUserCardsByTypeFlow(userId: Long, type: String): Flow<List<CardEntity>>
+
+    @Query("SELECT * FROM cards WHERE userId = :userId AND type = :type")
+    suspend fun getUserCardsByType(userId: Long, type: String): List<CardEntity>?
 
     @Query("SELECT * FROM cards WHERE id = :id")
     suspend fun getCardById(id: Long): CardEntity?

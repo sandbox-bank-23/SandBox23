@@ -8,6 +8,7 @@ import com.example.myapplication.core.ui.compose.App
 import com.example.myapplication.core.ui.theme.SandBox23Theme
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
