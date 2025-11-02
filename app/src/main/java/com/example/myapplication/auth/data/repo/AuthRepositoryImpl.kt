@@ -39,7 +39,11 @@ class AuthRepositoryImpl(
         val errorType = ResponseTypeMapper(data.code).mapToResponseType()
 
         return when (errorType) {
-            ResponseType.SUCCESS -> Result.Success(processSuccessResponse(data.copy(description = "OK")))
+            ResponseType.SUCCESS -> {
+                val authData = processSuccessResponse(data.copy(description = "OK"))
+                createUser(email = email, authData = authData)
+                Result.Success(authData)
+            }
             ResponseType.BAD_REQUEST -> Result.Error("Invalid email or password")
             ResponseType.NO_CONNECTION -> Result.Error("No internet connection")
             ResponseType.SERVER_ERROR -> Result.Error("Server error")
