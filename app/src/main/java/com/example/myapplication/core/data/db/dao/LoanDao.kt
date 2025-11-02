@@ -33,4 +33,7 @@ interface LoanDao {
         close(loan = loanEntity)
         return getLoan(loanId = loanEntity.id)
     }
+
+    @Query("DELETE FROM loans")
+    suspend fun deleteAll()
 }
