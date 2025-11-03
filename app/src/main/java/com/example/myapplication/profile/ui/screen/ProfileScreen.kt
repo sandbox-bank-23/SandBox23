@@ -1,7 +1,6 @@
 package com.example.myapplication.profile.ui.screen
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -61,6 +60,7 @@ import com.example.myapplication.core.ui.theme.onSurfaceLight
 import com.example.myapplication.core.ui.theme.onTertiaryLight
 import com.example.myapplication.core.ui.theme.outlineDark
 import com.example.myapplication.core.ui.theme.outlineLight
+import com.example.myapplication.core.ui.theme.rememberAppDarkTheme
 import com.example.myapplication.core.ui.theme.surfaceContainerHighLight
 import com.example.myapplication.core.ui.theme.surfaceLight
 import com.example.myapplication.core.ui.theme.tertiaryContainerLight
@@ -148,7 +148,7 @@ fun ProfileScreen(
                         Spacer(modifier = Modifier.height(12.dp))
                         InfoCardsGroup(profileData)
                         Spacer(modifier = Modifier.height(16.dp))
-                        val isDark = isSystemInDarkTheme()
+                        val isDark = rememberAppDarkTheme()
                         val switchesCardBackgroundColor =
                             if (isDark) onSecondaryContainerDark else MaterialTheme.colorScheme.secondaryFixedDim
                         Card(
@@ -264,7 +264,7 @@ private fun InfoSection(label: String, value: String) {
 
 @Composable
 fun InfoCardsGroup(profileData: ProfileState.ProfileData) {
-    val isDark = isSystemInDarkTheme()
+    val isDark = rememberAppDarkTheme()
     val backgroundColor = if (isDark) surfaceLight else surfaceContainerHighLight
     Card(
         modifier = Modifier.fillMaxWidth(),
