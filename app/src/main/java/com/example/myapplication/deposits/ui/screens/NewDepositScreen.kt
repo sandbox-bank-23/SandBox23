@@ -132,7 +132,7 @@ fun NewDepositScreen(
                 }
             )
         },
-        containerColor = MaterialTheme.colorScheme.background,
+        containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
     ) { innerPadding ->
 
         Column(
@@ -173,7 +173,7 @@ fun NewDepositScreen(
             Card(
                 shape = RoundedCornerShape(CornerRadiusMedium),
                 border = BorderStroke(Padding2dp, MaterialTheme.colorScheme.primary),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onPrimary),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLowest),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Box(
