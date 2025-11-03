@@ -164,18 +164,18 @@ fun ProfileScreen(
                                 ) { viewModel.changeTheme() }
                                 SettingSwitchRow(
                                     label = stringResource(R.string.languageSwitchTittle),
-                                    enabled = profileData.features and Features.LANG.flag != 0,
-                                    checked = profileData.isLangEnglish
+                                    enabled = true,
+                                    checked = false
                                 ) {}
                                 SettingSwitchRow(
                                     label = stringResource(R.string.notificationSwitchTittle),
-                                    enabled = profileData.features and Features.NOTIFICATIONS.flag != 0,
-                                    checked = profileData.isNotificationsEnabled
+                                    enabled = true,
+                                    checked = false
                                 ) {}
                                 SettingSwitchRow(
                                     label = stringResource(R.string.faceIdSwitchTittle),
-                                    enabled = false,
-                                    checked = profileData.isFaceIdEnabled
+                                    enabled = true,
+                                    checked = false
                                 ) {}
                             }
                         }
