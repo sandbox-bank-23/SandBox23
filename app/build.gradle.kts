@@ -94,5 +94,4 @@ dependencies {
 
     // Подключаем Gson и Retrofit
     implementation(libs.gson)
-
 }

@@ -1,7 +1,6 @@
 package com.example.myapplication.profile.ui.screen
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -34,6 +33,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -46,7 +46,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.navigation.NavHostController
 import com.example.myapplication.R
 import com.example.myapplication.core.ui.components.SimpleIconDialog
@@ -61,6 +60,7 @@ import com.example.myapplication.core.ui.theme.onSurfaceLight
 import com.example.myapplication.core.ui.theme.onTertiaryLight
 import com.example.myapplication.core.ui.theme.outlineDark
 import com.example.myapplication.core.ui.theme.outlineLight
+import com.example.myapplication.core.ui.theme.rememberAppDarkTheme
 import com.example.myapplication.core.ui.theme.surfaceContainerHighLight
 import com.example.myapplication.core.ui.theme.surfaceLight
 import com.example.myapplication.core.ui.theme.tertiaryContainerLight
@@ -79,10 +79,8 @@ fun ProfileScreen(
 ) {
     val profileData = viewModel.profileState.collectAsState().value
     val isLatestVersion = viewModel.isLatestVersion.collectAsState().value
-
-    LifecycleStartEffect(Unit) {
+    LaunchedEffect(Unit) {
         viewModel.requestProfileData()
-        onStopOrDispose { }
     }
 
     Scaffold(
@@ -140,7 +138,6 @@ fun ProfileScreen(
                             bottom = 25.dp
                         )
                 ) {
-                    // Контент, который может скроллиться
                     Column(
                         modifier = Modifier
                             .weight(1f)
@@ -151,7 +148,7 @@ fun ProfileScreen(
                         Spacer(modifier = Modifier.height(12.dp))
                         InfoCardsGroup(profileData)
                         Spacer(modifier = Modifier.height(16.dp))
-                        val isDark = isSystemInDarkTheme()
+                        val isDark = rememberAppDarkTheme()
                         val switchesCardBackgroundColor =
                             if (isDark) onSecondaryContainerDark else MaterialTheme.colorScheme.secondaryFixedDim
                         Card(
@@ -164,22 +161,22 @@ fun ProfileScreen(
                                     label = stringResource(R.string.themeSwitchTittle),
                                     enabled = profileData.features and Features.THEME.flag != 0,
                                     checked = profileData.isDarkTheme
-                                ) { checked -> viewModel.switchTheme(checked) }
+                                ) { viewModel.changeTheme() }
                                 SettingSwitchRow(
                                     label = stringResource(R.string.languageSwitchTittle),
-                                    enabled = profileData.features and Features.LANG.flag != 0,
-                                    checked = profileData.isLangEnglish
-                                ) { checked -> viewModel.switchLang(checked) }
+                                    enabled = true,
+                                    checked = false
+                                ) {}
                                 SettingSwitchRow(
                                     label = stringResource(R.string.notificationSwitchTittle),
-                                    enabled = profileData.features and Features.NOTIFICATIONS.flag != 0,
-                                    checked = profileData.isNotificationsEnabled
-                                ) { checked -> viewModel.switchNotifications(checked) }
+                                    enabled = true,
+                                    checked = false
+                                ) {}
                                 SettingSwitchRow(
                                     label = stringResource(R.string.faceIdSwitchTittle),
-                                    enabled = profileData.features and Features.FACE_ID.flag != 0,
-                                    checked = profileData.isFaceIdEnabled
-                                ) { checked -> viewModel.switchFaceId(checked) }
+                                    enabled = true,
+                                    checked = false
+                                ) {}
                             }
                         }
                         Spacer(modifier = Modifier.height(16.dp))
@@ -203,7 +200,15 @@ fun ProfileScreen(
 
                         Spacer(modifier = Modifier.height(16.dp))
                         OutlinedButton(
-                            onClick = { viewModel.requestLogOut() },
+                            onClick = {
+                                viewModel.requestLogOut()
+                                navController.navigate("auth/registration") {
+                                    popUpTo(0) {
+                                        inclusive = true
+                                    }
+                                    launchSingleTop = true
+                                }
+                            },
                             modifier = Modifier
                                 .width(380.dp)
                                 .height(64.dp),
@@ -259,7 +264,7 @@ private fun InfoSection(label: String, value: String) {
 
 @Composable
 fun InfoCardsGroup(profileData: ProfileState.ProfileData) {
-    val isDark = isSystemInDarkTheme()
+    val isDark = rememberAppDarkTheme()
     val backgroundColor = if (isDark) surfaceLight else surfaceContainerHighLight
     Card(
         modifier = Modifier.fillMaxWidth(),

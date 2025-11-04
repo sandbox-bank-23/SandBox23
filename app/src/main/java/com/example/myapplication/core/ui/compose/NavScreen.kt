@@ -8,7 +8,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.defaultMinSize
@@ -49,6 +48,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.R
 import com.example.myapplication.auth.navigation.Auth
+import com.example.myapplication.auth.ui.screens.RegistrationScreen
 import com.example.myapplication.auth.ui.state.AuthState
 import com.example.myapplication.auth.ui.viewmodel.PinPadViewModel
 import com.example.myapplication.cards.navigation.cardsScreenNavigation
@@ -62,6 +62,7 @@ import com.example.myapplication.core.ui.theme.NavTextInactiveDark
 import com.example.myapplication.core.ui.theme.NavTextInactiveLight
 import com.example.myapplication.core.ui.theme.PinPadBackgroundColor
 import com.example.myapplication.core.ui.theme.RoundedCornerShapeSelector
+import com.example.myapplication.core.ui.theme.rememberAppDarkTheme
 import com.example.myapplication.core.ui.theme.secondaryContainerDark
 import com.example.myapplication.loansanddeposits.navigation.loansDepositsScreenNavigation
 import com.example.myapplication.profile.navigation.profileScreenNavigation
@@ -185,7 +186,7 @@ fun NavigationBarContent(navController: NavHostController, bottomBarRoutes: List
     ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentDestination = navBackStackEntry?.destination
-        val isDarkTheme = isSystemInDarkTheme()
+        val isDarkTheme = rememberAppDarkTheme()
 
         bottomBarRoutes.forEach { item ->
             val selected = currentDestination?.route == item.route || currentDestination?.parent?.route == item.route
@@ -282,6 +283,13 @@ fun NavHostContent(
         transfersScreenNavigation()
         historyScreenNavigation()
         profileScreenNavigation(navController)
+
+        composable("auth/{screen}") { backStackEntry ->
+            val screen = backStackEntry.arguments?.getString("screen")
+            when (screen) {
+                "registration" -> RegistrationScreen(navController = navController)
+            }
+        }
     }
 }
 

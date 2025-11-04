@@ -4,8 +4,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.core.view.WindowCompat
 import com.example.myapplication.core.ui.compose.App
 import com.example.myapplication.core.ui.theme.SandBox23Theme
+import com.example.myapplication.profile.ui.viewmodel.ProfileViewModel
+import org.koin.androidx.compose.koinViewModel
 
 class MainActivity : ComponentActivity() {
 
@@ -13,7 +18,22 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            SandBox23Theme {
+            val profileViewModel: ProfileViewModel = koinViewModel()
+
+            val isDarkTheme by profileViewModel
+                .themeInteractor
+                .getTheme()
+                .collectAsState(initial = false)
+
+            val window = window
+            WindowCompat.setDecorFitsSystemWindows(window, false)
+
+            val insetsController = WindowCompat.getInsetsController(window, window.decorView)
+            insetsController.isAppearanceLightStatusBars = !isDarkTheme
+            insetsController.isAppearanceLightNavigationBars = !isDarkTheme
+            window.decorView.systemUiVisibility = 0
+
+            SandBox23Theme(darkTheme = isDarkTheme) {
                 App()
             }
         }
