@@ -93,11 +93,7 @@ class ProfileViewModel(
             false -> userIdString
         }
     }
-    private fun getCurrentTheme(): Boolean {
-        var isDarkTheme = false
-        viewModelScope.launch {
-            isDarkTheme = themeInteractor.getTheme().first()
-        }
-        return isDarkTheme
+    private suspend fun getCurrentTheme(): Boolean {
+        return themeInteractor.getTheme().first()
     }
 }
